@@ -21,3 +21,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+settingManager/dataSalesManager.dat
+saveContract/Судникович Виталий Олегович МН5-210402-76/testXML2.xml
+saveContract/Судникович Виталий Олегович МН5-210402-76/testXML.xml
+saveContract/Судникович Виталий Олегович МН5-210402-76/Data.txt
+saveContract/Судникович Виталий Олегович МН5-210402-76/Data.dat
+saveContract/Судникович Виталий Олегович AW1-231232-13/baseDataClient.dat
+*.xml
+*.dat
