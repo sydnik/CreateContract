@@ -12,25 +12,8 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Model model = new Model();
-
-        JFrame window = new JFrame();
-        MyController controller = new MyController(model);
-
-
-
-
-        window.setTitle("CreateContract");
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setSize(450, 500);
-        window.setResizable(false);
-//        controller.createWindow();
-
-        window.add(controller.getView());
-
-
-
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
+        MyView view = new MyView();
+        MyController controller = new MyController(model,view);
 
 //        String docWord = new String(Files.readAllBytes(Paths.get(
 //                "saveContract/Судникович Виталий Олегович МН5-210402-76/testXML.xml")), StandardCharsets.UTF_8);
@@ -47,6 +30,7 @@ public class Main {
 //                new String(Files.readAllBytes(path), charset).replace(search, replace)
 //                        .getBytes(charset));
 //    }
+        //Тут кароче список как подправить word документы
     }
 }
 

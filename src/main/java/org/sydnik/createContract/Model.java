@@ -1,7 +1,16 @@
 package org.sydnik.createContract;
 
+import org.sydnik.createContract.data.DataClient;
+import org.sydnik.createContract.data.SalesManager;
+
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +27,7 @@ public class Model {
 
 
     }
-
+    //Изменяю настройки главное менеджера
     public void setSalesManager(Component[] listComponent){
         String fullName = null;
         int numberPowerOfAttorney = 0;
@@ -46,6 +55,7 @@ public class Model {
         SalesManager.save(salesManager);
 
     }
+    //Создаю нового клиента
     public void createNewClient(Component[] listComponent){
 
         Map<String,String> mapDataClient = new HashMap<>();
@@ -53,7 +63,6 @@ public class Model {
         String fullNameClient= "";
         for(Component component:listComponent){
             try {
-                System.out.println(((JTextField) component).getName());
             switch ( component.getName()) {
 
                     case "numberContract": {
@@ -98,14 +107,64 @@ public class Model {
         dataClient = new DataClient(numberContract,fullNameClient,mapDataClient);
         System.out.println(fullNameClient);
         System.out.println(numberContract);
-        DataClient.save(dataClient,"saveContract/" + fullNameClient+ numberContract.replace(" ","")  +"/baseDataClient.dat");
+        dataClient.save(dataClient);
+    }
+    //Возвращает лист всех папок(Клиентов)
+    public String[] listSelectClient(){
+        File path = new File("saveContract"); //path указывает на директорию
+        String[] list = path.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.matches("(.*)([a-zA-Zа-яёА-ЯЁ]{2})\\d-\\d{6}-\\d{2}");
+            }
+        });
+        return list;
+    }
+    public String[] listSelectClientSearch(Component[] components){
+        String line= "";
+        for(Component component:components) {
+            try {
+                switch (component.getName()) {
+                    case "searchClient": {
+                        line = ((JTextField) component).getText();
+                        break;
+                    }
+
+                }
+            }catch (Exception e){}
+        }
+        File path = new File("saveContract"); //path указывает на директорию
+        String finalLine = line;
+        String[] list = path.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                if(name.matches("(.*)([a-zA-Zа-яёА-ЯЁ]{2})\\d-\\d{6}-\\d{2}"))
+                {
+                    return name.contains(finalLine);
+                }
+                return false;
+            }
+        });
+        return list;
     }
 
     public SalesManager getSalesManager() {
         return salesManager;
     }
 
-    public DataClient getDataClient() {
+    public void writeDataClient(Component[] listComponent) {
+        for(Component component:listComponent){
+            try {
+                if (component.getName().equals("ListClients")) {
+                    dataClient = DataClient.load("saveContract/" +
+                            (((JList)((JViewport)((JScrollPane)component).getComponent(0)).getComponent(0)).getSelectedValue())
+                            +"/baseDataClient.dat");
+                }
+            }catch (Exception e){}
+        }
+    }
+
+    public DataClient getDataClient(){
         return dataClient;
     }
 }
