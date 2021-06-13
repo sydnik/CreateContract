@@ -7,11 +7,13 @@ public class SalesManager implements Serializable {
     private int numberPowerOfAttorney;
     private String datePowerOfAttorney;
     private String miniName;
+    private String numberPhoneManager;
 
-    public SalesManager(String fullName, int numberPowerOfAttorney, String datePowerOfAttorney) {
+    public SalesManager(String fullName, int numberPowerOfAttorney, String datePowerOfAttorney, String numberPhoneManager) {
         this.fullName = fullName;
         this.numberPowerOfAttorney = numberPowerOfAttorney;
         this.datePowerOfAttorney = datePowerOfAttorney;
+        this.numberPhoneManager = numberPhoneManager;
         setMiniName(fullName);
     }
 
@@ -43,11 +45,15 @@ public class SalesManager implements Serializable {
         return miniName;
     }
 
-    public static void save(SalesManager salesManager){
+    public String getNumberPhoneManager() {
+        return numberPhoneManager;
+    }
+
+    public void save(){
         try {
             FileOutputStream fileOutput = new FileOutputStream("settingManager/dataSalesManager.dat");
             ObjectOutputStream outputStream = new ObjectOutputStream(fileOutput);
-            outputStream.writeObject(salesManager);
+            outputStream.writeObject(this);
             fileOutput.close();
             outputStream.close();
         } catch (FileNotFoundException e) {

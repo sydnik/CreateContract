@@ -1,7 +1,5 @@
 package org.sydnik.createContract;
 
-import org.sydnik.createContract.data.Currency;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -50,7 +48,8 @@ public class ForTest extends JPanel {
 
 
     public static void main(String[] args) {
-        new Currency().ChechKurs();
+        System.out.println(Double.parseDouble("2.232342"));
+        System.out.println(Double.parseDouble("2,745445".replace(",",".")));
     }
 
 }

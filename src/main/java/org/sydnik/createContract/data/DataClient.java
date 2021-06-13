@@ -1,7 +1,9 @@
 package org.sydnik.createContract.data;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class DataClient implements Serializable {
@@ -18,7 +20,7 @@ public class DataClient implements Serializable {
     private String addressDelivery;
     private String numberPhoneClient;
     // base contract
-    private Date dateCreateContract;
+    private String dateCreateContract;
     private String fullNameSalesManager;
     private String miniSalesManager;
     private String timeProduction;
@@ -44,7 +46,6 @@ public class DataClient implements Serializable {
 
     }
 
-
     private void setMiniNameClient(String fullName){
         String[] createMiniName = fullName.split(" ");
         miniNameClient = createMiniName[0]+" ";
@@ -56,10 +57,19 @@ public class DataClient implements Serializable {
 
         }
     }
-
-
     public void setDateClient(){
 
+    }
+    public void setBaseContract(Map<String,String> map){
+        dateCreateContract = map.get("dateCreateContract");
+        fullNameSalesManager = map.get("fullNameSalesManager");
+        miniSalesManager = map.get("miniSalesManager");
+        timeProduction = map.get("timeProduction");
+        allSumInEUR = Integer.parseInt(map.get("allSumInEUR"));
+        allSumInBYN =  Integer.parseInt(map.get("allSumInBYN"));
+        prepaymentOr10PercentSum = Integer.parseInt(map.get("prepaymentOr10PercentSum"));
+        payUpTo50PercentSum = Integer.parseInt(map.get("payUpTo50PercentSum"));
+        payUpTo100PercentSum = Integer.parseInt(map.get("payUpTo100PercentSum"));
     }
 
 
@@ -109,7 +119,11 @@ public class DataClient implements Serializable {
     public String getNumberPhoneClient() {
         return numberPhoneClient;
     }
-    public Date getDateCreateContract() {
+    public String getDateCreateContract() {
+        if(dateCreateContract==null){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            return dateFormat.format(new Date());
+        }
         return dateCreateContract;
     }
     public String getFullNameSalesManager() {
@@ -137,7 +151,7 @@ public class DataClient implements Serializable {
         return payUpTo100PercentSum;
     }
 
-    public void save(DataClient dataClient){
+    public void save(){
         String path ="saveContract/" + fullNameClient+" "+ numberContract  +"/baseDataClient.dat";
         String[] pathArray = path.split("/");
         path = "";
@@ -151,7 +165,7 @@ public class DataClient implements Serializable {
         try {
             FileOutputStream fileOutput = new FileOutputStream(path);
             ObjectOutputStream outputStream = new ObjectOutputStream(fileOutput);
-            outputStream.writeObject(dataClient);
+            outputStream.writeObject(this);
             fileOutput.close();
             outputStream.close();
         } catch (FileNotFoundException e) {
@@ -164,13 +178,16 @@ public class DataClient implements Serializable {
         try {
             FileInputStream fiStream = new FileInputStream(path);
             ObjectInputStream objectStream = new ObjectInputStream(fiStream);
-            Object object = objectStream.readObject();
+            Object object = objectStream.readUnshared();
             fiStream.close();
             objectStream.close();
 
             return  (DataClient) object;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (InvalidClassException e){
+            return null;
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

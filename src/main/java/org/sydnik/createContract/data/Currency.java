@@ -9,6 +9,7 @@ import java.util.Date;
 public class Currency implements Serializable {
     private double value;
     private String date;
+
     public static Currency createCurrency(){
         Currency currency = Currency.load();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MM YYYY");
@@ -26,6 +27,7 @@ public class Currency implements Serializable {
         date = simpleDateFormat.format(new Date());
         checkKurs();
     }
+
     public double getValue() {
         return value;
     }
