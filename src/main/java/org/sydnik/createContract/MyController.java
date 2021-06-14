@@ -110,6 +110,7 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
             }
             case "saveDataBaseContractClient" :{
                 model.saveDataBaseContractClient(view.getComponentsStaticPanel());
+                model.createBaseContract();
                 break;
             }
 

@@ -8,23 +8,11 @@ public class NumberInWords {
 
     private BigDecimal amount;
 
-    /**<br/>     * Конструктор из Long<br/>     */
-    public NumberInWords(long l) {
-        String s = String.valueOf(l);
-        if (!s.contains(".") )
-            s += ".0";
-        this.amount = new BigDecimal( s );
-    }
-
-    /**<br/>     * Вернуть сумму как строку<br/>     */
-    public String asString() {
-        return amount.toString();
-    }
 
     /**<br/>     * Выводим сумму прописью<br/>     * @param stripkop boolean флаг - показывать копейки или нет<br/>     * @return String Сумма прописью<br/>     */
     // Беларуские рубли
-    public String sumBYNInWords() {
-        boolean stripkop = true;//Если тру то нет копеек, С фалсе есть копейки
+    public static String sumBYNInWords(long rub) {
+        boolean stripkop = false;//Если тру то нет копеек, С фалсе есть копейки
         String[][] sex = {
                 {"","один","два","три","четыре","пять","шесть","семь","восемь","девять"},
                 {"","одна","две","три","четыре","пять","шесть","семь","восемь","девять"},
@@ -42,10 +30,9 @@ public class NumberInWords {
                 // можно добавлять дальше секстиллионы и т.д.
         };
         // получаем отдельно рубли и копейки
-        long rub = amount.longValue();
-        String[] moi = amount.toString().split("\\.");
+        String[] moi = {"","00"};
         long kop = Long.valueOf(moi[1]);
-        if (!moi[1].substring( 0,1).equals("0") ){// начинается не с нуля
+        if (moi[1].substring( 0,1).equals("0") ){// начинается не с нуля
             if (kop<10 )
                 kop *=10;
         }
@@ -111,11 +98,12 @@ public class NumberInWords {
             o = o+""+kops+" "+morph(kop,forms[ 0][ 0],forms[ 0][1],forms[ 0][2]);
             o = o.replaceAll(" {2,}", " ");
         }
+        System.out.println(o);
         return o;
     }
 
     //Тут условные единицы
-    public String sumEURInWords() {
+    public static String sumEURInWords(long rub) {
         boolean stripkop = true;//Если тру то нет копеек, С фалсе есть копейки
         String[][] sex = {
                 {"","одна","два","три","четыре","пять","шесть","семь","восемь","девять"},
@@ -126,7 +114,7 @@ public class NumberInWords {
         String[] str10 = {"","десять","двадцать","тридцать","сорок","пятьдесят","шестьдесят", "семьдесят","восемьдесят","девяносто"};
         String[][] forms = {
                 {"копейка", "копейки", "копеек", "1"},
-                {") условная денежная единица", ") условных денежных единиц", ") условных денежных единиц", "0"},
+                {"условная денежная единица", "условных денежных единиц", "условных денежных единиц", "0"},
                 {"тысяча", "тысячи", "тысяч", "1"},
                 {"миллион", "миллиона", "миллионов", "0"},
                 {"миллиард","миллиарда","миллиардов","0"},
@@ -134,8 +122,7 @@ public class NumberInWords {
                 // можно добавлять дальше секстиллионы и т.д.
         };
         // получаем отдельно рубли и копейки
-        long rub = amount.longValue();
-        String[] moi = amount.toString().split("\\.");
+        String[] moi = {"","00"};
         long kop = Long.valueOf(moi[1]);
         if (!moi[1].substring( 0,1).equals("0") ){// начинается не с нуля
             if (kop<10 )

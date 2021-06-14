@@ -160,6 +160,9 @@ public class Model {
         }
         mapDataBaseContract.put("fullNameSalesManager",salesManager.getFullName());
         mapDataBaseContract.put("miniSalesManager",salesManager.getMiniName());
+        mapDataBaseContract.put("numberPowerOfAttorney", String.valueOf(salesManager.getNumberPowerOfAttorney()));
+        mapDataBaseContract.put("datePowerOfAttorney",salesManager.getDatePowerOfAttorney());
+        mapDataBaseContract.put("numberPhoneManager",salesManager.getNumberPhoneManager());
         dataClient.setBaseContract(mapDataBaseContract);
         dataClient.save();
     }
@@ -202,23 +205,7 @@ public class Model {
         return list;
     }
     public void createBaseContract(){
-        try {
-            String docWord = Files.readString(Paths.get(
-                    "saveContract/Судникович Виталий Олегович МН5-210402-76/testXML.xml"));
-            docWord = docWord.replace("NumberContract", "МН5-210402-76");
-
-            Files.write(Paths.get("saveContract/Судникович Виталий Олегович МН5-210402-76/testXML2.xml"), docWord.getBytes(StandardCharsets.UTF_8));
-
-            String fileName = "saveContract/Судникович Виталий Олегович МН5-210402-76/testXML.xml";
-            String search = "NumberContract";
-            String replace = "МН5-210402-76";
-            Charset charset = StandardCharsets.UTF_8;
-            Path path = Paths.get(fileName);
-            Files.write(path,
-                    new String(Files.readAllBytes(path), charset).replace(search, replace)
-                            .getBytes(charset));
-        }
-        catch (Exception e){}
+        CreateDocumentsAndSave.createBaseContract(dataClient);
 
     }
 

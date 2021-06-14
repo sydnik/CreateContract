@@ -19,10 +19,14 @@ public class DataClient implements Serializable {
     private String addressRegistration;
     private String addressDelivery;
     private String numberPhoneClient;
+    //data manager
+    private String fullNameSalesManager;
+    private String numberPowerOfAttorney;
+    private String datePowerOfAttorney;
+    private String miniSalesManager;
+    private String numberPhoneManager;
     // base contract
     private String dateCreateContract;
-    private String fullNameSalesManager;
-    private String miniSalesManager;
     private String timeProduction;
     private int allSumInEUR;
     private int allSumInBYN;
@@ -37,7 +41,7 @@ public class DataClient implements Serializable {
         this.fullNameClient = fullNameClient;
         setMiniNameClient(fullNameClient);
         numberPassport = mapDataClient.get("numberPassport");
-        issuedByPassport = mapDataClient.get("issuedBy");
+        issuedByPassport = mapDataClient.get("issuedByPassport");
         whenIssued = mapDataClient.get("whenIssued");
         identificationNumber = mapDataClient.get("identificationNumber");
         addressRegistration = mapDataClient.get("addressRegistration");
@@ -70,6 +74,9 @@ public class DataClient implements Serializable {
         prepaymentOr10PercentSum = Integer.parseInt(map.get("prepaymentOr10PercentSum"));
         payUpTo50PercentSum = Integer.parseInt(map.get("payUpTo50PercentSum"));
         payUpTo100PercentSum = Integer.parseInt(map.get("payUpTo100PercentSum"));
+        numberPowerOfAttorney = map.get("numberPowerOfAttorney");
+        datePowerOfAttorney = map.get("datePowerOfAttorney");
+        numberPhoneManager = map.get("numberPhoneManager") ;
     }
 
 
@@ -149,6 +156,15 @@ public class DataClient implements Serializable {
     }
     public int getPayUpTo100PercentSum() {
         return payUpTo100PercentSum;
+    }
+    public String getNumberPowerOfAttorney() {
+        return numberPowerOfAttorney;
+    }
+    public String getDatePowerOfAttorney() {
+        return datePowerOfAttorney;
+    }
+    public String getNumberPhoneManager() {
+        return numberPhoneManager;
     }
 
     public void save(){
