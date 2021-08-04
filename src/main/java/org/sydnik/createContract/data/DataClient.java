@@ -1,15 +1,17 @@
 package org.sydnik.createContract.data;
 
+import org.sydnik.createContract.data.contract.BasicContract;
+import org.sydnik.createContract.data.contract.SupplementaryAgreementBasicContract;
+import org.sydnik.createContract.data.contract.SupplementaryAgreementUpSaleContract;
+import org.sydnik.createContract.data.contract.UpSaleContract;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DataClient implements Serializable {
-    private  Map<String,String> dataMap ;
-    //data client
     private String numberContract;
+    private String strangeName;
     private String fullNameClient;
     private String miniNameClient;
     private String numberPassport;
@@ -19,26 +21,16 @@ public class DataClient implements Serializable {
     private String addressRegistration;
     private String addressDelivery;
     private String numberPhoneClient;
-    //data manager
-    private String fullNameSalesManager;
-    private String numberPowerOfAttorney;
-    private String datePowerOfAttorney;
-    private String miniSalesManager;
-    private String numberPhoneManager;
-    // base contract
-    private String dateCreateContract;
-    private String timeProduction;
-    private int allSumInEUR;
-    private int allSumInBYN;
-    private int prepaymentOr10PercentSum;
-    private int payUpTo50PercentSum;
-    private int payUpTo100PercentSum;
-    // UpSale contract
 
+    BasicContract basicContract;
+    UpSaleContract upSaleContract;
+    SupplementaryAgreementBasicContract supplementaryAgreementBasicContract;
+    SupplementaryAgreementUpSaleContract supplementaryAgreementUpSaleContract;
 
-    public DataClient(String numberContract, String fullNameClient,Map<String,String> mapDataClient) {
-        this.numberContract = numberContract.replace(" ","");
-        this.fullNameClient = fullNameClient;
+    public DataClient(Map<String,String> mapDataClient) {
+        this.numberContract = mapDataClient.get("numberContract").trim();
+        this.strangeName = mapDataClient.get("strangeName").trim();
+        fullNameClient = mapDataClient.get("fullNameClient").trim();
         setMiniNameClient(fullNameClient);
         numberPassport = mapDataClient.get("numberPassport");
         issuedByPassport = mapDataClient.get("issuedByPassport");
@@ -47,7 +39,10 @@ public class DataClient implements Serializable {
         addressRegistration = mapDataClient.get("addressRegistration");
         addressDelivery = mapDataClient.get("addressDelivery");
         numberPhoneClient = mapDataClient.get("numberPhoneClient");
-
+        this.basicContract = new BasicContract();
+        this.upSaleContract = new UpSaleContract();
+        this.supplementaryAgreementBasicContract = new SupplementaryAgreementBasicContract();
+        this.supplementaryAgreementUpSaleContract = new SupplementaryAgreementUpSaleContract();
     }
 
     private void setMiniNameClient(String fullName){
@@ -61,40 +56,67 @@ public class DataClient implements Serializable {
 
         }
     }
-    public void setDateClient(){
 
+
+    public void setDateAboutClient(Map<String,String> mapDataClient){
+        this.numberContract = mapDataClient.get("numberContract").trim();
+        this.strangeName = mapDataClient.get("strangeName").trim();
+        fullNameClient = mapDataClient.get("fullNameClient").trim();
+        setMiniNameClient(fullNameClient);
+        numberPassport = mapDataClient.get("numberPassport");
+        issuedByPassport = mapDataClient.get("issuedByPassport");
+        whenIssued = mapDataClient.get("whenIssued");
+        identificationNumber = mapDataClient.get("identificationNumber");
+        addressRegistration = mapDataClient.get("addressRegistration");
+        addressDelivery = mapDataClient.get("addressDelivery");
+        numberPhoneClient = mapDataClient.get("numberPhoneClient");
     }
+
     public void setBaseContract(Map<String,String> map){
-        dateCreateContract = map.get("dateCreateContract");
-        fullNameSalesManager = map.get("fullNameSalesManager");
-        miniSalesManager = map.get("miniSalesManager");
-        timeProduction = map.get("timeProduction");
-        allSumInEUR = Integer.parseInt(map.get("allSumInEUR"));
-        allSumInBYN =  Integer.parseInt(map.get("allSumInBYN"));
-        prepaymentOr10PercentSum = Integer.parseInt(map.get("prepaymentOr10PercentSum"));
-        payUpTo50PercentSum = Integer.parseInt(map.get("payUpTo50PercentSum"));
-        payUpTo100PercentSum = Integer.parseInt(map.get("payUpTo100PercentSum"));
-        numberPowerOfAttorney = map.get("numberPowerOfAttorney");
-        datePowerOfAttorney = map.get("datePowerOfAttorney");
-        numberPhoneManager = map.get("numberPhoneManager") ;
+        this.basicContract = new BasicContract(map.get("dateCreateContract"),map.get("timeProduction"),
+                Integer.parseInt(map.get("allSumInEUR")), Integer.parseInt(map.get("allSumInBYN")),
+                Integer.parseInt(map.get("prepaymentOr10PercentSum")),Integer.parseInt(map.get("payUpTo50PercentSum")),
+                Integer.parseInt(map.get("payUpTo100PercentSum")));
     }
-
-
-    public Map<String, String> getDataMap() {
-        return dataMap;
+    public void setUpSaleContract(Map<String,String> map){
+        AdditionalProduct[] listAdditionalProducts = new AdditionalProduct[6];
+        for (int i = 0; i < listAdditionalProducts.length; i++) {
+            listAdditionalProducts[i] = new AdditionalProduct(
+                    map.get("additionalProducts"+i),
+                    map.get("additionalProductsCount"+i),
+                    map.get("additionalProductsFullPrice"+i),
+                    map.get("additionalProductsDiscount" + i),
+                    map.get("additionalProductsWithDiscount"+i)
+            );
+        }
+        this.upSaleContract = new UpSaleContract(map.get("dateCreateUpSaleContract"),listAdditionalProducts,
+                Integer.parseInt(map.get("allSumUpSaleInBYN")),Integer.parseInt(map.get("prepaymentUpSale")),
+                Integer.parseInt(map.get("payUpTo100percentUpSale")));
     }
-
-    public void setDataMap(Map<String, String> dataMap) {
-        this.dataMap = dataMap;
+    public void setDateSupplementaryAgreementBasicContract(Map<String,String> map) {
+        this.supplementaryAgreementBasicContract = new SupplementaryAgreementBasicContract(
+                map.get("dateCreateSupplementaryAgreementBasicContract"),Integer.parseInt(map.get("numberSupplementaryAgreementBasicContract")),
+                Integer.parseInt(map.get("allSumInEURSupplementaryAgreement")),Integer.parseInt(map.get("allSumInBYNSupplementaryAgreement")),
+                Integer.parseInt(map.get("prepaymentOr10PercentSumSupplementaryAgreement")),Integer.parseInt(map.get("payUpTo50PercentSumSupplementaryAgreement")),
+                Integer.parseInt(map.get("payUpTo100PercentSumSupplementaryAgreement")));
     }
+    public void setDateSupplementaryAgreementUpSaleContract(Map<String,String> map) {
+        AdditionalProduct[] listAdditionalProductsSupplementaryAgreementUpSale = new AdditionalProduct[6];
+        for (int i = 0; i < listAdditionalProductsSupplementaryAgreementUpSale.length; i++) {
+            listAdditionalProductsSupplementaryAgreementUpSale[i] = new AdditionalProduct(
+                    map.get("supplementaryAgreementAdditionalProducts"+i),
+                    map.get("supplementaryAgreementAdditionalProductsCount"+i),
+                    map.get("supplementaryAgreementAdditionalProductsFullPrice"+i),
+                    map.get("supplementaryAgreementAdditionalProductsDiscount" + i),
+                    map.get("supplementaryAgreementAdditionalProductsWithDiscount"+i)
+            );
 
-
-    public String numberInWord(){
-        System.out.println();
-
-        return null;
+        }
+        this.supplementaryAgreementUpSaleContract = new SupplementaryAgreementUpSaleContract(
+                map.get("dateCreateSupplementaryAgreementUpSaleContract"),Integer.parseInt(map.get("numberSupplementaryAgreementUpSale")),
+                listAdditionalProductsSupplementaryAgreementUpSale,Integer.parseInt(map.get("sumUpSaleInBYNSupplementaryAgreement")),
+                Integer.parseInt(map.get("prepaymentUpSaleSupplementaryAgreement")),Integer.parseInt(map.get("payUpTo100percentUpSaleSupplementaryAgreement")));
     }
-
 
     public String getNumberContract() {
         return numberContract;
@@ -126,89 +148,63 @@ public class DataClient implements Serializable {
     public String getNumberPhoneClient() {
         return numberPhoneClient;
     }
-    public String getDateCreateContract() {
-        if(dateCreateContract==null){
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-            return dateFormat.format(new Date());
-        }
-        return dateCreateContract;
+    public String getStrangeName() {
+        return strangeName;
     }
-    public String getFullNameSalesManager() {
-        return fullNameSalesManager;
+    public BasicContract getBasicContract() {
+        return basicContract;
     }
-    public String getMiniSalesManager() {
-        return miniSalesManager;
+    public UpSaleContract getUpSaleContract() {
+        return upSaleContract;
     }
-    public String getTimeProduction() {
-        return timeProduction;
+    public SupplementaryAgreementBasicContract getSupplementaryAgreementBasicContract() {
+        return supplementaryAgreementBasicContract;
     }
-    public int getAllSumInEUR() {
-        return allSumInEUR;
-    }
-    public int getAllSumInBYN() {
-        return allSumInBYN;
-    }
-    public int getPrepaymentOr10PercentSum() {
-        return prepaymentOr10PercentSum;
-    }
-    public int getPayUpTo50PercentSum() {
-        return payUpTo50PercentSum;
-    }
-    public int getPayUpTo100PercentSum() {
-        return payUpTo100PercentSum;
-    }
-    public String getNumberPowerOfAttorney() {
-        return numberPowerOfAttorney;
-    }
-    public String getDatePowerOfAttorney() {
-        return datePowerOfAttorney;
-    }
-    public String getNumberPhoneManager() {
-        return numberPhoneManager;
+    public SupplementaryAgreementUpSaleContract getSupplementaryAgreementUpSaleContract() {
+        return supplementaryAgreementUpSaleContract;
     }
 
     public void save(){
-        String path ="saveContract/" + fullNameClient+" "+ numberContract  +"/baseDataClient.dat";
-        String[] pathArray = path.split("/");
-        path = "";
-        if(pathArray.length>1){
-            for (int i = 0; i < pathArray.length-1; i++) {
-                path = path  + pathArray[i] + "/";
-            }
-        }
+        StringBuilder data = new StringBuilder();
+        data.append("numberContract/=/").append(numberContract).append("\n");
+        data.append("strangeName/=/").append(strangeName).append("\n");
+        data.append("fullNameClient/=/").append(fullNameClient).append("\n");
+        data.append("miniNameClient/=/").append(miniNameClient).append("\n");
+        data.append("numberPassport/=/").append(numberPassport).append("\n");
+        data.append("issuedByPassport/=/").append(issuedByPassport).append("\n");
+        data.append("whenIssued/=/").append(whenIssued).append("\n");
+        data.append("identificationNumber/=/").append(identificationNumber).append("\n");
+        data.append("addressRegistration/=/").append(addressRegistration).append("\n");
+        data.append("addressDelivery/=/").append(addressDelivery).append("\n");
+        data.append("numberPhoneClient/=/").append(numberPhoneClient).append("\n");
+        data.append(basicContract.dataForSave());
+        data.append(upSaleContract.dataForSave());
+        data.append(supplementaryAgreementBasicContract.dataForSave());
+        data.append(supplementaryAgreementUpSaleContract.dataForSave());
+        String path ="saveContract/" +numberContract +" "+ strangeName;
         new File(path).mkdirs();
-        path = path + pathArray[pathArray.length-1];
-        try {
-            FileOutputStream fileOutput = new FileOutputStream(path);
-            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutput);
-            outputStream.writeObject(this);
-            fileOutput.close();
-            outputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(
+                path  +"/baseDataClient.dat"))){
+                writer.write(String.valueOf(data));
+        } catch (Exception e) {
         }
     }
     public static DataClient load(String path){
-        try {
-            FileInputStream fiStream = new FileInputStream(path);
-            ObjectInputStream objectStream = new ObjectInputStream(fiStream);
-            Object object = objectStream.readUnshared();
-            fiStream.close();
-            objectStream.close();
-
-            return  (DataClient) object;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvalidClassException e){
-            return null;
-
+        HashMap<String,String> map = new HashMap<>();
+        String[] data;
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))){
+            while (reader.ready()){
+                data = reader.readLine().split("/=/");
+                map.put(data[0],data[1]);
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-        return null;
+        DataClient dataClient = new DataClient(map);
+        dataClient.upSaleContract = UpSaleContract.load(map);
+        dataClient.supplementaryAgreementUpSaleContract = SupplementaryAgreementUpSaleContract.load(map);
+        dataClient.basicContract = BasicContract.load(map);
+        dataClient.supplementaryAgreementBasicContract = SupplementaryAgreementBasicContract.load(map);
+        return dataClient;
     }
 }

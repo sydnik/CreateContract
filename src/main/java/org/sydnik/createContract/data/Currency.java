@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Currency implements Serializable {
     private double value;
@@ -27,6 +28,16 @@ public class Currency implements Serializable {
         date = simpleDateFormat.format(new Date());
         checkKurs();
     }
+    public Currency(double rate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MM YYYY");
+        date = simpleDateFormat.format(new Date());
+        value = rate;
+        this.save();
+    }
+    private Currency(String date, double value){
+        this.date = date;
+        this.value = value;
+    }
 
     public double getValue() {
         return value;
@@ -36,7 +47,7 @@ public class Currency implements Serializable {
     }
 
     private void checkKurs() {
-            String nameSite = "https://www.nbrb.by/API/ExRates/Rates/292";//292 - курс евро.
+            String nameSite = "https://www.nbrb.by/API/ExRates/Rates/451";//451 - курс евро.
             HttpURLConnection connection = null;
             String lineString = "";
             try {
@@ -58,23 +69,26 @@ public class Currency implements Serializable {
             value = (Double.parseDouble(newLine[1]));
     }
     public void save(){
-        try {
-            FileOutputStream fileOutput = new FileOutputStream("settingManager/currency.dat");
-            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutput);
-            outputStream.writeObject(this);
-            fileOutput.close();
-            outputStream.close();
+        String path ="settingManager/";
+        new File(path).mkdirs();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path+"currency.dat"))){
+            String data = "date/=/"+date+"\n"+
+                    "value/=/"+value;
+            writer.write(data);
         } catch (Exception e) {
         }
     }
     public static Currency load(){
-        try {
-            FileInputStream fiStream = new FileInputStream("settingManager/currency.dat");
-            ObjectInputStream objectStream = new ObjectInputStream(fiStream);
-            Object object = objectStream.readObject();
-            fiStream.close();
-            objectStream.close();
-            return (Currency) object;
+        try (BufferedReader reader = new BufferedReader(new FileReader("settingManager/currency.dat"))){
+            HashMap<String,String> map = new HashMap<>();
+            String line = "";
+            String[] data;
+            while (reader.ready()){
+                line = reader.readLine();
+                data = line.split("/=/");
+                map.put(data[0],data[1]);
+            }
+            return new Currency(map.get("date"),Double.parseDouble(map.get("value")));
         }  catch (Exception e) {
         }
         return null;

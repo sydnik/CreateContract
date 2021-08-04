@@ -8,11 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,19 +21,33 @@ public class Model {
 
             this.salesManager = SalesManager.load();
         if(salesManager==null) {
-            salesManager = new SalesManager("Нужно имя тебе", 99,
-                    "99.99.9999","+375(00) 000 0000");
+            System.out.println("i tutu");
+            salesManager = new SalesManager("Нужно имя тебе", "99",
+                    "99.99.9999","+375(00) 000 0000","");
         }
+    }
+    public void setCurrency(){
         currency = Currency.createCurrency();
+    }
+    public void setCurrency(Component[] components){
+        double value = 0;
+        for(Component component : components){
+            try {
+                if(component.getName().equals("valueCurrency")){
+                    value=Double.parseDouble(((JTextField)component).getText());
+                }
+            }catch (Exception e){}
 
-
+        }
+        currency = new Currency(value);
     }
     //Изменяю настройки главное менеджера
     public void setSalesManager(Component[] listComponent){
         String fullName = null;
         String numberPhoneManager = null;
-        int numberPowerOfAttorney = 0;
+        String numberPowerOfAttorney = null;
         String datePowerOfAttorney = null;
+        String pathForSaveContact = null;
         for (Component component:listComponent) {
             try {
                 switch ((String) component.getName()) {
@@ -46,39 +56,98 @@ public class Model {
                         break;
                     }
                     case "numberPowerOfAttorney": {
-                        numberPowerOfAttorney = Integer.parseInt(((JTextField) component).getText());
+                        numberPowerOfAttorney = ((JTextField) component).getText();
                         break;
                     }
                     case "datePowerOfAttorney": {
                         datePowerOfAttorney = ((JTextField) component).getText();
                         break;
-                    } case "numberPhoneManager": {
+                    }
+                    case "numberPhoneManager": {
                         numberPhoneManager = ((JTextField) component).getText();
+                        break;
+                    }
+                    case "pathForSaveContact": {
+                        pathForSaveContact = ((JTextField) component).getText();
+                        break;
                     }
                 }
             } catch (Exception e) {
             }
         }
-        salesManager = new SalesManager(fullName,numberPowerOfAttorney,datePowerOfAttorney,numberPhoneManager);
+        salesManager = new SalesManager(fullName,numberPowerOfAttorney,datePowerOfAttorney,numberPhoneManager,pathForSaveContact);
         salesManager.save();
 
     }
-    //Создаю нового клиента
     public void createNewClient(Component[] listComponent){
 
         Map<String,String> mapDataClient = new HashMap<>();
-        String numberContract = "";
-        String fullNameClient= "";
         for(Component component:listComponent){
             try {
             switch ( component.getName()) {
+                case "numberContract": {
+                    mapDataClient.put("numberContract",((JTextField) component).getText());
+                    break;
+                }
+                case "strangeName" : {
+                    mapDataClient.put("strangeName", ((JTextField) component).getText());
+                    break;
+                }
+                case "fullNameClient": {
+                    mapDataClient.put("fullNameClient",((JTextField) component).getText());
+                    break;
+                }
+                case "numberPassport": {
+                    mapDataClient.put("numberPassport", ((JTextField) component).getText());
+                    break;
+                }
+                case "issuedByPassport": {
+                    mapDataClient.put("issuedByPassport", ((JTextField) component).getText());
+                    break;
+                }
+                case "whenIssued": {
+                    mapDataClient.put("whenIssued", ((JTextField) component).getText());
+                    break;
+                }
+                case "identificationNumber": {
+                    mapDataClient.put("identificationNumber", ((JTextField) component).getText());
+                    break;
+                }
+                case "addressRegistration": {
+                    mapDataClient.put("addressRegistration", ((JTextField) component).getText());
+                    break;
+                }
+                case "addressDelivery": {
+                    mapDataClient.put("addressDelivery", ((JTextField) component).getText());
+                    break;
+                }
+                case "numberPhoneClient": {
+                    mapDataClient.put("numberPhoneClient", ((JTextField) component).getText());
+                    break;
+                }
+            }
+            }catch (Exception e){}
+        }
+
+        dataClient = new DataClient(mapDataClient);
+        dataClient.save();
+    }
+    public void saveDataAboutClient(Component[] listComponent){
+        Map<String,String> mapDataClient = new HashMap<>();
+        for(Component component:listComponent){
+            try {
+                switch ( component.getName()) {
 
                     case "numberContract": {
-                        numberContract = ((JTextField) component).getText();
+                        mapDataClient.put("numberContract",((JTextField) component).getText());
+                        break;
+                    }
+                    case "strangeName" : {
+                        mapDataClient.put("strangeName", ((JTextField) component).getText());
                         break;
                     }
                     case "fullNameClient": {
-                        fullNameClient = ((JTextField) component).getText();
+                        mapDataClient.put("fullNameClient",((JTextField) component).getText());
                         break;
                     }
                     case "numberPassport": {
@@ -109,20 +178,18 @@ public class Model {
                         mapDataClient.put("numberPhoneClient", ((JTextField) component).getText());
                         break;
                     }
+
                 }
             }catch (Exception e){}
         }
 
-        dataClient = new DataClient(numberContract,fullNameClient,mapDataClient);
-        System.out.println(fullNameClient);
-        System.out.println(numberContract);
+        dataClient.setDateAboutClient(mapDataClient);
         dataClient.save();
     }
     public void saveDataBaseContractClient (Component[] components){
         Map<String,String> mapDataBaseContract = new HashMap<>();
         for (Component component : components){
             try {
-                System.out.println(component.getName());
                 switch (component.getName()) {
                     case "dateCreateContract": {
                         mapDataBaseContract.put("dateCreateContract", ((JTextField) component).getText());
@@ -158,21 +225,64 @@ public class Model {
             catch (Exception a){}
 
         }
-        mapDataBaseContract.put("fullNameSalesManager",salesManager.getFullName());
-        mapDataBaseContract.put("miniSalesManager",salesManager.getMiniName());
-        mapDataBaseContract.put("numberPowerOfAttorney", String.valueOf(salesManager.getNumberPowerOfAttorney()));
-        mapDataBaseContract.put("datePowerOfAttorney",salesManager.getDatePowerOfAttorney());
-        mapDataBaseContract.put("numberPhoneManager",salesManager.getNumberPhoneManager());
         dataClient.setBaseContract(mapDataBaseContract);
         dataClient.save();
     }
+    public void saveDataUpSale (Component[] components){
+        Map<String,String> mapDataUpSale = new HashMap<>();
+        for (Component component : components){
+            if(component instanceof JTextField){
+                try {
+                    mapDataUpSale.put(component.getName(),((JTextField)component).getText());
+                } catch (Exception e){
+                    mapDataUpSale.put(component.getName(),"");
+                }
+
+            }
+
+        }
+        dataClient.setUpSaleContract(mapDataUpSale);
+        dataClient.save();
+        CreateDocumentsAndPrint.createUpSaleContract(dataClient,salesManager);
+    }
+    public void saveDateSupplementaryAgreementBasicContract (Component[] components){
+        Map<String,String> mapDataUpSale = new HashMap<>();
+        for (Component component : components){
+            if(component instanceof JTextField){
+                try {
+                    mapDataUpSale.put(component.getName(),((JTextField)component).getText());
+                } catch (Exception e){
+                    mapDataUpSale.put(component.getName(),"");
+                }
+            }
+        }
+        dataClient.setDateSupplementaryAgreementBasicContract(mapDataUpSale);
+        dataClient.save();
+        CreateDocumentsAndPrint.createSupplementaryAgreementBasicContract(dataClient, salesManager);
+    }
+    public void saveDateSupplementaryAgreementUpSaleContract (Component[] components){
+        Map<String,String> mapDataUpSale = new HashMap<>();
+        for (Component component : components){
+            if(component instanceof JTextField){
+                try {
+                    mapDataUpSale.put(component.getName(),((JTextField)component).getText());
+                } catch (Exception e){
+                    mapDataUpSale.put(component.getName(),"");
+                }
+            }
+        }
+        dataClient.setDateSupplementaryAgreementUpSaleContract(mapDataUpSale);
+        dataClient.save();
+        CreateDocumentsAndPrint.createSupplementaryAgreementUpSaleContract(dataClient, salesManager);
+    }
+
     //Возвращает лист всех папок(Клиентов)
     public String[] listSelectClient(){
         File path = new File("saveContract"); //path указывает на директорию
         String[] list = path.list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.matches("(.*)([a-zA-Zа-яёА-ЯЁ]{2})\\d-\\d{6}-\\d{2}");
+                return name.matches("([a-zA-Zа-яёА-ЯЁ]{2})\\d-\\d{6}-\\d{2}(.*)");
             }
         });
         return list;
@@ -195,7 +305,7 @@ public class Model {
         String[] list = path.list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                if(name.matches("(.*)([a-zA-Zа-яёА-ЯЁ]{2})\\d-\\d{6}-\\d{2}"))
+                if(name.matches("([a-zA-Zа-яёА-ЯЁ]{2})\\d-\\d{6}-\\d{2}(.*)"))
                 {
                     return name.toLowerCase().contains(finalLine.toLowerCase());
                 }
@@ -205,7 +315,67 @@ public class Model {
         return list;
     }
     public void createBaseContract(){
-        CreateDocumentsAndSave.createBaseContract(dataClient);
+        CreateDocumentsAndPrint.createBaseContract(dataClient,salesManager);
+    }
+    public void printDoc(String nameDoc){
+        // 100 мс недает встретится двум потокам
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        CreateDocumentsAndPrint.printDoc(dataClient,nameDoc);
+    }
+    public void openDoc(String s){
+        switch (s){
+            case "openFileBasicContract" : {
+                try {
+                    Desktop.getDesktop().open(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "openFileUpSaleContract": {
+                try {
+                    System.out.println("\"saveContract/\" + dataClient.getNumberContract() + \" \" +dataClient.getStrangeName() + \"/ДоговорUpSale\"+dataClient.getNumberContract() + \".docx\"");
+                    Desktop.getDesktop().open(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            }
+            case "openFileSupplementaryAgreementBasicContract" : {
+                try {
+
+                    Desktop.getDesktop().open(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
+                            "/Дополнительное соглашение №"+ dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()+" " +dataClient.getNumberContract() + ".docx"));
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            case "openFileSupplementaryAgreementUpSaleContract" : {
+                try {
+
+                    Desktop.getDesktop().open(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
+                            dataClient.getSupplementaryAgreementUpSaleContract().getNumberSupplementaryAgreementUpSale()+" "+dataClient.getNumberContract() + ".docx"));
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+    public void openDirectory (){
+        try {
+            //нужно реализовать открытие папки на гугл диск
+            Desktop.getDesktop().open(new File("saveContract/"+dataClient.getNumberContract() + " " + dataClient.getStrangeName()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -221,6 +391,9 @@ public class Model {
 
             }
         }
+    }
+    public void clearDataClient(){
+        dataClient = null;
     }
 
     public SalesManager getSalesManager() {

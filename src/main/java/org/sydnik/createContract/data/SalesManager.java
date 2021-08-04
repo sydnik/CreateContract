@@ -1,20 +1,33 @@
 package org.sydnik.createContract.data;
 
 import java.io.*;
+import java.util.HashMap;
 
 public class SalesManager implements Serializable {
     private String fullName;
-    private int numberPowerOfAttorney;
+    private String numberPowerOfAttorney;
     private String datePowerOfAttorney;
     private String miniName;
     private String numberPhoneManager;
+    private String pathForSaveContact;
 
-    public SalesManager(String fullName, int numberPowerOfAttorney, String datePowerOfAttorney, String numberPhoneManager) {
+    public SalesManager(String fullName, String numberPowerOfAttorney, String datePowerOfAttorney,
+                        String numberPhoneManager, String pathForSaveContact) {
         this.fullName = fullName;
         this.numberPowerOfAttorney = numberPowerOfAttorney;
         this.datePowerOfAttorney = datePowerOfAttorney;
         this.numberPhoneManager = numberPhoneManager;
+        this.pathForSaveContact = pathForSaveContact;
         setMiniName(fullName);
+    }
+    private SalesManager(String fullName, String numberPowerOfAttorney, String datePowerOfAttorney,
+                         String miniName, String numberPhoneManager, String pathForSaveContact) {
+        this.fullName = fullName;
+        this.numberPowerOfAttorney = numberPowerOfAttorney;
+        this.datePowerOfAttorney = datePowerOfAttorney;
+        this.miniName = miniName;
+        this.numberPhoneManager = numberPhoneManager;
+        this.pathForSaveContact = pathForSaveContact;
     }
 
     private void setMiniName(String fullName){
@@ -33,7 +46,7 @@ public class SalesManager implements Serializable {
         return fullName;
     }
 
-    public int getNumberPowerOfAttorney() {
+    public String getNumberPowerOfAttorney() {
         return numberPowerOfAttorney;
     }
 
@@ -49,32 +62,48 @@ public class SalesManager implements Serializable {
         return numberPhoneManager;
     }
 
+    public String getPathForSaveContact() {
+        return pathForSaveContact;
+    }
+
     public void save(){
-        try {
-            FileOutputStream fileOutput = new FileOutputStream("settingManager/dataSalesManager.dat");
-            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutput);
-            outputStream.writeObject(this);
-            fileOutput.close();
-            outputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        String path ="settingManager/";
+        new File(path).mkdirs();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path+"basicSetting.dat"))){
+            String data = "fullName/=/"+fullName+"\n"+
+                    "numberPowerOfAttorney/=/"+numberPowerOfAttorney+"\n"+
+                    "datePowerOfAttorney/=/"+datePowerOfAttorney+"\n"+
+                    "miniName/=/"+miniName+"\n"+
+                    "numberPhoneManager/=/"+numberPhoneManager+"\n"+
+                    "pathForSaveContact/=/"+pathForSaveContact;
+            writer.write(data);
+        } catch (Exception e) {
         }
     }
     public static SalesManager load(){
-        try {
-            FileInputStream fiStream = new FileInputStream("settingManager/dataSalesManager.dat");
-            ObjectInputStream objectStream = new ObjectInputStream(fiStream);
-            Object object = objectStream.readObject();
-            fiStream.close();
-            objectStream.close();
+        try (BufferedReader reader = new BufferedReader(new FileReader("settingManager/basicSetting.dat"))){
+            HashMap<String,String> map = new HashMap<>();
+            String line = "";
+            String[] data = new String[0];
+            while (reader.ready()){
+                try {
+                    line = reader.readLine();
+                    data = line.split("/=/");
+                    map.put(data[0], data[1]);
+                }catch (ArrayIndexOutOfBoundsException e){
+                    if (data[0].equals("pathForSaveContact")){
+                        map.put(data[0],"");
+                    }
 
-            return  (SalesManager) object;
+                }
+            }
+            if(map.size()<4){
+                return null;
+            }
+            return new SalesManager(map.get("fullName"),map.get("numberPowerOfAttorney"),
+                    map.get("datePowerOfAttorney"),map.get("miniName"),map.get("numberPhoneManager"),map.get("pathForSaveContact"));
         }  catch (Exception e) {
         }
         return null;
-
-
     }
 }
