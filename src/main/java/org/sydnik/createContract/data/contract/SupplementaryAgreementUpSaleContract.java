@@ -67,7 +67,6 @@ public class SupplementaryAgreementUpSaleContract implements Serializable {
         StringBuilder data = new StringBuilder();
         data.append("dateCreateSupplementaryAgreementUpSaleContract/=/").append(dateCreateSupplementaryAgreementUpSaleContract).append("\n");
         data.append("numberSupplementaryAgreementUpSale/=/").append(numberSupplementaryAgreementUpSale).append("\n");
-        data.append("listAdditionalProductsSupplementaryAgreementUpSale/=/").append(listAdditionalProductsSupplementaryAgreementUpSale).append("\n");
         data.append("allSumUpSaleInBYNSupplementaryAgreement/=/").append(allSumUpSaleInBYNSupplementaryAgreement).append("\n");
         data.append("prepaymentUpSaleSupplementaryAgreement/=/").append(prepaymentUpSaleSupplementaryAgreement).append("\n");
         data.append("payUpTo100percentUpSaleSupplementaryAgreement/=/").append(payUpTo100percentUpSaleSupplementaryAgreement).append("\n");
@@ -82,18 +81,22 @@ public class SupplementaryAgreementUpSaleContract implements Serializable {
         return data;
     }
     public static SupplementaryAgreementUpSaleContract load (Map<String,String> map){
-        AdditionalProduct listAdditionalProductsSupplementaryAgreementUpSale[];
-        if(map.get("listAdditionalProductsSupplementaryAgreementUpSale0").equals("null")){
-            return new SupplementaryAgreementUpSaleContract();
-        }else {
-            listAdditionalProductsSupplementaryAgreementUpSale = new AdditionalProduct[6];
-            for (int i = 0; i < listAdditionalProductsSupplementaryAgreementUpSale.length; i++) {
-                listAdditionalProductsSupplementaryAgreementUpSale[i] = AdditionalProduct.Load(map.get("listAdditionalProductsSupplementaryAgreementUpSale"+i));
+        try {
+            AdditionalProduct listAdditionalProductsSupplementaryAgreementUpSale[];
+            if (map.get("listAdditionalProductsSupplementaryAgreementUpSale0").equals("null")) {
+                return new SupplementaryAgreementUpSaleContract();
+            } else {
+                listAdditionalProductsSupplementaryAgreementUpSale = new AdditionalProduct[6];
+                for (int i = 0; i < listAdditionalProductsSupplementaryAgreementUpSale.length; i++) {
+                    listAdditionalProductsSupplementaryAgreementUpSale[i] = AdditionalProduct.Load(map.get("listAdditionalProductsSupplementaryAgreementUpSale" + i));
+                }
+                return new SupplementaryAgreementUpSaleContract(
+                        map.get("dateCreateSupplementaryAgreementUpSaleContract"), Integer.parseInt(map.get("numberSupplementaryAgreementUpSale")),
+                        listAdditionalProductsSupplementaryAgreementUpSale, Integer.parseInt(map.get("allSumUpSaleInBYNSupplementaryAgreement")),
+                        Integer.parseInt(map.get("prepaymentUpSaleSupplementaryAgreement")), Integer.parseInt(map.get("payUpTo100percentUpSaleSupplementaryAgreement")));
             }
-            return new SupplementaryAgreementUpSaleContract(
-                    map.get("dateCreateSupplementaryAgreementUpSaleContract"),Integer.parseInt(map.get("numberSupplementaryAgreementUpSale")),
-                    listAdditionalProductsSupplementaryAgreementUpSale,Integer.parseInt(map.get("sumUpSaleInBYNSupplementaryAgreement")),
-                    Integer.parseInt(map.get("prepaymentUpSaleSupplementaryAgreement")),Integer.parseInt(map.get("payUpTo100percentUpSaleSupplementaryAgreement")));
+        } catch (Exception e) {
+            return new SupplementaryAgreementUpSaleContract();
         }
     }
 }

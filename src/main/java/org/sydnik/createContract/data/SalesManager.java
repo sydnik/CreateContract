@@ -9,25 +9,25 @@ public class SalesManager implements Serializable {
     private String datePowerOfAttorney;
     private String miniName;
     private String numberPhoneManager;
-    private String pathForSaveContact;
+    private String pathForSaveContract;
 
     public SalesManager(String fullName, String numberPowerOfAttorney, String datePowerOfAttorney,
-                        String numberPhoneManager, String pathForSaveContact) {
+                        String numberPhoneManager, String pathForSaveContract) {
         this.fullName = fullName;
         this.numberPowerOfAttorney = numberPowerOfAttorney;
         this.datePowerOfAttorney = datePowerOfAttorney;
         this.numberPhoneManager = numberPhoneManager;
-        this.pathForSaveContact = pathForSaveContact;
+        this.pathForSaveContract = pathForSaveContract;
         setMiniName(fullName);
     }
     private SalesManager(String fullName, String numberPowerOfAttorney, String datePowerOfAttorney,
-                         String miniName, String numberPhoneManager, String pathForSaveContact) {
+                         String miniName, String numberPhoneManager, String pathForSaveContract) {
         this.fullName = fullName;
         this.numberPowerOfAttorney = numberPowerOfAttorney;
         this.datePowerOfAttorney = datePowerOfAttorney;
         this.miniName = miniName;
         this.numberPhoneManager = numberPhoneManager;
-        this.pathForSaveContact = pathForSaveContact;
+        this.pathForSaveContract = pathForSaveContract;
     }
 
     private void setMiniName(String fullName){
@@ -62,8 +62,9 @@ public class SalesManager implements Serializable {
         return numberPhoneManager;
     }
 
-    public String getPathForSaveContact() {
-        return pathForSaveContact;
+    public String getPathForSaveContract() {
+
+        return pathForSaveContract;
     }
 
     public void save(){
@@ -75,7 +76,7 @@ public class SalesManager implements Serializable {
                     "datePowerOfAttorney/=/"+datePowerOfAttorney+"\n"+
                     "miniName/=/"+miniName+"\n"+
                     "numberPhoneManager/=/"+numberPhoneManager+"\n"+
-                    "pathForSaveContact/=/"+pathForSaveContact;
+                    "pathForSaveContract/=/"+ pathForSaveContract;
             writer.write(data);
         } catch (Exception e) {
         }
@@ -91,7 +92,7 @@ public class SalesManager implements Serializable {
                     data = line.split("/=/");
                     map.put(data[0], data[1]);
                 }catch (ArrayIndexOutOfBoundsException e){
-                    if (data[0].equals("pathForSaveContact")){
+                    if (data[0].equals("pathForSaveContract")){
                         map.put(data[0],"");
                     }
 
@@ -101,7 +102,7 @@ public class SalesManager implements Serializable {
                 return null;
             }
             return new SalesManager(map.get("fullName"),map.get("numberPowerOfAttorney"),
-                    map.get("datePowerOfAttorney"),map.get("miniName"),map.get("numberPhoneManager"),map.get("pathForSaveContact"));
+                    map.get("datePowerOfAttorney"),map.get("miniName"),map.get("numberPhoneManager"),map.get("pathForSaveContract"));
         }  catch (Exception e) {
         }
         return null;

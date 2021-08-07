@@ -41,7 +41,6 @@ public class Model {
         }
         currency = new Currency(value);
     }
-    //Изменяю настройки главное менеджера
     public void setSalesManager(Component[] listComponent){
         String fullName = null;
         String numberPhoneManager = null;
@@ -318,19 +317,23 @@ public class Model {
         CreateDocumentsAndPrint.createBaseContract(dataClient,salesManager);
     }
     public void printDoc(String nameDoc){
-        // 100 мс недает встретится двум потокам
+        // 150 мс недает встретится двум потокам
         try {
-            Thread.sleep(100);
+            Thread.sleep(150);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        CreateDocumentsAndPrint.printDoc(dataClient,nameDoc);
+        CreateDocumentsAndPrint.printDoc(dataClient,nameDoc,salesManager);
     }
     public void openDoc(String s){
+        String path =salesManager.getPathForSaveContract();
+        if(path.equals("")){
+            path = "saveContract\\";
+        }
         switch (s){
             case "openFileBasicContract" : {
                 try {
-                    Desktop.getDesktop().open(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
+                    Desktop.getDesktop().open(new File(path+ "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -338,8 +341,7 @@ public class Model {
             }
             case "openFileUpSaleContract": {
                 try {
-                    System.out.println("\"saveContract/\" + dataClient.getNumberContract() + \" \" +dataClient.getStrangeName() + \"/ДоговорUpSale\"+dataClient.getNumberContract() + \".docx\"");
-                    Desktop.getDesktop().open(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
+                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -349,7 +351,7 @@ public class Model {
             case "openFileSupplementaryAgreementBasicContract" : {
                 try {
 
-                    Desktop.getDesktop().open(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
+                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
                             "/Дополнительное соглашение №"+ dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()+" " +dataClient.getNumberContract() + ".docx"));
                 }
                 catch (IOException e) {
@@ -359,7 +361,7 @@ public class Model {
             case "openFileSupplementaryAgreementUpSaleContract" : {
                 try {
 
-                    Desktop.getDesktop().open(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
+                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
                             dataClient.getSupplementaryAgreementUpSaleContract().getNumberSupplementaryAgreementUpSale()+" "+dataClient.getNumberContract() + ".docx"));
                 }
                 catch (IOException e) {
@@ -370,9 +372,12 @@ public class Model {
 
     }
     public void openDirectory (){
+        String path = salesManager.getPathForSaveContract();
+        if(path.equals("")){
+            path = "saveContract\\";
+        }
         try {
-            //нужно реализовать открытие папки на гугл диск
-            Desktop.getDesktop().open(new File("saveContract/"+dataClient.getNumberContract() + " " + dataClient.getStrangeName()));
+            Desktop.getDesktop().open(new File(path + "\\"+dataClient.getNumberContract() + " " + dataClient.getStrangeName()));
         } catch (IOException e) {
             e.printStackTrace();
         }

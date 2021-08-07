@@ -80,11 +80,15 @@ public class SupplementaryAgreementBasicContract implements Serializable {
         data.append("payUpTo100PercentSumSupplementaryAgreement/=/").append(payUpTo100PercentSumSupplementaryAgreement).append("\n");
         return data;
     }
-    public static SupplementaryAgreementBasicContract load (Map<String,String> map){
-        return new SupplementaryAgreementBasicContract(
-                map.get("dateCreateSupplementaryAgreementBasicContract"),Integer.parseInt(map.get("numberSupplementaryAgreementBasicContract")),
-                Integer.parseInt(map.get("allSumInEURSupplementaryAgreement")),Integer.parseInt(map.get("allSumInBYNSupplementaryAgreement")),
-                Integer.parseInt(map.get("prepaymentOr10PercentSumSupplementaryAgreement")),Integer.parseInt(map.get("payUpTo50PercentSumSupplementaryAgreement")),
-                Integer.parseInt(map.get("payUpTo100PercentSumSupplementaryAgreement")));
+    public static SupplementaryAgreementBasicContract load (Map<String,String> map) {
+        try {
+            return new SupplementaryAgreementBasicContract(
+                    map.get("dateCreateSupplementaryAgreementBasicContract"), Integer.parseInt(map.get("numberSupplementaryAgreementBasicContract")),
+                    Integer.parseInt(map.get("allSumInEURSupplementaryAgreement")), Integer.parseInt(map.get("allSumInBYNSupplementaryAgreement")),
+                    Integer.parseInt(map.get("prepaymentOr10PercentSumSupplementaryAgreement")), Integer.parseInt(map.get("payUpTo50PercentSumSupplementaryAgreement")),
+                    Integer.parseInt(map.get("payUpTo100PercentSumSupplementaryAgreement")));
+        }catch (Exception e) {
+            return new SupplementaryAgreementBasicContract();
+        }
     }
 }

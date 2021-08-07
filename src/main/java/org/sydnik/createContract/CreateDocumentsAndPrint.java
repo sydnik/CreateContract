@@ -36,14 +36,14 @@ public class CreateDocumentsAndPrint {
         }
         String docWord = map.get("word/document.xml");
 
-            //ВАжно чтобы первым выполнялась заполенение суммы прописью!!!
+        //ВАжно чтобы первым выполнялась заполенение суммы прописью!!!
         docWord = docWord.replace("allSumInEURWord", NumberInWords.sumEURInWords(dataClient.getBasicContract().getAllSumInEUR()));
         docWord = docWord.replace("allSumInBYNWord", NumberInWords.sumBYNInWords(dataClient.getBasicContract().getAllSumInBYN()));
         docWord = docWord.replace("prepaymentOr10PercentSumWord", NumberInWords.sumEURInWords(dataClient.getBasicContract().getPrepaymentOr10PercentSum()));
         docWord = docWord.replace("payUpTo50PercentSumWord", NumberInWords.sumEURInWords(dataClient.getBasicContract().getPayUpTo50PercentSum()));
         docWord = docWord.replace("payUpTo100PercentSumWord", NumberInWords.sumEURInWords(dataClient.getBasicContract().getPayUpTo100PercentSum()));
         //Все остально не должно мешать работе
-        docWord = docWord.replaceAll("NumberContract", dataClient.getNumberContract());
+        docWord = docWord.replaceAll("numberContract", dataClient.getNumberContract());
         docWord = docWord.replaceAll("fullNameClient", dataClient.getFullNameClient());
         docWord = docWord.replaceAll("miniNameClient", dataClient.getMiniNameClient());
         docWord = docWord.replace("numberPassport", dataClient.getNumberPassport());
@@ -54,6 +54,7 @@ public class CreateDocumentsAndPrint {
         docWord = docWord.replace("addressDelivery", dataClient.getAddressDelivery());
         docWord = docWord.replace("numberPhoneClient", dataClient.getNumberPhoneClient());
         docWord = docWord.replaceAll("fullNameSalesManager", salesManager.getFullName());
+        docWord = docWord.replace("numberPhoneManager", salesManager.getNumberPhoneManager());
         docWord = docWord.replace("numberPowerOfAttorney", salesManager.getNumberPowerOfAttorney());
         docWord = docWord.replace("datePowerOfAttorney", salesManager.getDatePowerOfAttorney());
         docWord = docWord.replaceAll("miniSalesManager", salesManager.getMiniName());
@@ -79,6 +80,24 @@ public class CreateDocumentsAndPrint {
             fos.close();
         }catch (Exception e){
 
+        }
+        if(!salesManager.getPathForSaveContract().equals("")) {
+            try {
+                new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " +
+                        dataClient.getStrangeName() + "/Договор" + dataClient.getNumberContract() + ".docx");
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                for (Map.Entry<String, String> s : map.entrySet()) {
+                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
+                    ZipEntry zipEntry = new ZipEntry(s.getKey());
+                    zipOut.putNextEntry(zipEntry);
+                    zipOut.write(b);
+                }
+                zipOut.close();
+                fos.close();
+            } catch (Exception e) {
+
+            }
         }
 
 
@@ -162,6 +181,24 @@ public class CreateDocumentsAndPrint {
         }catch (Exception e){
 
         }
+        if(!salesManager.getPathForSaveContract().equals("")) {
+            try {
+                new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " +
+                        dataClient.getStrangeName() + "/ДоговорUpSale" + dataClient.getNumberContract() + ".docx");
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                for (Map.Entry<String, String> s : map.entrySet()) {
+                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
+                    ZipEntry zipEntry = new ZipEntry(s.getKey());
+                    zipOut.putNextEntry(zipEntry);
+                    zipOut.write(b);
+                }
+                zipOut.close();
+                fos.close();
+            } catch (Exception e) {
+
+            }
+        }
 
 
     }
@@ -216,7 +253,8 @@ public class CreateDocumentsAndPrint {
         docWord = docWord.replace("numberPhoneManager", salesManager.getNumberPhoneManager());
         map.put("word/document.xml",docWord);
         String fileName = "saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
-                "/Дополнительное соглашение №"+dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()+" " +dataClient.getNumberContract() + ".docx";
+                "/Дополнительное соглашение №"+dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()+" " +
+                dataClient.getNumberContract() + ".docx";
         try {
             FileOutputStream fos = new FileOutputStream(fileName);
             ZipOutputStream zipOut = new ZipOutputStream(fos);
@@ -230,6 +268,25 @@ public class CreateDocumentsAndPrint {
             fos.close();
         }catch (Exception e){
 
+        }
+        if(!salesManager.getPathForSaveContract().equals("")) {
+            try {
+                new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName() +
+                        "/Дополнительное соглашение №" + dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract() + " "
+                        + dataClient.getNumberContract() + ".docx");
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                for (Map.Entry<String, String> s : map.entrySet()) {
+                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
+                    ZipEntry zipEntry = new ZipEntry(s.getKey());
+                    zipOut.putNextEntry(zipEntry);
+                    zipOut.write(b);
+                }
+                zipOut.close();
+                fos.close();
+            } catch (Exception e) {
+
+            }
         }
 
     }
@@ -315,16 +372,38 @@ public class CreateDocumentsAndPrint {
         }catch (Exception e){
 
         }
+        if(!salesManager.getPathForSaveContract().equals("")) {
+            try {
+                new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName() + "/Дополнительное соглашение UpSale" +
+                        dataClient.getSupplementaryAgreementUpSaleContract().getNumberSupplementaryAgreementUpSale() + " " + dataClient.getNumberContract() + ".docx");
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                for (Map.Entry<String, String> s : map.entrySet()) {
+                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
+                    ZipEntry zipEntry = new ZipEntry(s.getKey());
+                    zipOut.putNextEntry(zipEntry);
+                    zipOut.write(b);
+                }
+                zipOut.close();
+                fos.close();
+            } catch (Exception e) {
+
+            }
+        }
 
 
     }
-    public static void printDoc(DataClient dataClient, String howDoc){
+    public static void printDoc(DataClient dataClient, String howDoc,SalesManager salesManager){
+        String path = salesManager.getPathForSaveContract();
+        if(path.equals("")){
+            path="saveContract\\";
+        }
         switch (howDoc){
             case "printBaseContract" :{
                 try {
-                    Desktop.getDesktop().print(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
-                    Thread.sleep(1000);// Возникает ошибка, ворд не успевает закрыться а уже открывается второй, добавил задержку в 1 секунду
-                    Desktop.getDesktop().print(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
+                    Desktop.getDesktop().print(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
+                    Thread.sleep(2000);// Возникает ошибка, ворд не успевает закрыться а уже открывается второй, добавил задержку в 1 секунду
+                    Desktop.getDesktop().print(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
@@ -337,9 +416,9 @@ public class CreateDocumentsAndPrint {
             }
             case "printUpSaleContract" : {
                 try {
-                    Desktop.getDesktop().print(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
-                    Thread.sleep(1000);// Возникает ошибка, ворд не успевает закрыться а уже открывается второй, добавил задержку в 1 секунду
-                    Desktop.getDesktop().print(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
+                    Desktop.getDesktop().print(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
+                    Thread.sleep(2000);// Возникает ошибка, ворд не успевает закрыться а уже открывается второй, добавил задержку в 1 секунду
+                    Desktop.getDesktop().print(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
@@ -352,10 +431,10 @@ public class CreateDocumentsAndPrint {
             }
             case "printSupplementaryAgreementBasicContract" : {
                 try {
-                    Desktop.getDesktop().print(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
+                    Desktop.getDesktop().print(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
                             "/Дополнительное соглашение №"+ dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()+" " +dataClient.getNumberContract() + ".docx"));
-                    Thread.sleep(1000);// Возникает ошибка, ворд не успевает закрыться а уже открывается второй, добавил задержку в 1 секунду Дополнительное соглашение №15 DA2-313123-21
-                    Desktop.getDesktop().print(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
+                    Thread.sleep(2000);// Возникает ошибка, ворд не успевает закрыться а уже открывается второй, добавил задержку в 1 секунду Дополнительное соглашение №15 DA2-313123-21
+                    Desktop.getDesktop().print(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
                             "/Дополнительное соглашение №"+ dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()+" " +dataClient.getNumberContract() + ".docx"));
                 }
                 catch (InterruptedException e) {
@@ -368,10 +447,10 @@ public class CreateDocumentsAndPrint {
             }
             case "printSupplementaryAgreementUpSaleContract" : {
                 try {
-                    Desktop.getDesktop().print(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
+                    Desktop.getDesktop().print(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
                             dataClient.getSupplementaryAgreementUpSaleContract().getNumberSupplementaryAgreementUpSale()+" "+dataClient.getNumberContract() + ".docx"));
-                    Thread.sleep(1000);// Возникает ошибка, ворд не успевает закрыться а уже открывается второй, добавил задержку в 1 секунду Дополнительное соглашение №15 DA2-313123-21
-                    Desktop.getDesktop().print(new File("saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
+                    Thread.sleep(2000);// Возникает ошибка, ворд не успевает закрыться а уже открывается второй, добавил задержку в 1 секунду Дополнительное соглашение №15 DA2-313123-21
+                    Desktop.getDesktop().print(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
                             dataClient.getSupplementaryAgreementUpSaleContract().getNumberSupplementaryAgreementUpSale()+" "+dataClient.getNumberContract() + ".docx"));
                 }
                 catch (InterruptedException e) {

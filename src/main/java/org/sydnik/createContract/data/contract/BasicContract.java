@@ -80,11 +80,14 @@ public class BasicContract implements Serializable {
         return data;
     }
     public static BasicContract load (Map<String,String> map){
-        return new BasicContract(map.get("dateCreateContract"),map.get("timeProduction"),
-                Integer.parseInt(map.get("allSumInEUR")), Integer.parseInt(map.get("allSumInBYN")),
-                Integer.parseInt(map.get("prepaymentOr10PercentSum")),Integer.parseInt(map.get("payUpTo50PercentSum")),
-                Integer.parseInt(map.get("payUpTo100PercentSum")));
-
+        try {
+            return new BasicContract(map.get("dateCreateContract"),map.get("timeProduction"),
+                    Integer.parseInt(map.get("allSumInEUR")), Integer.parseInt(map.get("allSumInBYN")),
+                    Integer.parseInt(map.get("prepaymentOr10PercentSum")),Integer.parseInt(map.get("payUpTo50PercentSum")),
+                    Integer.parseInt(map.get("payUpTo100PercentSum")));
+        }catch (Exception e){
+            return new BasicContract();
+        }
 
     }
 }

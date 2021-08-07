@@ -199,7 +199,7 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
             case "checkBoxSumUpSaleInBYNSupplementaryAgreement" :
             case "checkBoxPrepaymentUpSaleSupplementaryAgreement" :
             case "checkBoxPayUpTo100percentSupplementaryAgreementUpSale" :
-            case "checkBoxDateCreateSupplementaryAgreementUpSale" :
+            case "checkBoxDateCreateSupplementaryAgreementUpSaleContract" :
             case "checkBoxNumberSupplementaryAgreementUpSale" :
             case "checkBoxDateCreateContract" :
             case "checkBoxCurrencySumSupplementaryAgreement" :

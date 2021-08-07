@@ -69,17 +69,21 @@ public class UpSaleContract implements Serializable {
         return data;
     }
     public static UpSaleContract load (Map<String,String> map){
-        AdditionalProduct listAdditionalProducts[];
-        if(map.get("listAdditionalProducts0").equals("null")||map.get("listAdditionalProducts0")==null){
-            return new UpSaleContract();
-        }else {
-            listAdditionalProducts = new AdditionalProduct[6];
-            for (int i = 0; i < listAdditionalProducts.length; i++) {
-                listAdditionalProducts[i] = AdditionalProduct.Load(map.get("listAdditionalProducts"+i));
+        try {
+            AdditionalProduct listAdditionalProducts[];
+            if (map.get("listAdditionalProducts0").equals("null") || map.get("listAdditionalProducts0") == null) {
+                return new UpSaleContract();
+            } else {
+                listAdditionalProducts = new AdditionalProduct[6];
+                for (int i = 0; i < listAdditionalProducts.length; i++) {
+                    listAdditionalProducts[i] = AdditionalProduct.Load(map.get("listAdditionalProducts" + i));
+                }
+                return new UpSaleContract(map.get("dateCreateUpSaleContract"), listAdditionalProducts,
+                        Integer.parseInt(map.get("allSumUpSaleInBYN")), Integer.parseInt(map.get("prepaymentUpSale")),
+                        Integer.parseInt(map.get("payUpTo100percentUpSale")));
             }
-            return new UpSaleContract(map.get("dateCreateUpSaleContract"),listAdditionalProducts,
-                    Integer.parseInt(map.get("allSumUpSaleInBYN")),Integer.parseInt(map.get("prepaymentUpSale")),
-                    Integer.parseInt(map.get("payUpTo100percentUpSale")));
+        }catch (Exception e){
+            return new UpSaleContract();
         }
     }
 }

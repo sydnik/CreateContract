@@ -4,11 +4,10 @@ package org.sydnik.createContract;
 import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
 
-import javax.sql.rowset.CachedRowSet;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -159,7 +158,7 @@ public class MyView extends JFrame {
         gridBagConstraints.ipadx = 300;
         JTextField pathForSaveContact = new JTextField();
         pathForSaveContact.setName("pathForSaveContact");
-        pathForSaveContact.setText(salesManager.getPathForSaveContact());
+        pathForSaveContact.setText(salesManager.getPathForSaveContract());
         staticJPanel.add(pathForSaveContact,gridBagConstraints);
 
         gridBagConstraints.gridy = 9;
@@ -711,12 +710,12 @@ public class MyView extends JFrame {
         gridBagConstraints.gridx = 0;
         staticJPanel.add(new JLabel("Срок исполнения"),gridBagConstraints);
         gridBagConstraints.gridx = 1;
-        JComboBox<String> periodOfExecution = new JComboBox(new String[]{"14 до 25","21 до 35"});
+        JComboBox<String> periodOfExecution = new JComboBox(new String[]{"14 до 25","21 до 29"});
         periodOfExecution.setName("timeProduction");
         if (dataClient.getBasicContract().getTimeProduction() == null){
             periodOfExecution.setSelectedIndex(0);
         }
-        else if(dataClient.getBasicContract().getTimeProduction().equals("21 до 35")){
+        else if(dataClient.getBasicContract().getTimeProduction().equals("21 до 29")){
             periodOfExecution.setSelectedIndex(1);
         }
         else {
@@ -1871,18 +1870,18 @@ public class MyView extends JFrame {
         staticJPanel.add(new JLabel("Дата подписания"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
-        JCheckBox checkBoxDateCreateSupplementaryAgreementUpSale  = new JCheckBox();
-        checkBoxDateCreateSupplementaryAgreementUpSale.setName("checkBoxDateCreateSupplementaryAgreementUpSale");
-        checkBoxDateCreateSupplementaryAgreementUpSale.addActionListener(controller);
-        staticJPanel.add(checkBoxDateCreateSupplementaryAgreementUpSale,gridBagConstraints);
+        JCheckBox checkBoxDateCreateSupplementaryAgreementUpSaleContract  = new JCheckBox();
+        checkBoxDateCreateSupplementaryAgreementUpSaleContract.setName("checkBoxDateCreateSupplementaryAgreementUpSaleContract");
+        checkBoxDateCreateSupplementaryAgreementUpSaleContract.addActionListener(controller);
+        staticJPanel.add(checkBoxDateCreateSupplementaryAgreementUpSaleContract,gridBagConstraints);
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridwidth = 3;
-        JFormattedTextField dateCreateSupplementaryAgreementUpSale = new JFormattedTextField(dateCreateContractMask);
-        dateCreateSupplementaryAgreementUpSale.setName("dateCreateSupplementaryAgreementUpSale");
-        dateCreateSupplementaryAgreementUpSale.setText(String.valueOf(dataClient.getSupplementaryAgreementUpSaleContract().getDateCreateSupplementaryAgreementUpSaleContract()));
-        dateCreateSupplementaryAgreementUpSale.addKeyListener(controller);
-        dateCreateSupplementaryAgreementUpSale.setEnabled(false);
-        staticJPanel.add(dateCreateSupplementaryAgreementUpSale,gridBagConstraints);
+        JFormattedTextField dateCreateSupplementaryAgreementUpSaleContract = new JFormattedTextField(dateCreateContractMask);
+        dateCreateSupplementaryAgreementUpSaleContract.setName("dateCreateSupplementaryAgreementUpSaleContract");
+        dateCreateSupplementaryAgreementUpSaleContract.setText(String.valueOf(dataClient.getSupplementaryAgreementUpSaleContract().getDateCreateSupplementaryAgreementUpSaleContract()));
+        dateCreateSupplementaryAgreementUpSaleContract.addKeyListener(controller);
+        dateCreateSupplementaryAgreementUpSaleContract.setEnabled(false);
+        staticJPanel.add(dateCreateSupplementaryAgreementUpSaleContract,gridBagConstraints);
 
         gridBagConstraints.gridy = 16;
         gridBagConstraints.gridx = 0;
@@ -2167,18 +2166,18 @@ public class MyView extends JFrame {
         staticJPanel.add(new JLabel("Дата подписания"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
-        JCheckBox checkBoxDateCreateSupplementaryAgreementUpSale  = new JCheckBox();
-        checkBoxDateCreateSupplementaryAgreementUpSale.setName("checkBoxDateCreateSupplementaryAgreementUpSale");
-        checkBoxDateCreateSupplementaryAgreementUpSale.addActionListener(controller);
-        staticJPanel.add(checkBoxDateCreateSupplementaryAgreementUpSale,gridBagConstraints);
+        JCheckBox checkBoxDateCreateSupplementaryAgreementUpSaleContract  = new JCheckBox();
+        checkBoxDateCreateSupplementaryAgreementUpSaleContract.setName("checkBoxDateCreateSupplementaryAgreementUpSaleContract");
+        checkBoxDateCreateSupplementaryAgreementUpSaleContract.addActionListener(controller);
+        staticJPanel.add(checkBoxDateCreateSupplementaryAgreementUpSaleContract,gridBagConstraints);
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridwidth = 3;
-        JFormattedTextField dateCreateSupplementaryAgreementUpSale = new JFormattedTextField(dateCreateContractMask);
-        dateCreateSupplementaryAgreementUpSale.setName("dateCreateSupplementaryAgreementUpSale");
-        dateCreateSupplementaryAgreementUpSale.setText(String.valueOf(dataClient.getSupplementaryAgreementUpSaleContract().getDateCreateSupplementaryAgreementUpSaleContract()));
-        dateCreateSupplementaryAgreementUpSale.addKeyListener(controller);
-        dateCreateSupplementaryAgreementUpSale.setEnabled(false);
-        staticJPanel.add(dateCreateSupplementaryAgreementUpSale,gridBagConstraints);
+        JFormattedTextField dateCreateSupplementaryAgreementUpSaleContract = new JFormattedTextField(dateCreateContractMask);
+        dateCreateSupplementaryAgreementUpSaleContract.setName("dateCreateSupplementaryAgreementUpSaleContract");
+        dateCreateSupplementaryAgreementUpSaleContract.setText(String.valueOf(dataClient.getSupplementaryAgreementUpSaleContract().getDateCreateSupplementaryAgreementUpSaleContract()));
+        dateCreateSupplementaryAgreementUpSaleContract.addKeyListener(controller);
+        dateCreateSupplementaryAgreementUpSaleContract.setEnabled(false);
+        staticJPanel.add(dateCreateSupplementaryAgreementUpSaleContract,gridBagConstraints);
 
         gridBagConstraints.gridy = 16;
         gridBagConstraints.gridx = 0;
@@ -2588,10 +2587,10 @@ public class MyView extends JFrame {
                 }
                 break;
             }
-            case "checkBoxDateCreateSupplementaryAgreementUpSale" :{
+            case "checkBoxDateCreateSupplementaryAgreementUpSaleContract" :{
                 for(Component component :staticJPanel.getComponents()){
                     try {
-                        if(component.getName().equals("dateCreateSupplementaryAgreementUpSale")){
+                        if(component.getName().equals("dateCreateSupplementaryAgreementUpSaleContract")){
                             component.setEnabled(checkBox.isSelected());
                             break;
                         }
@@ -2638,6 +2637,13 @@ public class MyView extends JFrame {
 
     public void selectPathForSaveContract(){
         JFileChooser chooser = new JFileChooser();
+        for(Component component :staticJPanel.getComponents()){
+            try {
+                if(component.getName().equals("pathForSaveContact")){
+                    chooser.setCurrentDirectory(new File(((JTextField) component).getText())); ;
+                }
+            } catch (Exception e){}
+        }
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);// должна открываться папка которая выбрана.
         int returnVal = chooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -2652,7 +2658,8 @@ public class MyView extends JFrame {
         }
     }
     //Отоброжает сообщение при этом не обновляет полностью страницу ИДЕЮ НУЖНО переделать
-    public void writeMessage(String message){
+    public void writeJustMessage(String message){
+
         staticJPanel.add(new JLabel(message));
         staticJPanel.revalidate();
         staticJPanel.repaint();
