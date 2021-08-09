@@ -1,5 +1,7 @@
 package org.sydnik.createContract.data;
 
+import org.sydnik.createContract.exception.CantWriteDoc;
+
 import java.io.*;
 import java.util.HashMap;
 
@@ -67,7 +69,7 @@ public class SalesManager implements Serializable {
         return pathForSaveContract;
     }
 
-    public void save(){
+    public void save() throws CantWriteDoc {
         String path ="settingManager/";
         new File(path).mkdirs();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path+"basicSetting.dat"))){
@@ -79,6 +81,8 @@ public class SalesManager implements Serializable {
                     "pathForSaveContract/=/"+ pathForSaveContract;
             writer.write(data);
         } catch (Exception e) {
+            throw new CantWriteDoc("Не смог смог сохранить найстроки \n" +
+                    "т.к. нет доступа к файлу");
         }
     }
     public static SalesManager load(){

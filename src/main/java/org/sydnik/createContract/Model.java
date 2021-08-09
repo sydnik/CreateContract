@@ -3,6 +3,7 @@ package org.sydnik.createContract;
 import org.sydnik.createContract.data.Currency;
 import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
+import org.sydnik.createContract.exception.CantWriteDoc;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,7 +42,7 @@ public class Model {
         }
         currency = new Currency(value);
     }
-    public void setSalesManager(Component[] listComponent){
+    public void setSalesManager(Component[] listComponent) throws CantWriteDoc {
         String fullName = null;
         String numberPhoneManager = null;
         String numberPowerOfAttorney = null;
@@ -78,7 +79,7 @@ public class Model {
         salesManager.save();
 
     }
-    public void createNewClient(Component[] listComponent){
+    public void createNewClient(Component[] listComponent) throws CantWriteDoc {
 
         Map<String,String> mapDataClient = new HashMap<>();
         for(Component component:listComponent){
@@ -131,7 +132,7 @@ public class Model {
         dataClient = new DataClient(mapDataClient);
         dataClient.save();
     }
-    public void saveDataAboutClient(Component[] listComponent){
+    public void saveDataAboutClient(Component[] listComponent) throws CantWriteDoc {
         Map<String,String> mapDataClient = new HashMap<>();
         for(Component component:listComponent){
             try {
@@ -185,7 +186,7 @@ public class Model {
         dataClient.setDateAboutClient(mapDataClient);
         dataClient.save();
     }
-    public void saveDataBaseContractClient (Component[] components){
+    public void saveDataBaseContractClient (Component[] components) throws CantWriteDoc {
         Map<String,String> mapDataBaseContract = new HashMap<>();
         for (Component component : components){
             try {
@@ -227,7 +228,7 @@ public class Model {
         dataClient.setBaseContract(mapDataBaseContract);
         dataClient.save();
     }
-    public void saveDataUpSale (Component[] components){
+    public void saveDataUpSale (Component[] components) throws CantWriteDoc {
         Map<String,String> mapDataUpSale = new HashMap<>();
         for (Component component : components){
             if(component instanceof JTextField){
@@ -244,7 +245,7 @@ public class Model {
         dataClient.save();
         CreateDocumentsAndPrint.createUpSaleContract(dataClient,salesManager);
     }
-    public void saveDateSupplementaryAgreementBasicContract (Component[] components){
+    public void saveDateSupplementaryAgreementBasicContract (Component[] components) throws CantWriteDoc {
         Map<String,String> mapDataUpSale = new HashMap<>();
         for (Component component : components){
             if(component instanceof JTextField){
@@ -259,7 +260,7 @@ public class Model {
         dataClient.save();
         CreateDocumentsAndPrint.createSupplementaryAgreementBasicContract(dataClient, salesManager);
     }
-    public void saveDateSupplementaryAgreementUpSaleContract (Component[] components){
+    public void saveDateSupplementaryAgreementUpSaleContract (Component[] components) throws CantWriteDoc {
         Map<String,String> mapDataUpSale = new HashMap<>();
         for (Component component : components){
             if(component instanceof JTextField){
@@ -313,7 +314,7 @@ public class Model {
         });
         return list;
     }
-    public void createBaseContract(){
+    public void createBaseContract() throws CantWriteDoc {
         CreateDocumentsAndPrint.createBaseContract(dataClient,salesManager);
     }
     public void printDoc(String nameDoc){

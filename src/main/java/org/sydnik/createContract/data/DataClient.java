@@ -4,6 +4,7 @@ import org.sydnik.createContract.data.contract.BasicContract;
 import org.sydnik.createContract.data.contract.SupplementaryAgreementBasicContract;
 import org.sydnik.createContract.data.contract.SupplementaryAgreementUpSaleContract;
 import org.sydnik.createContract.data.contract.UpSaleContract;
+import org.sydnik.createContract.exception.CantWriteDoc;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -164,7 +165,7 @@ public class DataClient implements Serializable {
         return supplementaryAgreementUpSaleContract;
     }
 
-    public void save(){
+    public void save() throws CantWriteDoc {
         StringBuilder data = new StringBuilder();
         data.append("numberContract/=/").append(numberContract).append("\n");
         data.append("strangeName/=/").append(strangeName).append("\n");
@@ -187,6 +188,7 @@ public class DataClient implements Serializable {
                 path  +"/baseDataClient.dat"))){
                 writer.write(String.valueOf(data));
         } catch (Exception e) {
+            throw new CantWriteDoc("Не смог сохранить данные в файл");
         }
     }
     public static DataClient load(String path){

@@ -3,6 +3,7 @@ package org.sydnik.createContract;
 
 import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
+import org.sydnik.createContract.exception.CantWriteDoc;
 
 import java.awt.*;
 import java.io.*;
@@ -15,7 +16,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class CreateDocumentsAndPrint {
-    public static void createBaseContract(DataClient dataClient, SalesManager salesManager){
+    public static void createBaseContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc {
         HashMap<String,String> map = new HashMap<>();
         try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Базовый договор.docx"))) {
             ZipEntry entry = stream.getNextEntry();
@@ -79,6 +80,7 @@ public class CreateDocumentsAndPrint {
             zipOut.close();
             fos.close();
         }catch (Exception e){
+            throw new CantWriteDoc("Не смог записать \n"+fileName);
 
         }
         if(!salesManager.getPathForSaveContract().equals("")) {
@@ -96,13 +98,13 @@ public class CreateDocumentsAndPrint {
                 zipOut.close();
                 fos.close();
             } catch (Exception e) {
-
+                throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
             }
         }
 
 
     }
-    public static void createUpSaleContract(DataClient dataClient,SalesManager salesManager){
+    public static void createUpSaleContract(DataClient dataClient,SalesManager salesManager) throws CantWriteDoc {
         String listLine[];
         HashMap<String,String> map = new HashMap<>();
         try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Договор UpSale.docx"))) {
@@ -179,6 +181,7 @@ public class CreateDocumentsAndPrint {
             zipOut.close();
             fos.close();
         }catch (Exception e){
+            throw new CantWriteDoc("Не смог записать \n"+fileName);
 
         }
         if(!salesManager.getPathForSaveContract().equals("")) {
@@ -196,13 +199,13 @@ public class CreateDocumentsAndPrint {
                 zipOut.close();
                 fos.close();
             } catch (Exception e) {
-
+                throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
             }
         }
 
 
     }
-    public static void createSupplementaryAgreementBasicContract(DataClient dataClient, SalesManager salesManager) {HashMap<String,String> map = new HashMap<>();
+    public static void createSupplementaryAgreementBasicContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc {HashMap<String,String> map = new HashMap<>();
         try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Дополнительное соглашение БД.docx"))) {
             ZipEntry entry = stream.getNextEntry();
             StringBuilder stringBuilder = new StringBuilder("");
@@ -267,7 +270,7 @@ public class CreateDocumentsAndPrint {
             zipOut.close();
             fos.close();
         }catch (Exception e){
-
+            throw new CantWriteDoc("Не смог записать \n"+fileName);
         }
         if(!salesManager.getPathForSaveContract().equals("")) {
             try {
@@ -285,12 +288,12 @@ public class CreateDocumentsAndPrint {
                 zipOut.close();
                 fos.close();
             } catch (Exception e) {
-
+                throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
             }
         }
 
     }
-    public static void createSupplementaryAgreementUpSaleContract(DataClient dataClient, SalesManager salesManager){
+    public static void createSupplementaryAgreementUpSaleContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc {
         String listLine[];
         HashMap<String,String> map = new HashMap<>();
         try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Дополнительно соглашение UpSale.docx"))) {
@@ -370,7 +373,7 @@ public class CreateDocumentsAndPrint {
             zipOut.close();
             fos.close();
         }catch (Exception e){
-
+            throw new CantWriteDoc("Не смог записать \n"+fileName);
         }
         if(!salesManager.getPathForSaveContract().equals("")) {
             try {
@@ -387,7 +390,7 @@ public class CreateDocumentsAndPrint {
                 zipOut.close();
                 fos.close();
             } catch (Exception e) {
-
+                throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
             }
         }
 

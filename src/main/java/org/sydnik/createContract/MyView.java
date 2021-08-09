@@ -97,14 +97,10 @@ public class MyView extends JFrame {
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = GridBagConstraints.WEST;
 
-        MaskFormatter numberPowerOfAttorneyFormatter = null,
-                datePowerOfAttorneyFormatter = null,
+        MaskFormatter datePowerOfAttorneyFormatter = null,
                 numberPhoneManagerFormatter = null;
-        JFormattedTextField numberPowerOfAttorney = null;
         JFormattedTextField datePowerOfAttorney = null;
         try {
-            numberPowerOfAttorneyFormatter = new MaskFormatter("##");
-            numberPowerOfAttorney = new JFormattedTextField(numberPowerOfAttorneyFormatter);
             numberPhoneManagerFormatter = new MaskFormatter("+375(##) ### ####");
 
             datePowerOfAttorneyFormatter = new MaskFormatter("##.##.####");
@@ -127,10 +123,11 @@ public class MyView extends JFrame {
         gridBagConstraints.gridy = 2;
         staticJPanel.add(new JLabel("Номер доверенности :"),gridBagConstraints);
 
-
+        JTextField numberPowerOfAttorney = new JTextField();
         gridBagConstraints.gridy = 3;
         numberPowerOfAttorney.setName("numberPowerOfAttorney");
         numberPowerOfAttorney.setText(String.valueOf(salesManager.getNumberPowerOfAttorney()));
+        numberPowerOfAttorney.addKeyListener(controller);
         staticJPanel.add(numberPowerOfAttorney,gridBagConstraints);
 
         gridBagConstraints.gridy = 4;
@@ -305,12 +302,14 @@ public class MyView extends JFrame {
         JFormattedTextField numberContract = new JFormattedTextField(numberContractFormatter);
         numberContract.setText(dataClient.getNumberContract());
         numberContract.setName("numberContract");
+        numberContract.setEnabled(false);
         staticJPanel.add(numberContract);
 
         staticJPanel.add(new JLabel("Странное название"));
         JTextField strangeName = new JTextField();
         strangeName.setText(dataClient.getStrangeName());
         strangeName.setName("strangeName");
+        strangeName.setEnabled(false);
         staticJPanel.add(strangeName);
 
         staticJPanel.add(new JLabel("ФИО клиенто полностью:"));
@@ -913,7 +912,7 @@ public class MyView extends JFrame {
 
     }
 
-    //Upsale
+    //UpSale
     public void editUpSaleContract (DataClient dataClient){
         MaskFormatter
                 dateCreateContractMask = null;
@@ -1035,7 +1034,7 @@ public class MyView extends JFrame {
         }
         gridBagConstraints.gridy = 11;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.ipadx = 0;
         staticJPanel.add(new JLabel("Сумма договора"),gridBagConstraints);
 
@@ -1054,15 +1053,15 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
-        JCheckBox checkAllSumUpSaleInBYN = new JCheckBox();
-        checkAllSumUpSaleInBYN.setName("checkAllSumUpSaleInBYN");
-        checkAllSumUpSaleInBYN.addActionListener(controller);
-        staticJPanel.add(checkAllSumUpSaleInBYN,gridBagConstraints);
+        JCheckBox checkBoxAllSumUpSaleInBYN = new JCheckBox();
+        checkBoxAllSumUpSaleInBYN.setName("checkBoxAllSumUpSaleInBYN");
+        checkBoxAllSumUpSaleInBYN.addActionListener(controller);
+        staticJPanel.add(checkBoxAllSumUpSaleInBYN,gridBagConstraints);
 
 
         gridBagConstraints.gridy = 12;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.ipadx = 0;
         staticJPanel.add(new JLabel("Предоплата:"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
@@ -1082,7 +1081,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 13;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Оплата до 100%"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -1101,7 +1100,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 14;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Дата подписания"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -1675,7 +1674,7 @@ public class MyView extends JFrame {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        gridBagConstraints.anchor = GridBagConstraints.CENTER;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 3;
@@ -1780,10 +1779,16 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 11;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.ipadx = 0;
         staticJPanel.add(new JLabel("Сумма договора"),gridBagConstraints);
 
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridwidth = 1;
+        JCheckBox checkBoxSumUpSaleInBYNSupplementaryAgreement = new JCheckBox();
+        checkBoxSumUpSaleInBYNSupplementaryAgreement.setName("checkBoxSumUpSaleInBYNSupplementaryAgreement");
+        checkBoxSumUpSaleInBYNSupplementaryAgreement.addActionListener(controller);
+        staticJPanel.add(checkBoxSumUpSaleInBYNSupplementaryAgreement,gridBagConstraints);
 
         JTextField sumUpSaleInBYNSupplementaryAgreement;
         gridBagConstraints.gridx = 5;
@@ -1797,18 +1802,12 @@ public class MyView extends JFrame {
         sumUpSaleInBYNSupplementaryAgreement.setEnabled(false);
         staticJPanel.add(sumUpSaleInBYNSupplementaryAgreement,gridBagConstraints);
 
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridwidth = 1;
-        JCheckBox checkBoxSumUpSaleInBYNSupplementaryAgreement = new JCheckBox();
-        checkBoxSumUpSaleInBYNSupplementaryAgreement.setName("checkBoxSumUpSaleInBYNSupplementaryAgreement");
-        checkBoxSumUpSaleInBYNSupplementaryAgreement.addActionListener(controller);
-        staticJPanel.add(checkBoxSumUpSaleInBYNSupplementaryAgreement,gridBagConstraints);
+
 
 
         gridBagConstraints.gridy = 12;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.ipadx = 0;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Предоплата:"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth =1;
@@ -1827,7 +1826,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 13;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Оплата до 100%"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -1846,7 +1845,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 14;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Дата UpSale"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -1866,7 +1865,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 15;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Дата подписания"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -1885,7 +1884,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 16;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Номер"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -1906,6 +1905,7 @@ public class MyView extends JFrame {
         gridBagConstraints.gridy = 17;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.ipadx = 0;
         JButton saveDataSupplementaryAgreementUpSaleContact = new JButton("Сохранить");
         saveDataSupplementaryAgreementUpSaleContact.setName("saveDataSupplementaryAgreementUpSaleContact");
         saveDataSupplementaryAgreementUpSaleContact.addActionListener(controller);
@@ -1973,7 +1973,7 @@ public class MyView extends JFrame {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        gridBagConstraints.anchor = GridBagConstraints.CENTER;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 3;
@@ -2076,7 +2076,7 @@ public class MyView extends JFrame {
         }
         gridBagConstraints.gridy = 11;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.ipadx = 0;
         staticJPanel.add(new JLabel("Сумма договора"),gridBagConstraints);
 
@@ -2103,7 +2103,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 12;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.ipadx = 0;
         staticJPanel.add(new JLabel("Предоплата:"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
@@ -2123,7 +2123,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 13;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Оплата до 100%"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -2142,7 +2142,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 14;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Дата UpSale"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -2162,7 +2162,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 15;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Дата подписания"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -2181,7 +2181,7 @@ public class MyView extends JFrame {
 
         gridBagConstraints.gridy = 16;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         staticJPanel.add(new JLabel("Номер"),gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
@@ -2344,286 +2344,17 @@ public class MyView extends JFrame {
 
     //Метод обновляет чек бокс + подвязаную к нему строку делая ее доступной или наоборот
     public void refreshCheckBox(JCheckBox checkBox){
-        switch (checkBox.getName()) {
-            case "checkBoxDateCreateContract" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("dateCreateContract")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
+        String obj = checkBox.getName().replace("checkBox","");
+        String objWithSmallLitter = Character.toLowerCase(obj.charAt(0)) + obj.substring(1);
+        System.out.println(objWithSmallLitter);
+        for(Component component :staticJPanel.getComponents()){
+            try {
+                if(component.getName().equals(objWithSmallLitter)){
+                    component.setEnabled(checkBox.isSelected());
+                    break;
                 }
-                break;
-            }
-            case "checkBoxCurrencySumSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("currencySumSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxAllSumInEURSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("allSumInEURSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPrepaymentOr10PercentSumSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("prepaymentOr10PercentSumSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPayUpTo50PercentSumSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("payUpTo50PercentSumSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPayUpTo100PercentSumSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("payUpTo100PercentSumSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxAllSumInBYNSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("allSumInBYNSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxDateCreateSupplementaryAgreementBasicContract" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("dateCreateSupplementaryAgreementBasicContract")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkAllSumUpSaleInBYN" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("allSumUpSaleInBYN")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPrepaymentUpSale" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("prepaymentUpSale")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPayUpTo100percentUpSale" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("payUpTo100percentUpSale")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxDateCreateUpSaleContract" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("dateCreateUpSaleContract")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxCurrency" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("currency")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxAllSumInEUR" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("allSumInEUR")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPrepaymentOr10PercentSum" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("prepaymentOr10PercentSum")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPayUpTo50PercentSum" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("payUpTo50PercentSum")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPayUpTo100PercentSum" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("payUpTo100PercentSum")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxAllSumInBYN" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("allSumInBYN")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxNumberSupplementaryAgreementBasicContract" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("numberSupplementaryAgreementBasicContract")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxSumUpSaleInBYNSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("sumUpSaleInBYNSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPrepaymentUpSaleSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("prepaymentUpSaleSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPayUpTo100percentSupplementaryAgreementUpSale" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("payUpTo100percentUpSaleSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxDateCreateSupplementaryAgreementUpSaleContract" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("dateCreateSupplementaryAgreementUpSaleContract")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxNumberSupplementaryAgreementUpSale" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("numberSupplementaryAgreementUpSale")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-            case "checkBoxPayUpTo100percentUpSaleSupplementaryAgreement" :{
-                for(Component component :staticJPanel.getComponents()){
-                    try {
-                        if(component.getName().equals("payUpTo100percentUpSaleSupplementaryAgreement")){
-                            component.setEnabled(checkBox.isSelected());
-                            break;
-                        }
-                    }catch (Exception e){}
-                }
-                break;
-            }
-
-
+            }catch (Exception e){}
         }
-
         staticJPanel.revalidate();
         staticJPanel.repaint();
 
@@ -2658,11 +2389,8 @@ public class MyView extends JFrame {
         }
     }
     //Отоброжает сообщение при этом не обновляет полностью страницу ИДЕЮ НУЖНО переделать
-    public void writeJustMessage(String message){
-
-        staticJPanel.add(new JLabel(message));
-        staticJPanel.revalidate();
-        staticJPanel.repaint();
+    public void writeJustMessage(String message,int messageType){
+        JOptionPane.showMessageDialog(this, message,"Сообщение",messageType);
     }
     //
     public JTextField getAllSumInEUR() {

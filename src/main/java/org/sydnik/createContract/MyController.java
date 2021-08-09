@@ -1,5 +1,7 @@
 package org.sydnik.createContract;
 
+import org.sydnik.createContract.exception.CantWriteDoc;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -8,7 +10,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 
-public class MyController implements ActionListener, ListSelectionListener, FocusListener, TextListener, KeyListener, MouseListener {
+public class MyController implements ActionListener, KeyListener, MouseListener {
     private Model model;
     private MyView view;
 
@@ -38,14 +40,21 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
     public void actionPerformed(ActionEvent e) {
         System.out.println(e);
         long s = System.currentTimeMillis();
+        if(((Component)e.getSource()).getName().contains("checkBox")){
+            view.refreshCheckBox((JCheckBox) e.getSource());
+        }
         switch (((Component)e.getSource()).getName()){
             case "sittingsManager":{
                 view.settingsManager(model.getSalesManager());
                 break;
             }
             case "saveSittingsManager":{
-                model.setSalesManager(view.getComponentsStaticPanel());
-//                view.writeMessage("Настройки сохранены");
+                try {
+                    model.setSalesManager(view.getComponentsStaticPanel());
+                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
+                } catch (CantWriteDoc cantWriteDoc) {
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "mainPage" :{
@@ -58,13 +67,21 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
                 break;
             }
             case "saveNewDataClient" :{
-                model.createNewClient(view.getComponentsStaticPanel());
-                view.selectedClient(model.getDataClient());
+                try {
+                    model.createNewClient(view.getComponentsStaticPanel());
+                    view.selectedClient(model.getDataClient());
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "saveDataAboutClient" :{
-                model.saveDataAboutClient(view.getComponentsStaticPanel());
-                view.selectedClient(model.getDataClient());
+                try {
+                    model.saveDataAboutClient(view.getComponentsStaticPanel());
+                    view.selectedClient(model.getDataClient());
+                }catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "selectClient" : {
@@ -110,13 +127,23 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
                 break;
             }
             case "saveDataBaseContractClient" :{
-                model.saveDataBaseContractClient(view.getComponentsStaticPanel());
-                model.createBaseContract();
+                try {
+                    model.saveDataBaseContractClient(view.getComponentsStaticPanel());
+                    model.createBaseContract();
+                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
+                } catch (CantWriteDoc ex){
+                    view.writeJustMessage(ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+                }
+
                 break;
             }
             case "printBaseContract" : {
-                model.saveDataBaseContractClient(view.getComponentsStaticPanel());
-                model.printDoc("printBaseContract");
+                try {
+                    model.saveDataBaseContractClient(view.getComponentsStaticPanel());
+                    model.printDoc("printBaseContract");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "editDataAboutClient" :{
@@ -124,13 +151,21 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
                 break;
             }
             case "openFileBasicContract" :{
-                model.saveDataBaseContractClient(view.getComponentsStaticPanel());
-                model.openDoc("openFileBasicContract");
+                try {
+                    model.saveDataBaseContractClient(view.getComponentsStaticPanel());
+                    model.openDoc("openFileBasicContract");
+                } catch (CantWriteDoc cantWriteDoc){
+                  view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "openFileSupplementaryAgreementBasicContract" :{
-                model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
-                model.openDoc("openFileSupplementaryAgreementBasicContract");
+                try {
+                    model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                    model.openDoc("openFileSupplementaryAgreementBasicContract");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "openDirectoryWithFile" :{
@@ -142,22 +177,40 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
                 break;
             }
             case "saveDataUpSaleContact" :{
-                model.saveDataUpSale(view.getComponentsStaticPanel());
+                try {
+                    model.saveDataUpSale(view.getComponentsStaticPanel());
+                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
+
                 break;
             }
             case "openFileUpSaleContract" : {
-                model.saveDataUpSale(view.getComponentsStaticPanel());
-                model.openDoc("openFileUpSaleContract");
+                try {
+                    model.saveDataUpSale(view.getComponentsStaticPanel());
+                    model.openDoc("openFileUpSaleContract");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "printUpSaleContract" : {
-                model.saveDataUpSale(view.getComponentsStaticPanel());
-                model.printDoc("printUpSaleContract");
+                try {
+                    model.saveDataUpSale(view.getComponentsStaticPanel());
+                    model.printDoc("printUpSaleContract");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "printSupplementaryAgreementBasicContract" : {
-                model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
-                model.printDoc("printSupplementaryAgreementBasicContract");
+                try {
+                    model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                    model.printDoc("printSupplementaryAgreementBasicContract");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "editSupplementaryAgreementBasicContract" : {
@@ -165,7 +218,12 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
                 break;
             }
             case "saveDataSupplementaryAgreementBasicContract": {
-                model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                try {
+                    model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "saveCurrency" : {
@@ -178,73 +236,38 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
                 break;
             }
             case "saveDataSupplementaryAgreementUpSaleContact" :{
-                model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                try {
+                    model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "printSupplementaryAgreementUpSaleContract" : {
-                model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
-                model.printDoc("printSupplementaryAgreementUpSaleContract");
+                try {
+                    model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                    model.printDoc("printSupplementaryAgreementUpSaleContract");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "openFileSupplementaryAgreementUpSaleContract" :{
-                model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
-                model.openDoc("openFileSupplementaryAgreementUpSaleContract");
+                try {
+                    model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                    model.openDoc("openFileSupplementaryAgreementUpSaleContract");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             }
             case "selectPath" : {
                 view.selectPathForSaveContract();
                 break;
             }
-            case "checkBoxPayUpTo100percentUpSaleSupplementaryAgreement" :
-            case "checkBoxSumUpSaleInBYNSupplementaryAgreement" :
-            case "checkBoxPrepaymentUpSaleSupplementaryAgreement" :
-            case "checkBoxPayUpTo100percentSupplementaryAgreementUpSale" :
-            case "checkBoxDateCreateSupplementaryAgreementUpSaleContract" :
-            case "checkBoxNumberSupplementaryAgreementUpSale" :
-            case "checkBoxDateCreateContract" :
-            case "checkBoxCurrencySumSupplementaryAgreement" :
-            case "checkBoxAllSumInEURSupplementaryAgreement" :
-            case "checkBoxPayUpTo50PercentSumSupplementaryAgreement" :
-            case "checkBoxPayUpTo100PercentSumSupplementaryAgreement" :
-            case "checkBoxAllSumInBYNSupplementaryAgreement":
-            case "checkBoxDateCreateSupplementaryAgreementBasicContract" :
-            case "checkBoxCurrency" :
-            case "checkBoxAllSumInEUR" :
-            case "checkBoxPrepaymentOr10PercentSum" :
-            case "checkBoxPayUpTo50PercentSum" :
-            case "checkBoxPayUpTo100PercentSum" :
-            case "checkBoxAllSumInBYN" :
-            case "checkAllSumUpSaleInBYN" :
-            case "checkBoxPrepaymentUpSale" :
-            case "checkBoxPayUpTo100percentUpSale" :
-            case "checkBoxDateCreateUpSaleContract" :
-            case "checkBoxNumberSupplementaryAgreementBasicContract" :
-            case "checkBoxPrepaymentOr10PercentSumSupplementaryAgreement" :{
-                view.refreshCheckBox((JCheckBox) e.getSource());
-                break;
-            }
-
-
         }
         System.out.println(System.currentTimeMillis()-s);
-    }
-
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-        System.out.println(e);
-    }
-
-    @Override
-    public void textValueChanged(TextEvent e) {
-        System.out.println(e);
     }
     @Override
     public void keyTyped(KeyEvent e) {
@@ -352,10 +375,6 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
                 }
                 break;
             }
-            case "numberSupplementaryAgreementBasicContract" : {
-                view.onlyNumber((JTextField) e.getComponent());
-                break;
-            }
             case "prepaymentUpSaleSupplementaryAgreement" :
             case "sumUpSaleInBYNSupplementaryAgreement" : {
                 view.onlyNumber((JTextField) e.getComponent());
@@ -367,6 +386,12 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
                 view.editCurrencyAgreementBasicContract((JTextField) e.getComponent());
                 break;
             }
+            case "numberSupplementaryAgreementBasicContract" :
+            case "numberPowerOfAttorney" : {
+                view.onlyNumber((JTextField) e.getComponent());
+                break;
+            }
+
 
         }
         if(e.getComponent().getName().contains("dditionalProduct")){
@@ -423,7 +448,6 @@ public class MyController implements ActionListener, ListSelectionListener, Focu
 
         }
     }
-
     @Override
     public void mouseClicked(MouseEvent e) {
         switch (((Component) e.getSource()).getName()) {
