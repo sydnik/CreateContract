@@ -29,3 +29,4 @@ saveContract/Судникович Виталий Олегович МН5-210402-7
 saveContract/Судникович Виталий Олегович AW1-231232-13/baseDataClient.dat
 *.xml
 *.dat
+src/main/java/org/sydnik/createContract/ForTest.java

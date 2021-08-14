@@ -1,10 +1,11 @@
 package org.sydnik.createContract;
 
 import org.sydnik.createContract.exception.CantWriteDoc;
+import org.sydnik.createContract.exception.DontHaveData;
+import org.sydnik.createContract.view.Display;
+import org.sydnik.createContract.view.ViewInvoiceDocument;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 public class MyController implements ActionListener, KeyListener, MouseListener {
     private Model model;
     private MyView view;
+    private Display display;
 
 
     private ArrayList<TextField> listText = new ArrayList<>();
@@ -25,6 +27,10 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
         this.view =view;
         view.setController(this);
 
+    }
+
+    public void setDisplay(Display display){
+        this.display = display;
     }
 
     public void displayMainPage(){
@@ -161,7 +167,7 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
             }
             case "openFileSupplementaryAgreementBasicContract" :{
                 try {
-                    model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                    model.saveDataSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
                     model.openDoc("openFileSupplementaryAgreementBasicContract");
                 } catch (CantWriteDoc cantWriteDoc){
                     view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
@@ -206,7 +212,7 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
             }
             case "printSupplementaryAgreementBasicContract" : {
                 try {
-                    model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                    model.saveDataSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
                     model.printDoc("printSupplementaryAgreementBasicContract");
                 } catch (CantWriteDoc cantWriteDoc){
                     view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
@@ -219,7 +225,7 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
             }
             case "saveDataSupplementaryAgreementBasicContract": {
                 try {
-                    model.saveDateSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                    model.saveDataSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
                     view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
                 } catch (CantWriteDoc cantWriteDoc){
                     view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
@@ -237,7 +243,7 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
             }
             case "saveDataSupplementaryAgreementUpSaleContact" :{
                 try {
-                    model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                    model.saveDataSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
                     view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
                 } catch (CantWriteDoc cantWriteDoc){
                     view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
@@ -246,7 +252,7 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
             }
             case "printSupplementaryAgreementUpSaleContract" : {
                 try {
-                    model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                    model.saveDataSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
                     model.printDoc("printSupplementaryAgreementUpSaleContract");
                 } catch (CantWriteDoc cantWriteDoc){
                     view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
@@ -255,7 +261,7 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
             }
             case "openFileSupplementaryAgreementUpSaleContract" :{
                 try {
-                    model.saveDateSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                    model.saveDataSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
                     model.openDoc("openFileSupplementaryAgreementUpSaleContract");
                 } catch (CantWriteDoc cantWriteDoc){
                     view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
@@ -266,6 +272,44 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                 view.selectPathForSaveContract();
                 break;
             }
+            case "editInvoiceDocument" : {
+                view.displayInvoiceDocument(model.getDataClient(),model.getCurrencyValue());
+                break;
+            }
+            case "saveDataInvoiceDocument" : {
+                try {
+                    model.saveDataInvoiceDocument(display);
+                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                } catch (DontHaveData dontHaveData) {
+                    view.writeJustMessage(dontHaveData.getMessage(),JOptionPane.WARNING_MESSAGE);
+                }
+                break;
+            }
+            case "printInvoiceDocument" : {
+                try {
+                    model.saveDataInvoiceDocument(display);
+                    model.printDoc("printInvoiceDocument");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                } catch (DontHaveData dontHaveData) {
+                    view.writeJustMessage(dontHaveData.getMessage(),JOptionPane.WARNING_MESSAGE);
+                }
+                break;
+            }
+            case "openFileInvoiceDocument" : {
+                try {
+                    model.saveDataInvoiceDocument(display);
+                    model.openDoc("openFileInvoiceDocument");
+                } catch (CantWriteDoc cantWriteDoc){
+                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                }catch (DontHaveData dontHaveData) {
+                    view.writeJustMessage(dontHaveData.getMessage(),JOptionPane.WARNING_MESSAGE);
+                }
+                break;
+            }
+
         }
         System.out.println(System.currentTimeMillis()-s);
     }
@@ -386,13 +430,31 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                 view.editCurrencyAgreementBasicContract((JTextField) e.getComponent());
                 break;
             }
+            case "priceInEURInvoiceDocument" :{
+                view.onlyNumber((JTextField) e.getComponent());
+                ((ViewInvoiceDocument) display).editPriceInEURInvoiceDocument();
+                break;
+            }
+            case "priceBYNInvoiceDocument" :{
+                view.onlyNumber((JTextField) e.getComponent());
+                ((ViewInvoiceDocument) display).editPriceBYNInvoiceDocument();
+                break;
+            }
+            case "currencyInvoiceDocument" :{
+                view.onlyDoubleNumber((JTextField)e.getComponent(),4 );
+                ((ViewInvoiceDocument) display).editCurrencyInvoiceDocument();
+                break;
+            }
             case "numberSupplementaryAgreementBasicContract" :
             case "numberPowerOfAttorney" : {
                 view.onlyNumber((JTextField) e.getComponent());
                 break;
             }
+            case "vat20InvoiceDocument" : {
+                view.onlyDoubleNumber(((JTextField)e.getComponent()),2);
 
-
+                break;
+            }
         }
         if(e.getComponent().getName().contains("dditionalProduct")){
             if(e.getComponent().getName().contains("supplementaryAgreement")){

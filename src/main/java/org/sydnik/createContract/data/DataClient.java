@@ -1,9 +1,6 @@
 package org.sydnik.createContract.data;
 
-import org.sydnik.createContract.data.contract.BasicContract;
-import org.sydnik.createContract.data.contract.SupplementaryAgreementBasicContract;
-import org.sydnik.createContract.data.contract.SupplementaryAgreementUpSaleContract;
-import org.sydnik.createContract.data.contract.UpSaleContract;
+import org.sydnik.createContract.data.contract.*;
 import org.sydnik.createContract.exception.CantWriteDoc;
 
 import java.io.*;
@@ -27,6 +24,7 @@ public class DataClient implements Serializable {
     UpSaleContract upSaleContract;
     SupplementaryAgreementBasicContract supplementaryAgreementBasicContract;
     SupplementaryAgreementUpSaleContract supplementaryAgreementUpSaleContract;
+    InvoiceDocument invoiceDocument;
 
     public DataClient(Map<String,String> mapDataClient) {
         this.numberContract = mapDataClient.get("numberContract").trim();
@@ -111,12 +109,20 @@ public class DataClient implements Serializable {
                     map.get("supplementaryAgreementAdditionalProductsDiscount" + i),
                     map.get("supplementaryAgreementAdditionalProductsWithDiscount"+i)
             );
-
         }
         this.supplementaryAgreementUpSaleContract = new SupplementaryAgreementUpSaleContract(
                 map.get("dateCreateSupplementaryAgreementUpSaleContract"),Integer.parseInt(map.get("numberSupplementaryAgreementUpSale")),
                 listAdditionalProductsSupplementaryAgreementUpSale,Integer.parseInt(map.get("sumUpSaleInBYNSupplementaryAgreement")),
                 Integer.parseInt(map.get("prepaymentUpSaleSupplementaryAgreement")),Integer.parseInt(map.get("payUpTo100percentUpSaleSupplementaryAgreement")));
+    }
+    public void setDataInvoiceDocument(HashMap<String,String> map){
+        invoiceDocument = new InvoiceDocument(
+                Integer.parseInt(map.get("priceBYNInvoiceDocument")),
+                Integer.parseInt(map.get("priceInEURInvoiceDocument")),
+                Double.parseDouble(map.get("vat20InvoiceDocument")),
+                map.get("createDateInvoiceDocument"),
+                map.get("whichBank"));
+
     }
 
     public String getNumberContract() {
@@ -164,6 +170,9 @@ public class DataClient implements Serializable {
     public SupplementaryAgreementUpSaleContract getSupplementaryAgreementUpSaleContract() {
         return supplementaryAgreementUpSaleContract;
     }
+    public InvoiceDocument getInvoiceDocument() {
+        return invoiceDocument;
+    }
 
     public void save() throws CantWriteDoc {
         StringBuilder data = new StringBuilder();
@@ -182,6 +191,7 @@ public class DataClient implements Serializable {
         data.append(upSaleContract.dataForSave());
         data.append(supplementaryAgreementBasicContract.dataForSave());
         data.append(supplementaryAgreementUpSaleContract.dataForSave());
+        data.append(invoiceDocument.dataForSave());
         String path ="saveContract/" +numberContract +" "+ strangeName;
         new File(path).mkdirs();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
@@ -207,6 +217,7 @@ public class DataClient implements Serializable {
         dataClient.supplementaryAgreementUpSaleContract = SupplementaryAgreementUpSaleContract.load(map);
         dataClient.basicContract = BasicContract.load(map);
         dataClient.supplementaryAgreementBasicContract = SupplementaryAgreementBasicContract.load(map);
+        dataClient.invoiceDocument = InvoiceDocument.load(map);
         return dataClient;
     }
 }

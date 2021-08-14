@@ -4,6 +4,9 @@ import org.sydnik.createContract.data.Currency;
 import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
 import org.sydnik.createContract.exception.CantWriteDoc;
+import org.sydnik.createContract.exception.DontHaveData;
+import org.sydnik.createContract.view.Display;
+import org.sydnik.createContract.createFileDocument.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -245,7 +248,7 @@ public class Model {
         dataClient.save();
         CreateDocumentsAndPrint.createUpSaleContract(dataClient,salesManager);
     }
-    public void saveDateSupplementaryAgreementBasicContract (Component[] components) throws CantWriteDoc {
+    public void saveDataSupplementaryAgreementBasicContract(Component[] components) throws CantWriteDoc {
         Map<String,String> mapDataUpSale = new HashMap<>();
         for (Component component : components){
             if(component instanceof JTextField){
@@ -260,7 +263,7 @@ public class Model {
         dataClient.save();
         CreateDocumentsAndPrint.createSupplementaryAgreementBasicContract(dataClient, salesManager);
     }
-    public void saveDateSupplementaryAgreementUpSaleContract (Component[] components) throws CantWriteDoc {
+    public void saveDataSupplementaryAgreementUpSaleContract(Component[] components) throws CantWriteDoc {
         Map<String,String> mapDataUpSale = new HashMap<>();
         for (Component component : components){
             if(component instanceof JTextField){
@@ -274,6 +277,11 @@ public class Model {
         dataClient.setDateSupplementaryAgreementUpSaleContract(mapDataUpSale);
         dataClient.save();
         CreateDocumentsAndPrint.createSupplementaryAgreementUpSaleContract(dataClient, salesManager);
+    }
+    public void saveDataInvoiceDocument(Display display) throws CantWriteDoc, DontHaveData {
+        dataClient.setDataInvoiceDocument(display.getDataForSave());
+        dataClient.save();
+        CreateXlsXFile.createInvoiceDocument(dataClient,salesManager);
     }
 
     //Возвращает лист всех папок(Клиентов)
@@ -364,6 +372,16 @@ public class Model {
 
                     Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
                             dataClient.getSupplementaryAgreementUpSaleContract().getNumberSupplementaryAgreementUpSale()+" "+dataClient.getNumberContract() + ".docx"));
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            case "openFileInvoiceDocument" : {
+                try {
+
+                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
+                            "/Счет-фактура " + dataClient.getNumberContract()+ ".xlsx"));
                 }
                 catch (IOException e) {
                     e.printStackTrace();

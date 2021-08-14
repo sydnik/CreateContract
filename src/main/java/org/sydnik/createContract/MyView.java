@@ -3,6 +3,7 @@ package org.sydnik.createContract;
 
 import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
+import org.sydnik.createContract.view.ViewInvoiceDocument;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
@@ -532,7 +533,8 @@ public class MyView extends JFrame {
         gridBagConstraints.ipadx = 40;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.gridx = 1;
-        staticJPanel.add(new JLabel("Новая сумма: "+dataClient.getSupplementaryAgreementBasicContract().getAllSumInEURSupplementaryAgreement()),gridBagConstraints);
+        staticJPanel.add(new JLabel("Новая сумма: "+dataClient.getSupplementaryAgreementBasicContract().getAllSumInEURSupplementaryAgreement()),
+                gridBagConstraints);
 
         gridBagConstraints.ipadx = 70;
         gridBagConstraints.gridy = 6;
@@ -551,7 +553,8 @@ public class MyView extends JFrame {
         gridBagConstraints.ipadx = 40;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.gridx = 1;
-        staticJPanel.add(new JLabel("Новая сумма: "+dataClient.getSupplementaryAgreementUpSaleContract().getAllSumUpSaleInBYNSupplementaryAgreement()),gridBagConstraints);
+        staticJPanel.add(new JLabel("Новая сумма: "+dataClient.getSupplementaryAgreementUpSaleContract().getAllSumUpSaleInBYNSupplementaryAgreement()),
+                gridBagConstraints);
 
         gridBagConstraints.ipadx = 70;
         gridBagConstraints.gridy = 7;
@@ -565,10 +568,29 @@ public class MyView extends JFrame {
         gridBagConstraints.gridy = 8;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 1;
-        staticJPanel.add(new JLabel("Данные о клиенте"),gridBagConstraints);
+        staticJPanel.add(new JLabel("Счет-фактура"),gridBagConstraints);
 
         gridBagConstraints.ipadx = 40;
         gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridx = 1;
+        staticJPanel.add(new JLabel("Сумма: "+dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument()),gridBagConstraints);
+
+        gridBagConstraints.ipadx = 70;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridx = 2;
+        JButton editInvoiceDocument = new JButton("Изменить");
+        editInvoiceDocument.addActionListener(controller);
+        editInvoiceDocument.setName("editInvoiceDocument");
+        staticJPanel.add(editInvoiceDocument,gridBagConstraints);
+
+        gridBagConstraints.ipadx = 50;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridwidth = 1;
+        staticJPanel.add(new JLabel("Данные о клиенте"),gridBagConstraints);
+
+        gridBagConstraints.ipadx = 40;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.gridx = 2;
         JButton editDataAboutClient = new JButton("Изменить");
         editDataAboutClient.addActionListener(controller);
@@ -576,19 +598,19 @@ public class MyView extends JFrame {
         staticJPanel.add(editDataAboutClient,gridBagConstraints);
 
         gridBagConstraints.ipadx = 50;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 1;
         staticJPanel.add(new JLabel("Просто строчка"),gridBagConstraints);
 
         gridBagConstraints.ipadx = 40;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.gridx = 1;
         staticJPanel.add(new JLabel(" "),gridBagConstraints);
 
         gridBagConstraints.ipadx = 40;
-        gridBagConstraints.ipady = 245;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.ipady = 220;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.gridx = 1;
         staticJPanel.add(new JLabel(" "),gridBagConstraints);
 
@@ -596,7 +618,7 @@ public class MyView extends JFrame {
         selectClient.setName("selectClient");
         selectClient.addActionListener(controller);
         gridBagConstraints.ipady = 0;
-        gridBagConstraints.gridy     = 11;
+        gridBagConstraints.gridy     = 12;
         gridBagConstraints.gridx    = 0;
         gridBagConstraints.gridwidth = 3;
         staticJPanel.add(selectClient,gridBagConstraints);
@@ -604,7 +626,7 @@ public class MyView extends JFrame {
         JButton mainPage = new JButton("Главная страница");
         mainPage.setName("mainPage");
         mainPage.addActionListener(controller);
-        gridBagConstraints.gridy     = 12;
+        gridBagConstraints.gridy     = 13;
         gridBagConstraints.gridx     = 0;
         gridBagConstraints.gridwidth = 3;
         staticJPanel.add(mainPage, gridBagConstraints);
@@ -1553,7 +1575,7 @@ public class MyView extends JFrame {
             }catch (Exception e){ }
 
         }
-        int sumInBYN = (int) Math.round(currency*allSum);
+        int sumInBYN = (int) Math.round((double) currency*allSum);
         for(Component component :  getComponentsStaticPanel()) {
             try {
                 switch (component.getName()){
@@ -1647,7 +1669,7 @@ public class MyView extends JFrame {
 
             }
         }
-        allSumField.setText(String.valueOf(Math.round((allSum*Double.parseDouble(jTextField.getText())))));
+        allSumField.setText(String.valueOf(Math.round(((double) allSum*Double.parseDouble(jTextField.getText())))));
         staticJPanel.revalidate();
         staticJPanel.repaint();
 
@@ -2342,6 +2364,12 @@ public class MyView extends JFrame {
 
     }
 
+    public void displayInvoiceDocument(DataClient dataClient, double currencyValue){
+        ViewInvoiceDocument vid = new ViewInvoiceDocument(staticJPanel,dataClient,currencyValue,controller);
+        vid.display();
+        controller.setDisplay(vid);
+
+    }
     //Метод обновляет чек бокс + подвязаную к нему строку делая ее доступной или наоборот
     public void refreshCheckBox(JCheckBox checkBox){
         String obj = checkBox.getName().replace("checkBox","");
@@ -2365,7 +2393,31 @@ public class MyView extends JFrame {
         staticJPanel.revalidate();
         staticJPanel.repaint();
     }
+    public void onlyDoubleNumber(JTextField jTextField,int howSymbolAfterDot){
+        if(!jTextField.getText().matches("[\\d]{0,6}[\\.]?[\\d]{0,"+howSymbolAfterDot+"}")){
+            String result = "";
+            String[] forTest = null;
+            result = jTextField.getText().replace(",",".");
+            forTest = result.split("\\.");
+            result = "";
+            for (int j = 0; j < forTest.length ; j++) {
+                forTest[j] = forTest[j].replaceAll("[^\\d]","");
+                result = result + forTest[j];
+                if(j==0){
+                    result = result+".";
+                }
+                if (j==1){
+                    break;
+                }
+            }
+            try {
+                result=result.substring(0,result.indexOf(".")+1+howSymbolAfterDot);
+            } catch (Exception e){
 
+            }
+            jTextField.setText(result);
+        }
+    }
     public void selectPathForSaveContract(){
         JFileChooser chooser = new JFileChooser();
         for(Component component :staticJPanel.getComponents()){
@@ -2388,7 +2440,6 @@ public class MyView extends JFrame {
             }
         }
     }
-    //Отоброжает сообщение при этом не обновляет полностью страницу ИДЕЮ НУЖНО переделать
     public void writeJustMessage(String message,int messageType){
         JOptionPane.showMessageDialog(this, message,"Сообщение",messageType);
     }
