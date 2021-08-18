@@ -31,11 +31,9 @@ public class ViewInvoiceDocument implements Display {
     @Override
     public void display(){
         MaskFormatter
-                dateMask = null,
-                currencyMark =null;
+                dateMask = null;
         try {
             dateMask = new MaskFormatter("##.##.####");
-            currencyMark = new MaskFormatter("#.####");
         }
         catch (Exception e){}
 
@@ -234,7 +232,7 @@ public class ViewInvoiceDocument implements Display {
 
         gridBagConstraints.gridy = 17;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.ipady = 170;
+        gridBagConstraints.ipady = 190;
         staticJPanel.add(new JLabel(" "),gridBagConstraints);
 
         gridBagConstraints.gridy = 18;
@@ -255,20 +253,12 @@ public class ViewInvoiceDocument implements Display {
         staticJPanel.add(mainPage,gridBagConstraints);
 
         if(priceBYNInvoiceDocument.getText().equals("0")){
-            fillDataBasicContract();
+            fillData();
         }
         staticJPanel.revalidate();
         staticJPanel.repaint();
     }
 
-    private void fillDataBasicContract(){
-            int priceInEUR = dataClient.getBasicContract().getAllSumInEUR()-dataClient.getBasicContract().getPrepaymentOr10PercentSum();
-            int priceInBYN = (int) Math.round(((double) priceInEUR)*currencyValue);
-            double vat20 = (double) Math.round((double)priceInBYN/6*100)/100;
-            priceInEURInvoiceDocument.setText(String.valueOf(priceInEUR));
-            priceBYNInvoiceDocument.setText(String.valueOf(priceInBYN));
-            vat20InvoiceDocument.setText(String.format(Locale.US,"%.2f",vat20));
-    }
     public void editPriceInEURInvoiceDocument(){
         if(!priceInEURInvoiceDocument.getText().equals("")) {
             int priceInEUR = Integer.parseInt(priceInEURInvoiceDocument.getText());
@@ -317,6 +307,24 @@ public class ViewInvoiceDocument implements Display {
         map.put("whichBank", String.valueOf(listBank.getSelectedItem()));
         System.out.println(map.get("whichBank"));
         return map;
+    }
+
+    private void fillData(){
+        int priceInEUR = dataClient.getBasicContract().getAllSumInEUR()-dataClient.getBasicContract().getPrepaymentOr10PercentSum();
+        int priceInBYN = (int) Math.round(((double) priceInEUR)*currencyValue);
+        double vat20 = (double) Math.round((double)priceInBYN/6*100)/100;
+        priceInEURInvoiceDocument.setText(String.valueOf(priceInEUR));
+        priceBYNInvoiceDocument.setText(String.valueOf(priceInBYN));
+        vat20InvoiceDocument.setText(String.format(Locale.US,"%.2f",vat20));
+    }
+    public void setCurrencyZero(boolean CorrectOrZero){
+        if(CorrectOrZero){
+            currencyInvoiceDocument.setText(String.valueOf(currencyValue));
+        }
+        else {
+            currencyInvoiceDocument.setText("0");
+        }
+
     }
 
 }

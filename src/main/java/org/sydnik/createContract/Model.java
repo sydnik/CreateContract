@@ -5,6 +5,7 @@ import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
 import org.sydnik.createContract.exception.CantWriteDoc;
 import org.sydnik.createContract.exception.DontHaveData;
+import org.sydnik.createContract.exception.DontHaveFilePattern;
 import org.sydnik.createContract.view.Display;
 import org.sydnik.createContract.createFileDocument.*;
 
@@ -189,96 +190,27 @@ public class Model {
         dataClient.setDateAboutClient(mapDataClient);
         dataClient.save();
     }
-    public void saveDataBaseContractClient (Component[] components) throws CantWriteDoc {
-        Map<String,String> mapDataBaseContract = new HashMap<>();
-        for (Component component : components){
-            try {
-                switch (component.getName()) {
-                    case "dateCreateContract": {
-                        mapDataBaseContract.put("dateCreateContract", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "timeProduction": {
-                        mapDataBaseContract.put("timeProduction", (String)((JComboBox)component).getSelectedItem());
-
-                        break;
-                    }
-                    case "allSumInEUR": {
-                        mapDataBaseContract.put("allSumInEUR", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "allSumInBYN": {
-                        mapDataBaseContract.put("allSumInBYN", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "prepaymentOr10PercentSum": {
-                        mapDataBaseContract.put("prepaymentOr10PercentSum", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "payUpTo50PercentSum": {
-                        mapDataBaseContract.put("payUpTo50PercentSum", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "payUpTo100PercentSum": {
-                        mapDataBaseContract.put("payUpTo100PercentSum", ((JTextField) component).getText());
-                        break;
-                    }
-                }
-            }
-            catch (Exception a){}
-
-        }
-        dataClient.setBaseContract(mapDataBaseContract);
+    public void saveDataBaseContractClient (Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
+        dataClient.setBaseContract(display.getDataForSave());
         dataClient.save();
+        CreateDocumentsAndPrint.createBasicContract(dataClient,salesManager);
     }
-    public void saveDataUpSale (Component[] components) throws CantWriteDoc {
-        Map<String,String> mapDataUpSale = new HashMap<>();
-        for (Component component : components){
-            if(component instanceof JTextField){
-                try {
-                    mapDataUpSale.put(component.getName(),((JTextField)component).getText());
-                } catch (Exception e){
-                    mapDataUpSale.put(component.getName(),"");
-                }
-
-            }
-
-        }
-        dataClient.setUpSaleContract(mapDataUpSale);
+    public void saveDataUpSale (Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
+        dataClient.setUpSaleContract(display.getDataForSave());
         dataClient.save();
         CreateDocumentsAndPrint.createUpSaleContract(dataClient,salesManager);
     }
-    public void saveDataSupplementaryAgreementBasicContract(Component[] components) throws CantWriteDoc {
-        Map<String,String> mapDataUpSale = new HashMap<>();
-        for (Component component : components){
-            if(component instanceof JTextField){
-                try {
-                    mapDataUpSale.put(component.getName(),((JTextField)component).getText());
-                } catch (Exception e){
-                    mapDataUpSale.put(component.getName(),"");
-                }
-            }
-        }
-        dataClient.setDateSupplementaryAgreementBasicContract(mapDataUpSale);
+    public void saveDataSupplementaryAgreementBasicContract(Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
+        dataClient.setDateSupplementaryAgreementBasicContract(display.getDataForSave());
         dataClient.save();
         CreateDocumentsAndPrint.createSupplementaryAgreementBasicContract(dataClient, salesManager);
     }
-    public void saveDataSupplementaryAgreementUpSaleContract(Component[] components) throws CantWriteDoc {
-        Map<String,String> mapDataUpSale = new HashMap<>();
-        for (Component component : components){
-            if(component instanceof JTextField){
-                try {
-                    mapDataUpSale.put(component.getName(),((JTextField)component).getText());
-                } catch (Exception e){
-                    mapDataUpSale.put(component.getName(),"");
-                }
-            }
-        }
-        dataClient.setDateSupplementaryAgreementUpSaleContract(mapDataUpSale);
+    public void saveDataSupplementaryAgreementUpSaleContract(Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
+        dataClient.setDateSupplementaryAgreementUpSaleContract(display.getDataForSave());
         dataClient.save();
         CreateDocumentsAndPrint.createSupplementaryAgreementUpSaleContract(dataClient, salesManager);
     }
-    public void saveDataInvoiceDocument(Display display) throws CantWriteDoc, DontHaveData {
+    public void saveDataInvoiceDocument(Display display) throws CantWriteDoc, DontHaveData, DontHaveFilePattern {
         dataClient.setDataInvoiceDocument(display.getDataForSave());
         dataClient.save();
         CreateXlsXFile.createInvoiceDocument(dataClient,salesManager);
@@ -322,8 +254,8 @@ public class Model {
         });
         return list;
     }
-    public void createBaseContract() throws CantWriteDoc {
-        CreateDocumentsAndPrint.createBaseContract(dataClient,salesManager);
+    public void createBaseContract() throws CantWriteDoc, DontHaveFilePattern {
+        CreateDocumentsAndPrint.createBasicContract(dataClient,salesManager);
     }
     public void printDoc(String nameDoc){
         // 150 мс недает встретится двум потокам
@@ -366,6 +298,7 @@ public class Model {
                 catch (IOException e) {
                     e.printStackTrace();
                 }
+                break;
             }
             case "openFileSupplementaryAgreementUpSaleContract" : {
                 try {
@@ -376,6 +309,7 @@ public class Model {
                 catch (IOException e) {
                     e.printStackTrace();
                 }
+                break;
             }
             case "openFileInvoiceDocument" : {
                 try {
@@ -386,6 +320,7 @@ public class Model {
                 catch (IOException e) {
                     e.printStackTrace();
                 }
+                break;
             }
         }
 
@@ -428,5 +363,11 @@ public class Model {
     }
     public double getCurrencyValue(){
         return currency.getValue();
+    }
+    public boolean isDateCurrency(String date){
+        if(currency.getDate().equals(date)){
+            return true;
+        }
+        return false;
     }
 }

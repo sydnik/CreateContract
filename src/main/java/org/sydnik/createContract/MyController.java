@@ -2,8 +2,8 @@ package org.sydnik.createContract;
 
 import org.sydnik.createContract.exception.CantWriteDoc;
 import org.sydnik.createContract.exception.DontHaveData;
-import org.sydnik.createContract.view.Display;
-import org.sydnik.createContract.view.ViewInvoiceDocument;
+import org.sydnik.createContract.exception.DontHaveFilePattern;
+import org.sydnik.createContract.view.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,267 +49,202 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
         if(((Component)e.getSource()).getName().contains("checkBox")){
             view.refreshCheckBox((JCheckBox) e.getSource());
         }
-        switch (((Component)e.getSource()).getName()){
-            case "sittingsManager":{
-                view.settingsManager(model.getSalesManager());
-                break;
-            }
-            case "saveSittingsManager":{
-                try {
-                    model.setSalesManager(view.getComponentsStaticPanel());
-                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
-                } catch (CantWriteDoc cantWriteDoc) {
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+        try {
+            switch (((Component) e.getSource()).getName()) {
+                case "sittingsManager": {
+                    view.settingsManager(model.getSalesManager());
+                    break;
                 }
-                break;
-            }
-            case "mainPage" :{
-                view.mainPage(model.getSalesManager());
-                model.clearDataClient();
-                break;
-            }
-            case "createNewClient": {
-                view.createNewClient();
-                break;
-            }
-            case "saveNewDataClient" :{
-                try {
+                case "saveSittingsManager": {
+                    model.setSalesManager(view.getComponentsStaticPanel());
+                    view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                case "mainPage": {
+                    view.mainPage(model.getSalesManager());
+                    model.clearDataClient();
+                    display= null;
+                    break;
+                }
+                case "createNewClient": {
+                    view.createNewClient();
+                    break;
+                }
+                case "saveNewDataClient": {
                     model.createNewClient(view.getComponentsStaticPanel());
                     view.selectedClient(model.getDataClient());
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "saveDataAboutClient" :{
-                try {
+                case "saveDataAboutClient": {
                     model.saveDataAboutClient(view.getComponentsStaticPanel());
                     view.selectedClient(model.getDataClient());
-                }catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "selectClient" : {
-                view.listClientsAndSelect(model.listSelectClient(),"");
-                model.clearDataClient();
-                break;
-            }
-            case "pushSelectClient" : {
-                for (Component component : view.getComponentsStaticPanel()) {
-                    try {
-                        if ((((JList) ((JViewport) ((JScrollPane) component).getComponent(0)).getComponent(0)).getSelectedIndex()) != -1) {
-                            model.writeDataClient(view.getComponentsStaticPanel());
-                            if(model.getDataClient()!=null) {
-                                view.selectedClient(model.getDataClient());
+                case "selectClient": {
+                    view.listClientsAndSelect(model.listSelectClient(), "");
+                    model.clearDataClient();
+                    break;
+                }
+                case "pushSelectClient": {
+                    for (Component component : view.getComponentsStaticPanel()) {
+                        try {
+                            if ((((JList) ((JViewport) ((JScrollPane) component).getComponent(0)).getComponent(0)).getSelectedIndex()) != -1) {
+                                model.writeDataClient(view.getComponentsStaticPanel());
+                                if (model.getDataClient() != null) {
+                                    view.selectedClient(model.getDataClient());
+                                }
                             }
+                        } catch (Exception a) {
                         }
-                    } catch (Exception a) {}
+                    }
+                    break;
                 }
-                break;
-            }
-            case "searchClientButton" :{
-                String line= "";
-                for(Component component:view.getComponentsStaticPanel()) {
-                    try {
-                        switch (component.getName()) {
-                            case "searchClient": {
-                                line = ((JTextField) component).getText();
-                                break;
-                            }
+                case "searchClientButton": {
+                    String line = "";
+                    for (Component component : view.getComponentsStaticPanel()) {
+                        try {
+                            switch (component.getName()) {
+                                case "searchClient": {
+                                    line = ((JTextField) component).getText();
+                                    break;
+                                }
 
+                            }
+                        } catch (Exception a) {
                         }
-                    }catch (Exception a){}
+                    }
+                    view.listClientsAndSelect(model.listSelectClientSearch(view.getComponentsStaticPanel()), line);
+                    break;
                 }
-                view.listClientsAndSelect(model.listSelectClientSearch(view.getComponentsStaticPanel()),line);
-                break;
-            }
-            case "editBasicContract" :{
-                view.editBasicContract(model.getDataClient(),model.getCurrencyValue());
-                break;
-            }
-            case "backSelectClient" : {
-                view.selectedClient(model.getDataClient());
-                break;
-            }
-            case "saveDataBaseContractClient" :{
-                try {
-                    model.saveDataBaseContractClient(view.getComponentsStaticPanel());
+                case "editBasicContract": {
+                    view.displayBasicContract(model.getDataClient(), model.getCurrencyValue());
+                    break;
+                }
+                case "backSelectClient": {
+                    view.selectedClient(model.getDataClient());
+                    display = null;
+                    break;
+                }
+                case "saveDataBaseContractClient": {
+                    model.saveDataBaseContractClient(display);
                     model.createBaseContract();
-                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
-                } catch (CantWriteDoc ex){
-                    view.writeJustMessage(ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+                        view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                    break;
                 }
-
-                break;
-            }
-            case "printBaseContract" : {
-                try {
-                    model.saveDataBaseContractClient(view.getComponentsStaticPanel());
+                case "printBaseContract": {
+                    model.saveDataBaseContractClient(display);
                     model.printDoc("printBaseContract");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "editDataAboutClient" :{
-                view.editDataAboutClient(model.getDataClient());
-                break;
-            }
-            case "openFileBasicContract" :{
-                try {
-                    model.saveDataBaseContractClient(view.getComponentsStaticPanel());
+                case "editDataAboutClient": {
+                    view.editDataAboutClient(model.getDataClient());
+                    break;
+                }
+                case "openFileBasicContract": {
+                    model.saveDataBaseContractClient(display);
                     model.openDoc("openFileBasicContract");
-                } catch (CantWriteDoc cantWriteDoc){
-                  view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "openFileSupplementaryAgreementBasicContract" :{
-                try {
-                    model.saveDataSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                case "openFileSupplementaryAgreementBasicContract": {
+                    model.saveDataSupplementaryAgreementBasicContract(display);
                     model.openDoc("openFileSupplementaryAgreementBasicContract");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "openDirectoryWithFile" :{
-                model.openDirectory();
-                break;
-            }
-            case "editUpSaleContract" : {
-                view.editUpSaleContract(model.getDataClient());
-                break;
-            }
-            case "saveDataUpSaleContact" :{
-                try {
-                    model.saveDataUpSale(view.getComponentsStaticPanel());
-                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                case "openDirectoryWithFile": {
+                    model.openDirectory();
+                    break;
                 }
-
-                break;
-            }
-            case "openFileUpSaleContract" : {
-                try {
-                    model.saveDataUpSale(view.getComponentsStaticPanel());
+                case "editUpSaleContract": {
+                    view.displayUpSaleContract(model.getDataClient());
+                    break;
+                }
+                case "saveDataUpSaleContact": {
+                    model.saveDataUpSale(display);
+                    view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                case "openFileUpSaleContract": {
+                    model.saveDataUpSale(display);
                     model.openDoc("openFileUpSaleContract");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "printUpSaleContract" : {
-                try {
-                    model.saveDataUpSale(view.getComponentsStaticPanel());
-                    model.printDoc("printUpSaleContract");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                case "printUpSaleContract": {
+                        model.saveDataUpSale(display);
+                        model.printDoc("printUpSaleContract");
+                    break;
                 }
-                break;
-            }
-            case "printSupplementaryAgreementBasicContract" : {
-                try {
-                    model.saveDataSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
+                case "printSupplementaryAgreementBasicContract": {
+
+                    model.saveDataSupplementaryAgreementBasicContract(display);
                     model.printDoc("printSupplementaryAgreementBasicContract");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "editSupplementaryAgreementBasicContract" : {
-                view.editSupplementaryAgreementBasicContract(model.getDataClient(),model.getCurrencyValue());
-                break;
-            }
-            case "saveDataSupplementaryAgreementBasicContract": {
-                try {
-                    model.saveDataSupplementaryAgreementBasicContract(view.getComponentsStaticPanel());
-                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                case "editSupplementaryAgreementBasicContract": {
+                    view.displaySupplementaryAgreementBasicContract(model.getDataClient(), model.getCurrencyValue());
+                    break;
                 }
-                break;
-            }
-            case "saveCurrency" : {
-                model.setCurrency(view.getComponentsStaticPanel());
-                view.mainPage(model.getSalesManager());
-                break;
-            }
-            case "editSupplementaryAgreementUpSale" :{
-                view.editSupplementaryAgreementUpSale(model.getDataClient());
-                break;
-            }
-            case "saveDataSupplementaryAgreementUpSaleContact" :{
-                try {
-                    model.saveDataSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
-                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                case "saveDataSupplementaryAgreementBasicContract": {
+                    try {
+                        model.saveDataSupplementaryAgreementBasicContract(display);
+                        view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (CantWriteDoc | DontHaveFilePattern ex) {
+                        view.writeJustMessage(ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
                 }
-                break;
-            }
-            case "printSupplementaryAgreementUpSaleContract" : {
-                try {
-                    model.saveDataSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                case "saveCurrency": {
+                    model.setCurrency(view.getComponentsStaticPanel());
+                    view.mainPage(model.getSalesManager());
+                    break;
+                }
+                case "editSupplementaryAgreementUpSale": {
+                    view.displaySupplementaryAgreementUpSale(model.getDataClient());
+                    break;
+                }
+                case "saveDataSupplementaryAgreementUpSaleContact": {
+                    model.saveDataSupplementaryAgreementUpSaleContract(display);
+                    view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                case "printSupplementaryAgreementUpSaleContract": {
+                    model.saveDataSupplementaryAgreementUpSaleContract(display);
                     model.printDoc("printSupplementaryAgreementUpSaleContract");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "openFileSupplementaryAgreementUpSaleContract" :{
-                try {
-                    model.saveDataSupplementaryAgreementUpSaleContract(view.getComponentsStaticPanel());
+                case "openFileSupplementaryAgreementUpSaleContract": {
+                    model.saveDataSupplementaryAgreementUpSaleContract(display);
                     model.openDoc("openFileSupplementaryAgreementUpSaleContract");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "selectPath" : {
-                view.selectPathForSaveContract();
-                break;
-            }
-            case "editInvoiceDocument" : {
-                view.displayInvoiceDocument(model.getDataClient(),model.getCurrencyValue());
-                break;
-            }
-            case "saveDataInvoiceDocument" : {
-                try {
+                case "selectPath": {
+                    view.selectPathForSaveContract();
+                    break;
+                }
+                case "editInvoiceDocument": {
+                    view.displayInvoiceDocument(model.getDataClient(), model.getCurrencyValue());
+                    break;
+                }
+                case "saveDataInvoiceDocument": {
                     model.saveDataInvoiceDocument(display);
-                    view.writeJustMessage("Настройки сохранены",JOptionPane.INFORMATION_MESSAGE);
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
-                } catch (DontHaveData dontHaveData) {
-                    view.writeJustMessage(dontHaveData.getMessage(),JOptionPane.WARNING_MESSAGE);
+                    view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "printInvoiceDocument" : {
-                try {
+                case "printInvoiceDocument": {
                     model.saveDataInvoiceDocument(display);
                     model.printDoc("printInvoiceDocument");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
-                } catch (DontHaveData dontHaveData) {
-                    view.writeJustMessage(dontHaveData.getMessage(),JOptionPane.WARNING_MESSAGE);
+                    break;
                 }
-                break;
-            }
-            case "openFileInvoiceDocument" : {
-                try {
+                case "openFileInvoiceDocument": {
                     model.saveDataInvoiceDocument(display);
                     model.openDoc("openFileInvoiceDocument");
-                } catch (CantWriteDoc cantWriteDoc){
-                    view.writeJustMessage(cantWriteDoc.getMessage(),JOptionPane.ERROR_MESSAGE);
-                }catch (DontHaveData dontHaveData) {
-                    view.writeJustMessage(dontHaveData.getMessage(),JOptionPane.WARNING_MESSAGE);
+                    break;
                 }
-                break;
-            }
 
+            }
+        } catch (CantWriteDoc | DontHaveFilePattern cantWriteDoc) {
+        view.writeJustMessage(cantWriteDoc.getMessage(), JOptionPane.ERROR_MESSAGE);
+        } catch (DontHaveData dontHaveData) {
+            view.writeJustMessage(dontHaveData.getMessage(), JOptionPane.WARNING_MESSAGE);
         }
         System.out.println(System.currentTimeMillis()-s);
     }
@@ -326,108 +261,63 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
         //свич реализует логику если кнопку нажал и находится  в определеном поел то делаем это
         switch (e.getComponent().getName()){
             case "allSumInEUR":{
-                    try {
-                        view.editBasicContractEditAllSumInEUR(Integer.parseInt(view.getAllSumInEUR().getText().replaceAll("[^0-9]","")));
-                    }
-                    catch (NumberFormatException s){
-                    }
+                view.onlyNumber((JTextField) e.getSource());
+                ((ViewBasicContract)display).editBasicContractEditAllSumInEUR();
                 break;
             }
             case "searchClient" :{
-                String line= "";
-                for(Component component:view.getComponentsStaticPanel()) {
-                    try {
-                        if((component.getName().equals("searchClient"))) {
-                            line = ((JTextField) component).getText();
-                        }
-                    }catch (Exception a){}
-                }
-                view.listClientsAndSelect(model.listSelectClientSearch(view.getComponentsStaticPanel()),line);
+                view.listClientsAndSelect(model.listSelectClientSearch(view.getComponentsStaticPanel()),((JTextField)e.getComponent()).getText());
                 break;
             }
             case "prepaymentOr10PercentSum" :{
-                try {
-                    view.editBasicContractEditPrepaymentOr10PercentSum(Integer.parseInt(view.getAllSumInEUR().getText()),
-                            Integer.parseInt(view.getPrepaymentOr10PercentSum().getText().replaceAll("[^0-9]","")));
-                }catch (Exception t){
-                }
+                view.onlyNumber((JTextField) e.getSource());
+                ((ViewBasicContract)display).editBasicContractEditPrepaymentOr10PercentSum();
                 break;
             }
             case "payUpTo50PercentSum":{
-                try {
-                    view.editBasicContractEditPayUpTo50PercentSum(Integer.parseInt(view.getAllSumInEUR().getText()),
-                            Integer.parseInt(view.getPrepaymentOr10PercentSum().getText()),
-                            Integer.parseInt(view.getPayUpTo50PercentSum().getText().replaceAll("[^0-9]","")));
-                }catch (Exception t){
-                }
+                view.onlyNumber((JTextField) e.getSource());
+                ((ViewBasicContract)display).editBasicContractEditPayUpTo50PercentSum();
                 break;
             }
             case "allSumUpSaleInBYN" :{
-                try {
-                    view.onlyNumber((JTextField) e.getComponent());
-                    view.editUpSaleEditPrepaymentUpSale(Integer.parseInt(((JTextField)e.getComponent()).getText()));
-                }
-                catch (Exception a) {
-
-                }
+                view.onlyNumber((JTextField) e.getComponent());
+                ((ViewUpSaleContract)display).editAllSumUpSaleInBYN();
                 break;
-
             }
             case "prepaymentUpSale" : {
-                try {
-                    view.onlyNumber((JTextField) e.getComponent());
-                    view.editUpSaleEditPayUpTo100percentUpSale(Integer.parseInt(((JTextField)e.getComponent()).getText()));
-                }
-                catch (Exception a) { }
+                view.onlyNumber((JTextField) e.getComponent());
+                ((ViewUpSaleContract)display).editPrepaymentUpSaleUpSale();
                 break;
             }
             case "currency":{
-                try {
-                    Double.parseDouble(((JTextField)e.getComponent()).getText());
-                    view.editCurrencyBasicContract((JTextField) e.getComponent());
-                } catch (Exception f){
-
-                }
+                view.onlyDoubleNumber((JTextField) e.getComponent(),4);
+                ((ViewBasicContract)display).editCurrencyBasicContract();
+                break;
             }
             case "allSumInEURSupplementaryAgreement" : {
-                try {
-                    view.onlyNumber((JTextField) e.getComponent());
-                    view.editEditAllSumAgreementBasicContract(Integer.parseInt(((JTextField)e.getComponent()).getText()));
-                }
-                catch (Exception a) {
-
-                }
+                view.onlyNumber((JTextField) e.getComponent());
+                ((ViewSupplementaryAgreementBasicContract)display).editAllEURSumAgreementBasicContract();
                 break;
             }
             case "prepaymentOr10PercentSumSupplementaryAgreement" : {
-                try {
-                    view.onlyNumber((JTextField) e.getComponent());
-                    view.editEditPayUpTo50percentAgreementBasicContract();
-                }
-                catch (Exception a) {
-
-                }
+                view.onlyNumber((JTextField) e.getComponent());
+                ((ViewSupplementaryAgreementBasicContract)display).editPrepaymentOr10PercentSumSupplementaryAgreement();
                 break;
             }
             case "payUpTo50PercentSumSupplementaryAgreement" : {
-                try {
-                    view.onlyNumber((JTextField) e.getComponent());
-                    view.editEditPayUpTo100percentAgreementBasicContract();
-                }
-                catch (Exception a) {
-
-                }
+                view.onlyNumber((JTextField) e.getComponent());
+                ((ViewSupplementaryAgreementBasicContract)display).editPayUpTo50percentAgreementBasicContract();
                 break;
             }
             case "prepaymentUpSaleSupplementaryAgreement" :
             case "sumUpSaleInBYNSupplementaryAgreement" : {
                 view.onlyNumber((JTextField) e.getComponent());
-                view.editSupplementaryAgreementUpSaleEditPayUpTo100percentUpSale();
+                ((ViewSupplementaryAgreementUpSale)display).editPrepaymentOrAllSumSupplementaryAgreementUpSale();
                 break;
             }
             case "currencySumSupplementaryAgreement" :{
-                Double.parseDouble(((JTextField)e.getComponent()).getText());
-                view.editCurrencyAgreementBasicContract((JTextField) e.getComponent());
+                view.onlyDoubleNumber((JTextField) e.getComponent(),4);
+                ((ViewSupplementaryAgreementBasicContract)display).editCurrencyAgreementBasicContract();
                 break;
             }
             case "priceInEURInvoiceDocument" :{
@@ -452,62 +342,68 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
             }
             case "vat20InvoiceDocument" : {
                 view.onlyDoubleNumber(((JTextField)e.getComponent()),2);
-
+                break;
+            }
+            case "dateCreateSupplementaryAgreementBasicContract" : {
+                if(!model.isDateCurrency(((JTextField)e.getComponent()).getText())){
+                    ((ViewSupplementaryAgreementBasicContract)display).setCurrencyZero(false);
+                }
+                else {
+                    ((ViewSupplementaryAgreementBasicContract)display).setCurrencyZero(true);
+                }
+                ((ViewSupplementaryAgreementBasicContract) display).editCurrencyAgreementBasicContract();
+                break;
+            }
+            case "dateCreateContract" : {
+                if(!model.isDateCurrency(((JTextField)e.getComponent()).getText())){
+                    ((ViewBasicContract)display).setCurrencyZero(false);
+                }
+                else {
+                    ((ViewBasicContract)display).setCurrencyZero(true);
+                }
+                ((ViewBasicContract) display).editCurrencyBasicContract();
+                break;
+            }
+            case "createDateInvoiceDocument" :{
+                if(!model.isDateCurrency(((JTextField)e.getComponent()).getText())){
+                    ((ViewInvoiceDocument)display).setCurrencyZero(false);
+                }
+                else {
+                    ((ViewInvoiceDocument)display).setCurrencyZero(true);
+                }
+                ((ViewInvoiceDocument)display).editCurrencyInvoiceDocument();
+                break;
+            }
+            case "valueCurrency" : {
+                view.onlyDoubleNumber((JTextField) e.getComponent(),4);
                 break;
             }
         }
         if(e.getComponent().getName().contains("dditionalProduct")){
             if(e.getComponent().getName().contains("supplementaryAgreement")){
+                //"Этот блок отвественный за Доп соглашение Апсейл
                 if (e.getComponent().getName().contains("Count")||e.getComponent().getName().contains("sDiscount")||
                         e.getComponent().getName().contains("FullPrice")){
-                    try {
-                        Integer.parseInt(((JTextField)e.getComponent()).getText());
-                        view.editSupplementaryAgreementUpSaleEditSumProductWithDiscount((JTextField) e.getComponent());
-                    }
-                    catch (Exception a) {
-                        view.onlyNumber((JTextField) e.getComponent());
-                        view.editSupplementaryAgreementUpSaleEditSumProductWithDiscount((JTextField) e.getComponent());
-                    }
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewSupplementaryAgreementUpSale)display).editSupplementaryAgreementUpSaleSumProductPriceAndDiscountAndCount((JTextField) e.getComponent());
 
                 }  if  (e.getComponent().getName().contains("WithDiscount")){
-                    try {
-                        Integer.parseInt(((JTextField)e.getComponent()).getText());
-                        view.editSupplementaryAgreementUpSaleEditAllSum();
-                    }
-                    catch (Exception a) {
-                        view.onlyNumber((JTextField) e.getComponent());
-                        view.editSupplementaryAgreementUpSaleEditAllSum();
-                    }
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewSupplementaryAgreementUpSale)display).editWithDiscount();
                 }
             }
             else {
 
-                if (e.getComponent().getName().contains("additionalProductsCount")||e.getComponent().getName().contains("additionalProductsDiscount")||
-                        e.getComponent().getName().contains("additionalProductsFullPrice")){
-                    try {
-                        Integer.parseInt(((JTextField)e.getComponent()).getText());
-                        view.editUpSaleEditSumProductWithDiscount((JTextField) e.getComponent());
-                    }
-                    catch (Exception a) {
-                        view.onlyNumber((JTextField) e.getComponent());
-                        view.editUpSaleEditSumProductWithDiscount((JTextField) e.getComponent());
-                    }
+                if (e.getComponent().getName().contains("additionalProductsCount")||e.getComponent().getName().contains("additionalProductsDiscount")|| e.getComponent().getName().contains("additionalProductsFullPrice")){
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewUpSaleContract)display).editUpSaleEditSumProductPriceAndDiscountAndCount((JTextField) e.getComponent());
+
 
                 }  if  (e.getComponent().getName().contains("additionalProductsWithDiscount")){
-                    try {
-                        Integer.parseInt(((JTextField)e.getComponent()).getText());
-                        view.editUpSaleEditAllSum();
-                    }
-                    catch (Exception a) {
-                        view.onlyNumber((JTextField) e.getComponent());
-                        view.editUpSaleEditAllSum();
-                    }
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewUpSaleContract)display).editWithDiscount();
                 }
-
             }
-
-
-
         }
     }
     @Override

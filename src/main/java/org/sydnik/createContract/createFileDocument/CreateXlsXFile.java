@@ -6,19 +6,26 @@ import org.sydnik.createContract.NumberInWords;
 import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
 import org.sydnik.createContract.exception.CantWriteDoc;
+import org.sydnik.createContract.exception.DontHaveFilePattern;
 
 import java.io.*;
 
-
+//Данный класс предназначен для статик методов которые будут делать xlsx файлы из шаблонов
 public class CreateXlsXFile {
 
-    public static void createInvoiceDocument(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc {
+    public static void createInvoiceDocument(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc, DontHaveFilePattern {
         String fileName = "saveContract/" + dataClient.getNumberContract() + " " + dataClient.getStrangeName();
         XSSFWorkbook workbook;
+        XSSFSheet sheet;
         try {
             FileInputStream fileInputStream = new FileInputStream("files/Счет-Фактура.xlsx");
             workbook = new XSSFWorkbook(fileInputStream);
-            XSSFSheet sheet = workbook.getSheet("TDSheet");
+            sheet = workbook.getSheet("TDSheet");
+        } catch (Exception e) {
+            throw new DontHaveFilePattern("Не смог получить доступ к шаблону\n" +
+                    "files/Базовый договор.docx");
+        }
+        try {
             sheet.getRow(4).getCell(1).setCellValue("Счет-Фактура " + dataClient.getNumberContract() + " " + dataClient.getInvoiceDocument().getCreateDateInvoiceDocument());
             sheet.getRow(5).getCell(3).setCellValue(dataClient.getFullNameClient());
             sheet.getRow(6).getCell(3).setCellValue("Документ, удостоверяющий личность:\n" +

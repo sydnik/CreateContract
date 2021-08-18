@@ -5,6 +5,7 @@ import org.sydnik.createContract.NumberInWords;
 import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
 import org.sydnik.createContract.exception.CantWriteDoc;
+import org.sydnik.createContract.exception.DontHaveFilePattern;
 
 import java.awt.*;
 import java.io.*;
@@ -16,8 +17,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+//Требудется разделить на два класса. Данный класс должен быть предназначек только для
 public class CreateDocumentsAndPrint {
-    public static void createBaseContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc {
+    public static void createBasicContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc, DontHaveFilePattern {
         HashMap<String,String> map = new HashMap<>();
         try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Базовый договор.docx"))) {
             ZipEntry entry = stream.getNextEntry();
@@ -31,10 +33,9 @@ public class CreateDocumentsAndPrint {
                 map.put(entry.getName(),new String(stringBuilder));
                 entry = stream.getNextEntry();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new DontHaveFilePattern("Не смог получить доступ к шаблону\n" +
+                    "files/Базовый договор.docx");
         }
         String docWord = map.get("word/document.xml");
 
@@ -105,7 +106,7 @@ public class CreateDocumentsAndPrint {
 
 
     }
-    public static void createUpSaleContract(DataClient dataClient,SalesManager salesManager) throws CantWriteDoc {
+    public static void createUpSaleContract(DataClient dataClient,SalesManager salesManager) throws CantWriteDoc, DontHaveFilePattern {
         String listLine[];
         HashMap<String,String> map = new HashMap<>();
         try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Договор UpSale.docx"))) {
@@ -120,10 +121,9 @@ public class CreateDocumentsAndPrint {
                 map.put(entry.getName(),new String(stringBuilder));
                 entry = stream.getNextEntry();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new DontHaveFilePattern("Не смог получить доступ к шаблону\n" +
+                    "files/Договор UpSale.docx");
         }
         String docWord = map.get("word/document.xml");
         //ВАжно чтобы первым выполнялась заполенение суммы прописью!!!
@@ -206,7 +206,7 @@ public class CreateDocumentsAndPrint {
 
 
     }
-    public static void createSupplementaryAgreementBasicContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc {HashMap<String,String> map = new HashMap<>();
+    public static void createSupplementaryAgreementBasicContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc, DontHaveFilePattern {HashMap<String,String> map = new HashMap<>();
         try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Дополнительное соглашение БД.docx"))) {
             ZipEntry entry = stream.getNextEntry();
             StringBuilder stringBuilder = new StringBuilder("");
@@ -219,10 +219,9 @@ public class CreateDocumentsAndPrint {
                 map.put(entry.getName(),new String(stringBuilder));
                 entry = stream.getNextEntry();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new DontHaveFilePattern("Не смог получить доступ к шаблону\n" +
+                    "files/Дополнительное соглашение БД.docx");
         }
         String docWord = map.get("word/document.xml");
         //ВАжно чтобы первым выполнялась заполенение суммы прописью!!!
@@ -294,7 +293,7 @@ public class CreateDocumentsAndPrint {
         }
 
     }
-    public static void createSupplementaryAgreementUpSaleContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc {
+    public static void createSupplementaryAgreementUpSaleContract(DataClient dataClient, SalesManager salesManager) throws CantWriteDoc, DontHaveFilePattern {
         String listLine[];
         HashMap<String,String> map = new HashMap<>();
         try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Дополнительно соглашение UpSale.docx"))) {
@@ -309,10 +308,9 @@ public class CreateDocumentsAndPrint {
                 map.put(entry.getName(),new String(stringBuilder));
                 entry = stream.getNextEntry();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new DontHaveFilePattern("Не смог получить доступ к шаблону\n" +
+                    "files/Дополнительно соглашение UpSale.docx");
         }
         String docWord = map.get("word/document.xml");
         //ВАжно чтобы первым выполнялась заполенение суммы прописью!!!
@@ -396,81 +394,6 @@ public class CreateDocumentsAndPrint {
         }
 
 
-    }
-    public static void createInvoiceDocument(DataClient dataClient,SalesManager salesManager) throws CantWriteDoc{
-        String listLine[];
-        HashMap<String,String> map = new HashMap<>();
-        try(ZipInputStream stream = new ZipInputStream(new FileInputStream("files/Счет-Фактура.xlsx"))) {
-            ZipEntry entry = stream.getNextEntry();
-            StringBuilder stringBuilder = new StringBuilder("");
-            while (entry!=null) {
-                stringBuilder = new StringBuilder("");
-                Scanner sc = new Scanner(stream,"UTF-8");
-                while (sc.hasNextLine()) {
-                    stringBuilder.append(sc.nextLine()).append("\n");
-                }
-                map.put(entry.getName(),new String(stringBuilder));
-                entry = stream.getNextEntry();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String docWord = map.get("xl/sharedStrings.xml");
-        //ВАжно чтобы первым выполнялась заполенение суммы прописью!!!
-        docWord = docWord.replace("priceBYNInvoiceDocumentWord", NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument()));
-        //Косяк нужно переделать чтобы писал копейки
-        docWord = docWord.replace("vat20InvoiceDocumentWord",NumberInWords.sumBYNInWords((long) dataClient.getInvoiceDocument().getVat20InvoiceDocument()));
-        //Все остально не должно мешать работе
-        docWord = docWord.replaceAll("numberContract", dataClient.getNumberContract());
-        docWord = docWord.replaceAll("fullNameClient", dataClient.getFullNameClient());
-        docWord = docWord.replace("numberPassport", dataClient.getNumberPassport());
-        docWord = docWord.replace("issuedByPassport", dataClient.getIssuedByPassport());
-        docWord = docWord.replace("whenIssued", dataClient.getWhenIssued());
-        docWord = docWord.replace("identificationNumber", dataClient.getIdentificationNumber());
-        docWord = docWord.replace("addressRegistration", dataClient.getAddressRegistration());
-        docWord = docWord.replace("addressDelivery", dataClient.getAddressDelivery());
-        docWord = docWord.replace("numberPhoneClient", dataClient.getNumberPhoneClient());
-        docWord = docWord.replaceAll("priceBYNInvoiceDocument", String.valueOf(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument()));
-        docWord = docWord.replaceAll("createDateInvoiceDocument",dataClient.getInvoiceDocument().getCreateDateInvoiceDocument());
-        docWord = docWord.replace("vat20InvoiceDocument",String.valueOf(dataClient.getInvoiceDocument().getVat20InvoiceDocument()));
-        docWord = docWord.replace("lineForBank",dataClient.getInvoiceDocument().getLineForBank());
-
-        map.put("xl/sharedStrings.xml",docWord);
-        String fileName = "saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Счет-фактура " + dataClient.getNumberContract()+" "+ dataClient.getInvoiceDocument().getWhichBank() + ".xlsx";
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            ZipOutputStream zipOut = new ZipOutputStream(fos);
-            for (Map.Entry<String,String> s : map.entrySet()) {
-                byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
-                ZipEntry zipEntry = new ZipEntry(s.getKey());
-                zipOut.putNextEntry(zipEntry);
-                zipOut.write(b);
-            }
-            zipOut.close();
-            fos.close();
-        }catch (Exception e){
-            throw new CantWriteDoc("Не смог сохранить счет фактуру\n"+fileName);
-        }
-        if(!salesManager.getPathForSaveContract().equals("")) {
-            try {
-                new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
-                FileOutputStream fos = new FileOutputStream(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName() +
-                        "/Счет-фактура " + dataClient.getNumberContract()+" "+ dataClient.getInvoiceDocument().getWhichBank() + ".xlsx");
-                ZipOutputStream zipOut = new ZipOutputStream(fos);
-                for (Map.Entry<String, String> s : map.entrySet()) {
-                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
-                    ZipEntry zipEntry = new ZipEntry(s.getKey());
-                    zipOut.putNextEntry(zipEntry);
-                    zipOut.write(b);
-                }
-                zipOut.close();
-                fos.close();
-            } catch (Exception e) {
-                throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
-            }
-        }
     }
 
     public static void printDoc(DataClient dataClient, String howDoc,SalesManager salesManager){

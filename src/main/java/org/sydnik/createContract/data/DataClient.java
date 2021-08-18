@@ -203,11 +203,16 @@ public class DataClient implements Serializable {
     }
     public static DataClient load(String path){
         HashMap<String,String> map = new HashMap<>();
-        String[] data;
+        String[] data = new String[0];
         try (BufferedReader reader = new BufferedReader(new FileReader(path))){
             while (reader.ready()){
-                data = reader.readLine().split("/=/");
-                map.put(data[0],data[1]);
+                try {
+                    data = reader.readLine().split("/=/");
+                    map.put(data[0],data[1]);
+                }catch (Exception e){
+                    map.put(data[0],"");
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();

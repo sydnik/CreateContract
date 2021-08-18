@@ -8,29 +8,26 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Currency implements Serializable {
+    final static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
     private double value;
     private String date;
-
     public static Currency createCurrency(){
         Currency currency = Currency.load();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MM YYYY");
         if(currency ==null){
             currency = new Currency();
             currency.save();
-        } else if(!currency.getDate().equals(simpleDateFormat.format(new Date()))){
+        } else if(!currency.getDate().equals(SIMPLE_DATE_FORMAT.format(new Date()))){
             currency = new Currency();
             currency.save();
         }
         return currency;
     }
     private Currency() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MM YYYY");
-        date = simpleDateFormat.format(new Date());
+        date = SIMPLE_DATE_FORMAT.format(new Date());
         checkKurs();
     }
     public Currency(double rate) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MM YYYY");
-        date = simpleDateFormat.format(new Date());
+        date = SIMPLE_DATE_FORMAT.format(new Date());
         value = rate;
         this.save();
     }
