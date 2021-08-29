@@ -318,7 +318,7 @@ public class ViewBasicContract implements Display{
 
     public void editCurrencyBasicContract(){
         if(!currency.getText().equals("")) {
-            allSumInBYN.setText(String.valueOf((double) Math.round((Double.parseDouble(allSumInEUR.getText())) * Double.parseDouble(currency.getText()))));
+            allSumInBYN.setText(String.valueOf((int) Math.round((Double.parseDouble(allSumInEUR.getText())) * Double.parseDouble(currency.getText()))));
         }
     }
 
