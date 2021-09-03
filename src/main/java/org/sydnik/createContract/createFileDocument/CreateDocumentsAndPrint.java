@@ -70,21 +70,6 @@ public class CreateDocumentsAndPrint {
         docWord = docWord.replace("payUpTo100PercentSum", dataClient.getBasicContract().getPayUpTo100PercentSum()+".00");
         map.put("word/document.xml",docWord);
         String fileName = "saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx";
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            ZipOutputStream zipOut = new ZipOutputStream(fos);
-            for (Map.Entry<String,String> s : map.entrySet()) {
-                byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
-                ZipEntry zipEntry = new ZipEntry(s.getKey());
-                zipOut.putNextEntry(zipEntry);
-                zipOut.write(b);
-            }
-            zipOut.close();
-            fos.close();
-        }catch (Exception e){
-            throw new CantWriteDoc("Не смог записать \n"+fileName);
-
-        }
         if(!salesManager.getPathForSaveContract().equals("")) {
             try {
                 new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
@@ -101,6 +86,23 @@ public class CreateDocumentsAndPrint {
                 fos.close();
             } catch (Exception e) {
                 throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
+            }
+        }
+        else {
+            try {
+                FileOutputStream fos = new FileOutputStream(fileName);
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                for (Map.Entry<String,String> s : map.entrySet()) {
+                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
+                    ZipEntry zipEntry = new ZipEntry(s.getKey());
+                    zipOut.putNextEntry(zipEntry);
+                    zipOut.write(b);
+                }
+                zipOut.close();
+                fos.close();
+            }catch (Exception e){
+                throw new CantWriteDoc("Не смог записать \n"+fileName);
+
             }
         }
 
@@ -170,21 +172,6 @@ public class CreateDocumentsAndPrint {
 
         map.put("word/document.xml",docWord);
         String fileName = "saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx";
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            ZipOutputStream zipOut = new ZipOutputStream(fos);
-            for (Map.Entry<String,String> s : map.entrySet()) {
-                byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
-                ZipEntry zipEntry = new ZipEntry(s.getKey());
-                zipOut.putNextEntry(zipEntry);
-                zipOut.write(b);
-            }
-            zipOut.close();
-            fos.close();
-        }catch (Exception e){
-            throw new CantWriteDoc("Не смог записать \n"+fileName);
-
-        }
         if(!salesManager.getPathForSaveContract().equals("")) {
             try {
                 new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
@@ -201,6 +188,23 @@ public class CreateDocumentsAndPrint {
                 fos.close();
             } catch (Exception e) {
                 throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
+            }
+        }
+        else {
+            try {
+                FileOutputStream fos = new FileOutputStream(fileName);
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                for (Map.Entry<String,String> s : map.entrySet()) {
+                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
+                    ZipEntry zipEntry = new ZipEntry(s.getKey());
+                    zipOut.putNextEntry(zipEntry);
+                    zipOut.write(b);
+                }
+                zipOut.close();
+                fos.close();
+            }catch (Exception e){
+                throw new CantWriteDoc("Не смог записать \n"+fileName);
+
             }
         }
 
@@ -258,20 +262,6 @@ public class CreateDocumentsAndPrint {
         String fileName = "saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
                 "/Дополнительное соглашение №"+dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()+" " +
                 dataClient.getNumberContract() + ".docx";
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            ZipOutputStream zipOut = new ZipOutputStream(fos);
-            for (Map.Entry<String,String> s : map.entrySet()) {
-                byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
-                ZipEntry zipEntry = new ZipEntry(s.getKey());
-                zipOut.putNextEntry(zipEntry);
-                zipOut.write(b);
-            }
-            zipOut.close();
-            fos.close();
-        }catch (Exception e){
-            throw new CantWriteDoc("Не смог записать \n"+fileName);
-        }
         if(!salesManager.getPathForSaveContract().equals("")) {
             try {
                 new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
@@ -289,6 +279,21 @@ public class CreateDocumentsAndPrint {
                 fos.close();
             } catch (Exception e) {
                 throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
+            }
+        }else {
+            try {
+                FileOutputStream fos = new FileOutputStream(fileName);
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                for (Map.Entry<String,String> s : map.entrySet()) {
+                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
+                    ZipEntry zipEntry = new ZipEntry(s.getKey());
+                    zipOut.putNextEntry(zipEntry);
+                    zipOut.write(b);
+                }
+                zipOut.close();
+                fos.close();
+            }catch (Exception e){
+                throw new CantWriteDoc("Не смог записать \n"+fileName);
             }
         }
 
@@ -360,20 +365,7 @@ public class CreateDocumentsAndPrint {
         map.put("word/document.xml",docWord);
         String fileName = "saveContract/" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
                 dataClient.getSupplementaryAgreementUpSaleContract().getNumberSupplementaryAgreementUpSale()+" "+dataClient.getNumberContract() + ".docx";
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            ZipOutputStream zipOut = new ZipOutputStream(fos);
-            for (Map.Entry<String,String> s : map.entrySet()) {
-                byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
-                ZipEntry zipEntry = new ZipEntry(s.getKey());
-                zipOut.putNextEntry(zipEntry);
-                zipOut.write(b);
-            }
-            zipOut.close();
-            fos.close();
-        }catch (Exception e){
-            throw new CantWriteDoc("Не смог записать \n"+fileName);
-        }
+
         if(!salesManager.getPathForSaveContract().equals("")) {
             try {
                 new File(salesManager.getPathForSaveContract() + "\\" + dataClient.getNumberContract() + " " + dataClient.getStrangeName()).mkdirs();
@@ -390,6 +382,22 @@ public class CreateDocumentsAndPrint {
                 fos.close();
             } catch (Exception e) {
                 throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n"+salesManager.getPathForSaveContract());
+            }
+        }
+        else {
+            try {
+                FileOutputStream fos = new FileOutputStream(fileName);
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                for (Map.Entry<String,String> s : map.entrySet()) {
+                    byte[] b = s.getValue().getBytes(StandardCharsets.UTF_8);
+                    ZipEntry zipEntry = new ZipEntry(s.getKey());
+                    zipOut.putNextEntry(zipEntry);
+                    zipOut.write(b);
+                }
+                zipOut.close();
+                fos.close();
+            }catch (Exception e){
+                throw new CantWriteDoc("Не смог записать \n"+fileName);
             }
         }
 

@@ -42,6 +42,7 @@ public class DataClient implements Serializable {
         this.upSaleContract = new UpSaleContract();
         this.supplementaryAgreementBasicContract = new SupplementaryAgreementBasicContract();
         this.supplementaryAgreementUpSaleContract = new SupplementaryAgreementUpSaleContract();
+        this.invoiceDocument = new InvoiceDocument();
     }
 
     private void setMiniNameClient(String fullName){

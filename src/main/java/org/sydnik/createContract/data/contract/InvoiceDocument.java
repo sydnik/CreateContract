@@ -18,9 +18,9 @@ public class InvoiceDocument {
         this.createDateInvoiceDocument = createDateInvoiceDocument;
         this.whichBank = whichBank;
     }
-    private InvoiceDocument() {
+    public InvoiceDocument() {
         this.priceBYNInvoiceDocument = 0;
-        this.priceInEURInvoiceDocument = 9;
+        this.priceInEURInvoiceDocument = 0;
         this.vat20InvoiceDocument = 0;
         this.createDateInvoiceDocument = null;
         this.whichBank = "";

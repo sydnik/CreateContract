@@ -49,11 +49,7 @@ public class CreateXlsXFile {
             sheet.getRow(18).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getVat20InvoiceDocument()));
             sheet.getRow(19).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getPriceInEURInvoiceDocument()));
             sheet.getRow(21).getCell(1).setCellValue(dataClient.getInvoiceDocument().getLineForBank());
-            new File(fileName).mkdirs();
-            fileName = fileName+"/Счет-фактура " + dataClient.getNumberContract() + ".xlsx";
-            FileOutputStream fos = new FileOutputStream(fileName);
-                workbook.write(fos);
-                fos.close();
+
             } catch (Exception e) {
                 throw new CantWriteDoc("Не смог записать \n" + fileName);
             }
@@ -67,6 +63,21 @@ public class CreateXlsXFile {
                     fos.close();
                 } catch (Exception e) {
                     throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n" + salesManager.getPathForSaveContract());
+                }
+            }
+            else {
+                try {
+                    new File(fileName).mkdirs();
+                    fileName = fileName+"/Счет-фактура " + dataClient.getNumberContract() + ".xlsx";
+                    FileOutputStream fos = new FileOutputStream(fileName);
+                    workbook.write(fos);
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n" + "saveContract");
+
+                } catch (IOException e) {
+                    throw new CantWriteDoc("Не смог записать в папку которую вы указали в настройках,проверьте доступ \n" + "saveContract");
+
                 }
             }
     }
