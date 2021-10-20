@@ -2,8 +2,13 @@ package org.sydnik.createContract.data;
 
 import org.sydnik.createContract.data.contract.*;
 import org.sydnik.createContract.exception.CantWriteDoc;
+import org.sydnik.createContract.view.ViewSupplementaryAgreementUpSale;
+import org.sydnik.createContract.view.ViewUpSaleContract;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -79,7 +84,7 @@ public class DataClient implements Serializable {
                 Integer.parseInt(map.get("payUpTo100PercentSum")));
     }
     public void setUpSaleContract(Map<String,String> map){
-        AdditionalProduct[] listAdditionalProducts = new AdditionalProduct[6];
+        AdditionalProduct[] listAdditionalProducts = new AdditionalProduct[ViewUpSaleContract.COUNT_ADDITIONAL_PRODUCT];
         for (int i = 0; i < listAdditionalProducts.length; i++) {
             listAdditionalProducts[i] = new AdditionalProduct(
                     map.get("additionalProducts"+i),
@@ -101,7 +106,7 @@ public class DataClient implements Serializable {
                 Integer.parseInt(map.get("payUpTo100PercentSumSupplementaryAgreement")));
     }
     public void setDateSupplementaryAgreementUpSaleContract(Map<String,String> map) {
-        AdditionalProduct[] listAdditionalProductsSupplementaryAgreementUpSale = new AdditionalProduct[6];
+        AdditionalProduct[] listAdditionalProductsSupplementaryAgreementUpSale = new AdditionalProduct[ViewSupplementaryAgreementUpSale.COUNT_ADDITIONAL_PRODUCT];
         for (int i = 0; i < listAdditionalProductsSupplementaryAgreementUpSale.length; i++) {
             listAdditionalProductsSupplementaryAgreementUpSale[i] = new AdditionalProduct(
                     map.get("supplementaryAgreementAdditionalProducts"+i),
@@ -175,6 +180,14 @@ public class DataClient implements Serializable {
         return invoiceDocument;
     }
 
+    public boolean checkNameFreeForSave(){
+        String path ="saveContract/" +numberContract +" "+ strangeName;
+        Path s = Paths.get(path);
+        if(Files.isDirectory(s)){
+            return false;
+        }
+        return true;
+    }
     public void save() throws CantWriteDoc {
         StringBuilder data = new StringBuilder();
         data.append("numberContract/=/").append(numberContract).append("\n");

@@ -37,7 +37,7 @@ public class CreateXlsXFile {
                     "Адрес доставки: " + dataClient.getAddressDelivery() + "\n" +
                     "тел.: " + dataClient.getNumberPhoneClient());
             sheet.getRow(7).getCell(3).setCellValue("№" + dataClient.getNumberContract() + " " + dataClient.getBasicContract().getDateCreateContract());
-            sheet.getRow(14).getCell(2).setCellValue("Набор мебельных деталей для кухни (№" + dataClient.getNumberContract() + ")q \n" +
+            sheet.getRow(14).getCell(2).setCellValue("Набор мебельных деталей для кухни (№" + dataClient.getNumberContract() + ") \n" +
                     "Страна производства Республика Беларусь");
             sheet.getRow(14).getCell(7).setCellValue(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument() + ".00");
             sheet.getRow(14).getCell(8).setCellValue(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument() + ".00");
@@ -47,7 +47,7 @@ public class CreateXlsXFile {
             sheet.getRow(15).getCell(11).setCellValue(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument());
 
             sheet.getRow(18).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getVat20InvoiceDocument()));
-            sheet.getRow(19).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getPriceInEURInvoiceDocument()));
+            sheet.getRow(19).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument()));
             sheet.getRow(21).getCell(1).setCellValue(dataClient.getInvoiceDocument().getLineForBank());
 
             } catch (Exception e) {

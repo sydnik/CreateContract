@@ -83,111 +83,16 @@ public class Model {
         salesManager.save();
 
     }
-    public void createNewClient(Component[] listComponent) throws CantWriteDoc {
+    public void createNewClient(Display display) throws CantWriteDoc, DontHaveData {
+        dataClient = new DataClient(display.getDataForSave());
+        if(dataClient.checkNameFreeForSave()){
+            dataClient.save();
+        }else throw new CantWriteDoc("такой номер догора и имя занято(Поменяйте как минимум Странное название)");
 
-        Map<String,String> mapDataClient = new HashMap<>();
-        for(Component component:listComponent){
-            try {
-            switch ( component.getName()) {
-                case "numberContract": {
-                    mapDataClient.put("numberContract",((JTextField) component).getText());
-                    break;
-                }
-                case "strangeName" : {
-                    mapDataClient.put("strangeName", ((JTextField) component).getText());
-                    break;
-                }
-                case "fullNameClient": {
-                    mapDataClient.put("fullNameClient",((JTextField) component).getText());
-                    break;
-                }
-                case "numberPassport": {
-                    mapDataClient.put("numberPassport", ((JTextField) component).getText());
-                    break;
-                }
-                case "issuedByPassport": {
-                    mapDataClient.put("issuedByPassport", ((JTextField) component).getText());
-                    break;
-                }
-                case "whenIssued": {
-                    mapDataClient.put("whenIssued", ((JTextField) component).getText());
-                    break;
-                }
-                case "identificationNumber": {
-                    mapDataClient.put("identificationNumber", ((JTextField) component).getText());
-                    break;
-                }
-                case "addressRegistration": {
-                    mapDataClient.put("addressRegistration", ((JTextField) component).getText());
-                    break;
-                }
-                case "addressDelivery": {
-                    mapDataClient.put("addressDelivery", ((JTextField) component).getText());
-                    break;
-                }
-                case "numberPhoneClient": {
-                    mapDataClient.put("numberPhoneClient", ((JTextField) component).getText());
-                    break;
-                }
-            }
-            }catch (Exception e){}
-        }
 
-        dataClient = new DataClient(mapDataClient);
-        dataClient.save();
     }
-    public void saveDataAboutClient(Component[] listComponent) throws CantWriteDoc {
-        Map<String,String> mapDataClient = new HashMap<>();
-        for(Component component:listComponent){
-            try {
-                switch ( component.getName()) {
-
-                    case "numberContract": {
-                        mapDataClient.put("numberContract",((JTextField) component).getText());
-                        break;
-                    }
-                    case "strangeName" : {
-                        mapDataClient.put("strangeName", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "fullNameClient": {
-                        mapDataClient.put("fullNameClient",((JTextField) component).getText());
-                        break;
-                    }
-                    case "numberPassport": {
-                        mapDataClient.put("numberPassport", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "issuedByPassport": {
-                        mapDataClient.put("issuedByPassport", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "whenIssued": {
-                        mapDataClient.put("whenIssued", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "identificationNumber": {
-                        mapDataClient.put("identificationNumber", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "addressRegistration": {
-                        mapDataClient.put("addressRegistration", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "addressDelivery": {
-                        mapDataClient.put("addressDelivery", ((JTextField) component).getText());
-                        break;
-                    }
-                    case "numberPhoneClient": {
-                        mapDataClient.put("numberPhoneClient", ((JTextField) component).getText());
-                        break;
-                    }
-
-                }
-            }catch (Exception e){}
-        }
-
-        dataClient.setDateAboutClient(mapDataClient);
+    public void saveDataAboutClient(Display display) throws CantWriteDoc, DontHaveData {
+        dataClient.setDateAboutClient(display.getDataForSave());
         dataClient.save();
     }
     public void saveDataBaseContractClient (Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
@@ -354,6 +259,8 @@ public class Model {
     public void clearDataClient(){
         dataClient = null;
     }
+
+
 
     public SalesManager getSalesManager() {
         return salesManager;

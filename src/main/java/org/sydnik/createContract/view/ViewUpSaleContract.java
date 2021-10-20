@@ -9,10 +9,9 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.util.HashMap;
 
-public class ViewUpSaleContract implements Display {
-    private JPanel staticJPanel;
-    private DataClient dataClient;
-    private MyController controller;
+
+public class ViewUpSaleContract extends MainViewContract implements Display {
+    public static final int COUNT_ADDITIONAL_PRODUCT = 9;
     private JTextField additionalProductsWithDiscount[];
     private JTextField additionalProducts[];
     private JTextField additionalProductsCount[];
@@ -24,115 +23,84 @@ public class ViewUpSaleContract implements Display {
     private JFormattedTextField dateCreateUpSaleContract;
 
     public ViewUpSaleContract(JPanel staticJPanel, DataClient dataClient, MyController controller) {
-        this.staticJPanel = staticJPanel;
-        this.dataClient = dataClient;
-        this.controller = controller;
+        super(staticJPanel,dataClient,"UpSale",controller);
     }
 
     @Override
     public void display() {
+        int line =-1;
+        startPage();
         MaskFormatter
                 dateCreateContractMask = null;
         try {
             dateCreateContractMask = new MaskFormatter("##.##.####");
         } catch (Exception e) {
         }
-
-        staticJPanel.removeAll();
-        staticJPanel.setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
-
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+
+        gridBagConstraints.gridy = ++line;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
-        JLabel j1 = new JLabel("Клиент: ");
-        j1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        staticJPanel.add(j1, gridBagConstraints);
-
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridwidth = 5;
-        JLabel j2 = new JLabel(dataClient.getFullNameClient());
-        j2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        staticJPanel.add(j2, gridBagConstraints);
-
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
-        JLabel j4 = new JLabel("UpSale договор ");
-        j4.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        staticJPanel.add(j4, gridBagConstraints);
-
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridwidth = 5;
-        JLabel j3 = new JLabel(dataClient.getNumberContract() + " " + dataClient.getStrangeName());
-        j3.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        staticJPanel.add(j3, gridBagConstraints);
-
-        gridBagConstraints.gridy = 2;
-        staticJPanel.add(new JLabel(" "), gridBagConstraints);
-        gridBagConstraints.gridy = 3;
-        staticJPanel.add(new JLabel(" "), gridBagConstraints);
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridx = 0;
-        staticJPanel.add(new JLabel("№"), gridBagConstraints);
+        workingWindow.add(new JLabel("№"), gridBagConstraints);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridwidth = 3;
-        staticJPanel.add(new JLabel(" Наименование товара"), gridBagConstraints);
+        workingWindow.add(new JLabel(" Наименование товара"), gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
-        staticJPanel.add(new JLabel("К"), gridBagConstraints);
+        workingWindow.add(new JLabel("К"), gridBagConstraints);
         gridBagConstraints.gridx = 5;
-        staticJPanel.add(new JLabel("Цена"), gridBagConstraints);
+        workingWindow.add(new JLabel("Цена"), gridBagConstraints);
         gridBagConstraints.gridx = 6;
-        staticJPanel.add(new JLabel("%"), gridBagConstraints);
+        workingWindow.add(new JLabel("%"), gridBagConstraints);
         gridBagConstraints.gridx = 7;
-        staticJPanel.add(new JLabel("Всего"), gridBagConstraints);
-        additionalProducts = new JTextField[6];
-        additionalProductsCount = new JTextField[6];
-        additionalProductsDiscount = new JTextField[6];
-        additionalProductsFullPrice = new JTextField[6];
-        additionalProductsWithDiscount = new JTextField[6];
-        for (int i = 0; i < 6; i++) {
+        workingWindow.add(new JLabel("Всего"), gridBagConstraints);
+        additionalProducts = new JTextField[COUNT_ADDITIONAL_PRODUCT];
+        additionalProductsCount = new JTextField[COUNT_ADDITIONAL_PRODUCT];
+        additionalProductsDiscount = new JTextField[COUNT_ADDITIONAL_PRODUCT];
+        additionalProductsFullPrice = new JTextField[COUNT_ADDITIONAL_PRODUCT];
+        additionalProductsWithDiscount = new JTextField[COUNT_ADDITIONAL_PRODUCT];
+        int i =0;
+        line++;
+        for (; i < COUNT_ADDITIONAL_PRODUCT; i++) {
             additionalProducts[i] = new JTextField();
             additionalProductsCount[i] = new JTextField();
             additionalProductsDiscount[i] = new JTextField();
             additionalProductsFullPrice[i] = new JTextField();
             additionalProductsWithDiscount[i] = new JTextField();
-            gridBagConstraints.gridy = 5 + i;
+            gridBagConstraints.gridy = line + i;
             gridBagConstraints.gridx = 0;
             gridBagConstraints.ipadx = 5;
             gridBagConstraints.gridwidth = 1;
-            staticJPanel.add(new JLabel(String.valueOf(i + 1)), gridBagConstraints);
+            workingWindow.add(new JLabel(String.valueOf(i + 1)), gridBagConstraints);
             gridBagConstraints.gridx = 1;
             gridBagConstraints.ipadx = 310;
             gridBagConstraints.gridwidth = 3;
             additionalProducts[i].setName("additionalProducts" + i);
-            staticJPanel.add(additionalProducts[i], gridBagConstraints);
+            workingWindow.add(additionalProducts[i], gridBagConstraints);
             gridBagConstraints.gridx = 4;
             gridBagConstraints.ipadx = 10;
             gridBagConstraints.gridwidth = 1;
             additionalProductsCount[i].setText(String.valueOf(1));
             additionalProductsCount[i].setName("additionalProductsCount" + i);
             additionalProductsCount[i].addKeyListener(controller);
-            staticJPanel.add(additionalProductsCount[i], gridBagConstraints);
+            workingWindow.add(additionalProductsCount[i], gridBagConstraints);
             gridBagConstraints.gridx = 5;
             gridBagConstraints.ipadx = 50;
             additionalProductsDiscount[i].setText(String.valueOf(0));
             additionalProductsFullPrice[i].setName("additionalProductsFullPrice" + i);
             additionalProductsFullPrice[i].addKeyListener(controller);
-            staticJPanel.add(additionalProductsFullPrice[i], gridBagConstraints);
+            workingWindow.add(additionalProductsFullPrice[i], gridBagConstraints);
             gridBagConstraints.gridx = 6;
             gridBagConstraints.ipadx = 15;
             additionalProductsDiscount[i].setName("additionalProductsDiscount" + i);
             additionalProductsDiscount[i].addKeyListener(controller);
-            staticJPanel.add(additionalProductsDiscount[i], gridBagConstraints);
+            workingWindow.add(additionalProductsDiscount[i], gridBagConstraints);
             gridBagConstraints.gridx = 7;
             gridBagConstraints.ipadx = 50;
             additionalProductsWithDiscount[i].setName("additionalProductsWithDiscount" + i);
             additionalProductsWithDiscount[i].addKeyListener(controller);
-            staticJPanel.add(additionalProductsWithDiscount[i], gridBagConstraints);
+            workingWindow.add(additionalProductsWithDiscount[i], gridBagConstraints);
             try {
                 if (dataClient.getUpSaleContract().getListAdditionalProducts()[i] != null) {
                     additionalProducts[i].setText(dataClient.getUpSaleContract().getListAdditionalProducts()[i].getName());
@@ -141,17 +109,18 @@ public class ViewUpSaleContract implements Display {
                     additionalProductsFullPrice[i].setText(dataClient.getUpSaleContract().getListAdditionalProducts()[i].getFullPrice());
                     additionalProductsWithDiscount[i].setText(dataClient.getUpSaleContract().getListAdditionalProducts()[i].getPriceWithDiscount());
                 }
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
 
             }
 
 
         }
-        gridBagConstraints.gridy = 11;
+        line = line +i;
+        gridBagConstraints.gridy = ++line;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.ipadx = 0;
-        staticJPanel.add(new JLabel("Сумма договора"), gridBagConstraints);
+        workingWindow.add(new JLabel("Сумма договора"), gridBagConstraints);
 
 
         gridBagConstraints.gridx = 5;
@@ -163,27 +132,27 @@ public class ViewUpSaleContract implements Display {
         }
         allSumUpSaleInBYN.addKeyListener(controller);
         allSumUpSaleInBYN.setEnabled(false);
-        staticJPanel.add(allSumUpSaleInBYN, gridBagConstraints);
+        workingWindow.add(allSumUpSaleInBYN, gridBagConstraints);
 
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
         JCheckBox checkBoxAllSumUpSaleInBYN = new JCheckBox();
         checkBoxAllSumUpSaleInBYN.setName("checkBoxAllSumUpSaleInBYN");
         checkBoxAllSumUpSaleInBYN.addActionListener(controller);
-        staticJPanel.add(checkBoxAllSumUpSaleInBYN, gridBagConstraints);
+        workingWindow.add(checkBoxAllSumUpSaleInBYN, gridBagConstraints);
 
 
-        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridy = ++line;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.ipadx = 0;
-        staticJPanel.add(new JLabel("Предоплата:"), gridBagConstraints);
+        workingWindow.add(new JLabel("Предоплата:"), gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
         JCheckBox checkBoxPrepaymentUpSale = new JCheckBox();
         checkBoxPrepaymentUpSale.setName("checkBoxPrepaymentUpSale");
         checkBoxPrepaymentUpSale.addActionListener(controller);
-        staticJPanel.add(checkBoxPrepaymentUpSale, gridBagConstraints);
+        workingWindow.add(checkBoxPrepaymentUpSale, gridBagConstraints);
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridwidth = 3;
         prepaymentUpSale = new JTextField();
@@ -191,18 +160,18 @@ public class ViewUpSaleContract implements Display {
         prepaymentUpSale.setText(String.valueOf(dataClient.getUpSaleContract().getPrepaymentUpSale()));
         prepaymentUpSale.addKeyListener(controller);
         prepaymentUpSale.setEnabled(false);
-        staticJPanel.add(prepaymentUpSale, gridBagConstraints);
+        workingWindow.add(prepaymentUpSale, gridBagConstraints);
 
-        gridBagConstraints.gridy = 13;
+        gridBagConstraints.gridy = ++line;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 4;
-        staticJPanel.add(new JLabel("Оплата до 100%"), gridBagConstraints);
+        workingWindow.add(new JLabel("Оплата до 100%"), gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
         JCheckBox checkBoxPayUpTo100percentUpSale = new JCheckBox();
         checkBoxPayUpTo100percentUpSale.setName("checkBoxPayUpTo100percentUpSale");
         checkBoxPayUpTo100percentUpSale.addActionListener(controller);
-        staticJPanel.add(checkBoxPayUpTo100percentUpSale, gridBagConstraints);
+        workingWindow.add(checkBoxPayUpTo100percentUpSale, gridBagConstraints);
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridwidth = 3;
         payUpTo100percentUpSale = new JTextField();
@@ -210,18 +179,18 @@ public class ViewUpSaleContract implements Display {
         payUpTo100percentUpSale.setText(String.valueOf(dataClient.getUpSaleContract().getPayUpTo100percentUpSale()));
         payUpTo100percentUpSale.addKeyListener(controller);
         payUpTo100percentUpSale.setEnabled(false);
-        staticJPanel.add(payUpTo100percentUpSale, gridBagConstraints);
+        workingWindow.add(payUpTo100percentUpSale, gridBagConstraints);
 
-        gridBagConstraints.gridy = 14;
+        gridBagConstraints.gridy = ++line;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 4;
-        staticJPanel.add(new JLabel("Дата подписания"), gridBagConstraints);
+        workingWindow.add(new JLabel("Дата подписания"), gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 1;
         JCheckBox checkBoxDateCreateUpSaleContract = new JCheckBox();
         checkBoxDateCreateUpSaleContract.setName("checkBoxDateCreateUpSaleContract");
         checkBoxDateCreateUpSaleContract.addActionListener(controller);
-        staticJPanel.add(checkBoxDateCreateUpSaleContract, gridBagConstraints);
+        workingWindow.add(checkBoxDateCreateUpSaleContract, gridBagConstraints);
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridwidth = 3;
         dateCreateUpSaleContract = new JFormattedTextField(dateCreateContractMask);
@@ -229,70 +198,64 @@ public class ViewUpSaleContract implements Display {
         dateCreateUpSaleContract.setText(String.valueOf(dataClient.getUpSaleContract().getDateCreateUpSaleContract()));
         dateCreateUpSaleContract.addKeyListener(controller);
         dateCreateUpSaleContract.setEnabled(false);
-        staticJPanel.add(dateCreateUpSaleContract, gridBagConstraints);
+        workingWindow.add(dateCreateUpSaleContract, gridBagConstraints);
 
-        gridBagConstraints.gridy = 15;
+        gridBagConstraints.gridy = ++line;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 4;
         JButton saveDataUpSaleContact = new JButton("Сохранить");
         saveDataUpSaleContact.setName("saveDataUpSaleContact");
         saveDataUpSaleContact.addActionListener(controller);
-        staticJPanel.add(saveDataUpSaleContact, gridBagConstraints);
-
-        gridBagConstraints.gridy = 15;
+        workingWindow.add(saveDataUpSaleContact, gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 4;
         JButton printUpSaleContract = new JButton("Распечатать 2 раза");
         printUpSaleContract.setName("printUpSaleContract");
         printUpSaleContract.addActionListener(controller);
-        staticJPanel.add(printUpSaleContract, gridBagConstraints);
+        workingWindow.add(printUpSaleContract, gridBagConstraints);
 
-        gridBagConstraints.gridy = 16;
+        gridBagConstraints.gridy = ++line;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 4;
         JButton openDirectoryWithFile = new JButton("Открыть папку с файлом");
         openDirectoryWithFile.setName("openDirectoryWithFile");
         openDirectoryWithFile.addActionListener(controller);
-        staticJPanel.add(openDirectoryWithFile, gridBagConstraints);
-
-        gridBagConstraints.gridy = 16;
+        workingWindow.add(openDirectoryWithFile, gridBagConstraints);
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridwidth = 4;
         JButton openFileUpSaleContract = new JButton("Открыть файл");
         openFileUpSaleContract.setName("openFileUpSaleContract");
         openFileUpSaleContract.addActionListener(controller);
-        staticJPanel.add(openFileUpSaleContract, gridBagConstraints);
+        workingWindow.add(openFileUpSaleContract, gridBagConstraints);
 
-        gridBagConstraints.gridy = 17;
+        gridBagConstraints.gridy = ++line;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.ipady = 120;
-        gridBagConstraints.gridwidth = 8;
-        staticJPanel.add(new JLabel(" "), gridBagConstraints);
+        gridBagConstraints.gridwidth = 4;
+        JButton orderUpSaleMaunfeld = new JButton("Скопировать Maunfeld");
+        orderUpSaleMaunfeld.setName("orderUpSaleMaunfeld");
+        orderUpSaleMaunfeld.addActionListener(controller);
+        workingWindow.add(orderUpSaleMaunfeld, gridBagConstraints);
 
-        gridBagConstraints.gridy = 18;
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.ipady = 0;
-        JButton backSelectClient = new JButton("Назад");
-        backSelectClient.setName("backSelectClient");
-        backSelectClient.addActionListener(controller);
-        staticJPanel.add(backSelectClient, gridBagConstraints);
 
-        gridBagConstraints.gridy = 19;
-        gridBagConstraints.gridx = 0;
-        JButton mainPage = new JButton("Главная страница");
-        mainPage.setName("mainPage");
-        mainPage.addActionListener(controller);
-        staticJPanel.add(mainPage, gridBagConstraints);
+        gridBagConstraints.gridy = line;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridwidth = 4;
+        JButton orderUpSaleSink = new JButton("Скопировать Emar");
+        orderUpSaleSink.setName("orderUpSaleSink");
+        orderUpSaleSink.addActionListener(controller);
+        workingWindow.add(orderUpSaleSink, gridBagConstraints);
 
-        staticJPanel.revalidate();
-        staticJPanel.repaint();
+        super.endPage();
     }
 
     public void editUpSaleEditSumProductPriceAndDiscountAndCount(JTextField jTextField) {
         int i = Integer.parseInt(jTextField.getName().substring(jTextField.getName().length()-1));
         int jCount = Integer.parseInt(additionalProductsCount[i].getText());
         int jDiscount = Integer.parseInt(additionalProductsDiscount[i].getText());
-        int jPrice = Integer.parseInt(additionalProductsFullPrice[i].getText());
+        int jPrice =0;
+        try {
+            jPrice = Integer.parseInt(additionalProductsFullPrice[i].getText());
+        }catch (Exception e){}
         additionalProductsWithDiscount[i].setText(String.valueOf(((int) Math.round((double) jPrice * ((double) (100 - jDiscount) / 100))) * jCount));
         staticJPanel.revalidate();
         staticJPanel.repaint();
@@ -337,18 +300,20 @@ public class ViewUpSaleContract implements Display {
                 dateCreateUpSaleContract.equals("  .  .    ")){
             throw  new DontHaveData("Заполните все поля техники должно быть минимум 1");
         }
-        HashMap<String,String> map = new HashMap<>();
+        HashMap<String,String> result = new HashMap<>();
         for (int i = 0; i < additionalProducts.length; i++) {
-            map.put("additionalProducts"+i,additionalProducts[i].getText());
-            map.put("additionalProductsCount"+i,additionalProductsCount[i].getText());
-            map.put("additionalProductsFullPrice"+i,additionalProductsFullPrice[i].getText());
-            map.put("additionalProductsDiscount" + i,additionalProductsDiscount[i].getText());
-            map.put("additionalProductsWithDiscount"+i,additionalProductsWithDiscount[i].getText());
+            result.put("additionalProducts"+i,additionalProducts[i].getText());
+            result.put("additionalProductsCount"+i,additionalProductsCount[i].getText());
+            result.put("additionalProductsFullPrice"+i,additionalProductsFullPrice[i].getText());
+            result.put("additionalProductsDiscount" + i,additionalProductsDiscount[i].getText());
+            result.put("additionalProductsWithDiscount"+i,additionalProductsWithDiscount[i].getText());
         }
-        map.put("dateCreateUpSaleContract",dateCreateUpSaleContract.getText());
-        map.put("allSumUpSaleInBYN",allSumUpSaleInBYN.getText());
-        map.put("prepaymentUpSale",prepaymentUpSale.getText());
-        map.put("payUpTo100percentUpSale",payUpTo100percentUpSale.getText());
-        return map;
+        result.put("dateCreateUpSaleContract",dateCreateUpSaleContract.getText());
+        result.put("allSumUpSaleInBYN",allSumUpSaleInBYN.getText());
+        result.put("prepaymentUpSale",prepaymentUpSale.getText());
+        result.put("payUpTo100percentUpSale",payUpTo100percentUpSale.getText());
+        return result;
     }
 }
+
+

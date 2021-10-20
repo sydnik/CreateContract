@@ -1,6 +1,7 @@
 package org.sydnik.createContract.data.contract;
 
 import org.sydnik.createContract.data.AdditionalProduct;
+import org.sydnik.createContract.view.ViewSupplementaryAgreementUpSale;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -86,7 +87,7 @@ public class SupplementaryAgreementUpSaleContract implements Serializable {
             if (map.get("listAdditionalProductsSupplementaryAgreementUpSale0").equals("null")) {
                 return new SupplementaryAgreementUpSaleContract();
             } else {
-                listAdditionalProductsSupplementaryAgreementUpSale = new AdditionalProduct[6];
+                listAdditionalProductsSupplementaryAgreementUpSale = new AdditionalProduct[ViewSupplementaryAgreementUpSale.COUNT_ADDITIONAL_PRODUCT];
                 for (int i = 0; i < listAdditionalProductsSupplementaryAgreementUpSale.length; i++) {
                     listAdditionalProductsSupplementaryAgreementUpSale[i] = AdditionalProduct.Load(map.get("listAdditionalProductsSupplementaryAgreementUpSale" + i));
                 }

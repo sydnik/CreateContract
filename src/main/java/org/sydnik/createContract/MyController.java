@@ -8,18 +8,12 @@ import org.sydnik.createContract.view.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 
 
 public class MyController implements ActionListener, KeyListener, MouseListener {
     private Model model;
     private MyView view;
     private Display display;
-
-
-    private ArrayList<TextField> listText = new ArrayList<>();
-    private ArrayList<JTextPane> listJTextPane = new ArrayList<>();
-
 
 
     public MyController(Model model,MyView view) {
@@ -66,17 +60,13 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                     display= null;
                     break;
                 }
-                case "createNewClient": {
-                    view.createNewClient();
-                    break;
-                }
                 case "saveNewDataClient": {
-                    model.createNewClient(view.getComponentsStaticPanel());
+                    model.createNewClient(display);
                     view.selectedClient(model.getDataClient());
                     break;
                 }
                 case "saveDataAboutClient": {
-                    model.saveDataAboutClient(view.getComponentsStaticPanel());
+                    model.saveDataAboutClient(display);
                     view.selectedClient(model.getDataClient());
                     break;
                 }
@@ -137,7 +127,12 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                     break;
                 }
                 case "editDataAboutClient": {
-                    view.editDataAboutClient(model.getDataClient());
+                    view.displayEditDataAboutClient(model.getDataClient());
+                    break;
+                }
+                case "createNewClient": {
+                    model.clearDataClient();
+                    view.displayNewClient();
                     break;
                 }
                 case "openFileBasicContract": {
@@ -237,6 +232,40 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                 case "openFileInvoiceDocument": {
                     model.saveDataInvoiceDocument(display);
                     model.openDoc("openFileInvoiceDocument");
+                    break;
+                }
+                case "orderUpSaleMaunfeld": {
+                    OrderUpSale orderUpSale = new OrderUpSale(model.getDataClient().getUpSaleContract().getListAdditionalProducts(),
+                            model.getDataClient().getNumberContract());
+                    orderUpSale.copyTextBuffer(OrderUpSale.MAUNFELD);
+                    view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                case "orderUpSaleSink": {
+                    OrderUpSale orderUpSale = new OrderUpSale(model.getDataClient().getUpSaleContract().getListAdditionalProducts(),
+                            model.getDataClient().getNumberContract());
+                    orderUpSale.copyTextBuffer(OrderUpSale.EMAR);
+                    view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                case "orderSupplementaryAgreementUpSaleSink" :{
+                    OrderUpSale orderUpSale = new OrderUpSale(
+                            model.getDataClient().getSupplementaryAgreementUpSaleContract().getListAdditionalProductsSupplementaryAgreementUpSale(),
+                            model.getDataClient().getNumberContract());
+                    orderUpSale.copyTextBuffer(OrderUpSale.EMAR);
+                    view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                case "orderSupplementaryAgreementUpSaleMaunfeld": {
+                    OrderUpSale orderUpSale = new OrderUpSale(
+                            model.getDataClient().getSupplementaryAgreementUpSaleContract().getListAdditionalProductsSupplementaryAgreementUpSale(),
+                            model.getDataClient().getNumberContract());
+                    orderUpSale.copyTextBuffer(OrderUpSale.MAUNFELD);
+                    view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                case "createFileForCutting" : {
+                    view.displayCreateFileForCutting(model.getDataClient());
                     break;
                 }
 
@@ -378,6 +407,11 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                 view.onlyDoubleNumber((JTextField) e.getComponent(),4);
                 break;
             }
+            case "boxListMaterial" :{
+                System.out.println("dsads");
+                ((ViewCreateFileForCutting)display).filterBoxListMaterial(((JTextField)e.getComponent()).getText());
+                break;
+            }
         }
         if(e.getComponent().getName().contains("dditionalProduct")){
             if(e.getComponent().getName().contains("supplementaryAgreement")){
@@ -419,6 +453,10 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                         }
                     }
                 }
+                break;
+            }
+            case "boxListMaterial": {
+                ((ViewCreateFileForCutting)display).popupVisible();
                 break;
             }
         }

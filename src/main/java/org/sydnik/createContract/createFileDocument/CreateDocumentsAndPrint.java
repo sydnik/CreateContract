@@ -6,6 +6,8 @@ import org.sydnik.createContract.data.DataClient;
 import org.sydnik.createContract.data.SalesManager;
 import org.sydnik.createContract.exception.CantWriteDoc;
 import org.sydnik.createContract.exception.DontHaveFilePattern;
+import org.sydnik.createContract.view.ViewSupplementaryAgreementUpSale;
+import org.sydnik.createContract.view.ViewUpSaleContract;
 
 import java.awt.*;
 import java.io.*;
@@ -153,7 +155,7 @@ public class CreateDocumentsAndPrint {
         docWord = docWord.replace("prepaymentUpSale", dataClient.getUpSaleContract().getPrepaymentUpSale()+".00");
         docWord = docWord.replace("payUpTo100percentUpSale", dataClient.getUpSaleContract().getPayUpTo100percentUpSale()+".00");
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < ViewUpSaleContract.COUNT_ADDITIONAL_PRODUCT; i++) {
             if(!dataClient.getUpSaleContract().getListAdditionalProducts()[i].getName().equals("")) {
                 docWord = docWord.replace("additionalProducts" + i, dataClient.getUpSaleContract().getListAdditionalProducts()[i].getName());
                 docWord = docWord.replace("additionalProductsCount" + i, String.valueOf(dataClient.getUpSaleContract().getListAdditionalProducts()[i].getCount()));
@@ -162,7 +164,7 @@ public class CreateDocumentsAndPrint {
             else {
                 listLine = docWord.split("additionalProductsWithDiscount"+i);
                 listLine[0] = listLine[0].substring(0,listLine[0].lastIndexOf("<w:tr w"));
-                for (int j  = i; j < 6 ; j++) {
+                for (int j = i; j < ViewUpSaleContract.COUNT_ADDITIONAL_PRODUCT; j++) {
                     listLine[1] = listLine[1].substring(listLine[1].indexOf("</w:tr>")+7);
                 }
                 docWord = listLine[0]+listLine[1];
@@ -345,7 +347,7 @@ public class CreateDocumentsAndPrint {
         docWord = docWord.replace("prepaymentUpSaleSupplementaryAgreement", dataClient.getSupplementaryAgreementUpSaleContract().getPrepaymentUpSaleSupplementaryAgreement()+".00");
         docWord = docWord.replace("payUpTo100PercentSupplementaryAgreementUpSale", dataClient.getSupplementaryAgreementUpSaleContract().getPayUpTo100percentUpSaleSupplementaryAgreement()+".00");
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < ViewSupplementaryAgreementUpSale.COUNT_ADDITIONAL_PRODUCT; i++) {
             if(!dataClient.getSupplementaryAgreementUpSaleContract().getListAdditionalProductsSupplementaryAgreementUpSale()[i].getName().equals("")) {
                 docWord = docWord.replace("supplementaryAgreementAdditionalProducts" + i, dataClient.getSupplementaryAgreementUpSaleContract().getListAdditionalProductsSupplementaryAgreementUpSale()[i].getName());
                 docWord = docWord.replace("supplementaryAgreementAdditionalProductsCount" + i, String.valueOf(dataClient.getSupplementaryAgreementUpSaleContract().getListAdditionalProductsSupplementaryAgreementUpSale()[i].getCount()));
@@ -354,7 +356,7 @@ public class CreateDocumentsAndPrint {
             else {
                 listLine = docWord.split("supplementaryAgreementAdditionalProductsWithDiscount"+i);
                 listLine[0] = listLine[0].substring(0,listLine[0].lastIndexOf("<w:tr w"));
-                for (int j  = i; j < 6 ; j++) {
+                for (int j  = i; j < ViewSupplementaryAgreementUpSale.COUNT_ADDITIONAL_PRODUCT ; j++) {
                     listLine[1] = listLine[1].substring(listLine[1].indexOf("</w:tr>")+7);
                 }
                 docWord = listLine[0]+listLine[1];

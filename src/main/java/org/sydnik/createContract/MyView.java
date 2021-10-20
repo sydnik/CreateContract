@@ -15,13 +15,15 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class MyView extends JFrame {
+    public static final int HEIGHT_WINDOW_APPS = 600;
+    public static final int WIDTH_WINDOW_APPS = 500;
     private MyController controller;
     private JPanel staticJPanel;
 
 
     public MyView() {
         super("CreateContract");
-        setSize(500, 600);
+        setSize(WIDTH_WINDOW_APPS, HEIGHT_WINDOW_APPS);
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);//окно по центру
@@ -180,193 +182,6 @@ public class MyView extends JFrame {
         staticJPanel.revalidate();
         staticJPanel.repaint();
 
-
-    }
-    public void createNewClient(){
-        staticJPanel.removeAll();
-        staticJPanel.setLayout(new GridLayout(22,1));
-        MaskFormatter
-                identificationNumberFormatter = null,
-                whenIssuedFormatter = null,
-                numberPassportFormatter = null,
-                phoneFormatter = null,
-                numberContractFormatter = null,
-                dateCreateContractFormatter = null;
-        try {
-        numberContractFormatter = new MaskFormatter("UU#-######-##*");
-        phoneFormatter = new MaskFormatter("+375(##) ### ####");
-        numberPassportFormatter = new MaskFormatter("UU#######");
-        whenIssuedFormatter = new MaskFormatter("##.##.####");
-        identificationNumberFormatter = new MaskFormatter(("#######U###UU#"));
-        dateCreateContractFormatter = new MaskFormatter("##.##.####");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        staticJPanel.add(new JLabel("Номер договора:"));
-        JFormattedTextField numberContract = new JFormattedTextField(numberContractFormatter);
-        numberContract.setName("numberContract");
-        staticJPanel.add(numberContract);
-
-        staticJPanel.add(new JLabel("Странное название"));
-        JTextField strangeName = new JTextField();
-        strangeName.setName("strangeName");
-        staticJPanel.add(strangeName);
-
-        staticJPanel.add(new JLabel("ФИО клиенто полностью:"));
-        JTextField fullNameClient = new JTextField();
-        fullNameClient.setName("fullNameClient");
-        staticJPanel.add(fullNameClient);
-
-        staticJPanel.add(new JLabel("Номер паспорта:"));
-        JFormattedTextField numberPassport = new JFormattedTextField(numberPassportFormatter);
-        numberPassport.setName("numberPassport");
-        staticJPanel.add(numberPassport);
-
-        staticJPanel.add(new JLabel("Кем выдан:"));
-        JTextField issuedByPassport = new JTextField();
-        issuedByPassport.setName("issuedByPassport");
-        staticJPanel.add(issuedByPassport);
-
-        staticJPanel.add(new JLabel("Когда выдан:"));
-        JFormattedTextField whenIssued = new JFormattedTextField(whenIssuedFormatter);
-        whenIssued.setName("whenIssued");
-        staticJPanel.add(whenIssued);
-
-        staticJPanel.add(new JLabel("Идентификационный номер:"));
-        JFormattedTextField identificationNumber = new JFormattedTextField(identificationNumberFormatter);
-        identificationNumber.setName("identificationNumber");
-        staticJPanel.add(identificationNumber);
-
-        staticJPanel.add(new JLabel("Адрес регистрации:"));
-        JTextField addressRegistration = new JTextField();
-        addressRegistration.setName("addressRegistration");
-        staticJPanel.add(addressRegistration);
-
-        staticJPanel.add(new JLabel("Адрес доставки:"));
-        JTextField addressDelivery = new JTextField();
-        addressDelivery.setName("addressDelivery");
-        staticJPanel.add(addressDelivery);
-
-        staticJPanel.add(new JLabel("Мобильный телефон:"));
-        JFormattedTextField numberPhoneClient = new JFormattedTextField(phoneFormatter);
-        numberPhoneClient.setName("numberPhoneClient");
-        staticJPanel.add(numberPhoneClient);
-
-        JButton save = new JButton("Добавить нового клиента");
-        save.setName("saveNewDataClient");
-        save.addActionListener(controller);
-        staticJPanel.add(save);
-
-        JButton mainPage = new JButton("Главная страница");
-        mainPage.setName("mainPage");
-        mainPage.addActionListener(controller);
-        staticJPanel.add(mainPage);
-
-        staticJPanel.revalidate();
-        staticJPanel.repaint();
-
-    }
-    public void editDataAboutClient(DataClient dataClient){
-        staticJPanel.removeAll();
-        staticJPanel.setLayout(new GridLayout(23,1));
-        MaskFormatter
-                identificationNumberFormatter = null,
-                whenIssuedFormatter = null,
-                numberPassportFormatter = null,
-                phoneFormatter = null,
-                numberContractFormatter = null,
-                dateCreateContractFormatter = null;
-        try {
-            numberContractFormatter = new MaskFormatter("UU#-######-##*");
-            phoneFormatter = new MaskFormatter("+375(##) ### ####");
-            numberPassportFormatter = new MaskFormatter("UU#######");
-            whenIssuedFormatter = new MaskFormatter("##.##.####");
-            identificationNumberFormatter = new MaskFormatter(("#######U###UU#"));
-            dateCreateContractFormatter = new MaskFormatter("##.##.####");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        staticJPanel.add(new JLabel("Номер договора:"));
-        JFormattedTextField numberContract = new JFormattedTextField(numberContractFormatter);
-        numberContract.setText(dataClient.getNumberContract());
-        numberContract.setName("numberContract");
-        numberContract.setEnabled(false);
-        staticJPanel.add(numberContract);
-
-        staticJPanel.add(new JLabel("Странное название"));
-        JTextField strangeName = new JTextField();
-        strangeName.setText(dataClient.getStrangeName());
-        strangeName.setName("strangeName");
-        strangeName.setEnabled(false);
-        staticJPanel.add(strangeName);
-
-        staticJPanel.add(new JLabel("ФИО клиенто полностью:"));
-        JTextField fullNameClient = new JTextField();
-        fullNameClient.setText(dataClient.getFullNameClient());
-        fullNameClient.setName("fullNameClient");
-        staticJPanel.add(fullNameClient);
-
-        staticJPanel.add(new JLabel("Номер паспорта:"));
-        JFormattedTextField numberPassport = new JFormattedTextField(numberPassportFormatter);
-        numberPassport.setText(dataClient.getNumberPassport());
-        numberPassport.setName("numberPassport");
-        staticJPanel.add(numberPassport);
-
-        staticJPanel.add(new JLabel("Кем выдан:"));
-        JTextField issuedByPassport = new JTextField();
-        issuedByPassport.setText(dataClient.getIssuedByPassport());
-        issuedByPassport.setName("issuedByPassport");
-        staticJPanel.add(issuedByPassport);
-
-        staticJPanel.add(new JLabel("Когда выдан:"));
-        JFormattedTextField whenIssued = new JFormattedTextField(whenIssuedFormatter);
-        whenIssued.setText(dataClient.getWhenIssued());
-        whenIssued.setName("whenIssued");
-        staticJPanel.add(whenIssued);
-
-        staticJPanel.add(new JLabel("Идентификационный номер:"));
-        JFormattedTextField identificationNumber = new JFormattedTextField(identificationNumberFormatter);
-        identificationNumber.setName("identificationNumber");
-        identificationNumber.setText(dataClient.getIdentificationNumber());
-        staticJPanel.add(identificationNumber);
-
-        staticJPanel.add(new JLabel("Адрес регистрации:"));
-        JTextField addressRegistration = new JTextField();
-        addressRegistration.setText(dataClient.getAddressRegistration());
-        addressRegistration.setName("addressRegistration");
-        staticJPanel.add(addressRegistration);
-
-        staticJPanel.add(new JLabel("Адрес доставки:"));
-        JTextField addressDelivery = new JTextField();
-        addressDelivery.setText(dataClient.getAddressDelivery());
-        addressDelivery.setName("addressDelivery");
-        staticJPanel.add(addressDelivery);
-
-        staticJPanel.add(new JLabel("Мобильный телефон:"));
-        JFormattedTextField numberPhoneClient = new JFormattedTextField(phoneFormatter);
-        numberPhoneClient.setText(dataClient.getNumberPhoneClient());
-        numberPhoneClient.setName("numberPhoneClient");
-        staticJPanel.add(numberPhoneClient);
-
-        JButton save = new JButton("Сохранить");
-        save.setName("saveDataAboutClient");
-        save.addActionListener(controller);
-        staticJPanel.add(save);
-
-        JButton backSelectClient = new JButton("Назад");
-        backSelectClient.setName("backSelectClient");
-        backSelectClient.addActionListener(controller);
-        staticJPanel.add(backSelectClient);
-
-        JButton mainPage = new JButton("Главная страница");
-        mainPage.setName("mainPage");
-        mainPage.addActionListener(controller);
-        staticJPanel.add(mainPage);
-
-        staticJPanel.revalidate();
-        staticJPanel.repaint();
 
     }
     public void listClientsAndSelect(String[] list,String s) {
@@ -589,13 +404,17 @@ public class MyView extends JFrame {
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.gridy = 10;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 1;
-        staticJPanel.add(new JLabel("Просто строчка"),gridBagConstraints);
+        gridBagConstraints.gridwidth = 2;
+        staticJPanel.add(new JLabel("Добавить файлы для распила"),gridBagConstraints);
 
-        gridBagConstraints.ipadx = 40;
+        gridBagConstraints.ipadx = 70;
         gridBagConstraints.gridy = 10;
-        gridBagConstraints.gridx = 1;
-        staticJPanel.add(new JLabel(" "),gridBagConstraints);
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridwidth = 1;
+        JButton createFileForCutting = new JButton("Создать");
+        createFileForCutting.addActionListener(controller);
+        createFileForCutting.setName("createFileForCutting");
+        staticJPanel.add(createFileForCutting,gridBagConstraints);
 
         gridBagConstraints.ipadx = 40;
         gridBagConstraints.ipady = 220;
@@ -624,6 +443,17 @@ public class MyView extends JFrame {
         staticJPanel.repaint();
 
 
+    }
+    //jnj,hfpbnm
+    public void displayNewClient(){
+        ViewMainDataClient view = new ViewMainDataClient(staticJPanel,null,controller);
+        view.display();
+        controller.setDisplay(view);
+    }
+    public void displayEditDataAboutClient(DataClient dataClient){
+        ViewMainDataClient view = new ViewMainDataClient(staticJPanel,dataClient,controller);
+        view.display();
+        controller.setDisplay(view);
     }
     //Форма для заполнения данных о договоре
     public void displayBasicContract(DataClient dataClient, double currencyValue){
@@ -656,11 +486,17 @@ public class MyView extends JFrame {
         controller.setDisplay(vid);
 
     }
+    public void displayCreateFileForCutting(DataClient dataClient){
+        // в разработке
+//        ViewCreateFileForCutting viewCreateFileForCutting = new ViewCreateFileForCutting(staticJPanel,dataClient,controller);
+//        viewCreateFileForCutting.display();
+//        controller.setDisplay(viewCreateFileForCutting);
+    }
     //Общие методы которые работают везде
     public void refreshCheckBox(JCheckBox checkBox){
         String obj = checkBox.getName().replace("checkBox","");
         String objWithSmallLitter = Character.toLowerCase(obj.charAt(0)) + obj.substring(1);
-        for(Component component :staticJPanel.getComponents()){
+        for(Component component :((JPanel)(staticJPanel.getComponent(MainViewContract.INDEX_WORK_WINDOW))).getComponents()){
             try {
                 if(component.getName().equals(objWithSmallLitter)){
                     component.setEnabled(checkBox.isSelected());

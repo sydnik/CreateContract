@@ -10,11 +10,8 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class ViewInvoiceDocument implements Display {
-    private JPanel staticJPanel;
-    private DataClient dataClient;
+public class ViewInvoiceDocument extends MainViewContract implements Display {
     private double currencyValue;
-    private MyController controller;
     private JTextField currencyInvoiceDocument;
     private JTextField priceInEURInvoiceDocument;
     private JTextField priceBYNInvoiceDocument;
@@ -23,13 +20,12 @@ public class ViewInvoiceDocument implements Display {
     private JComboBox<String> listBank;
 
     public ViewInvoiceDocument(JPanel staticJPanel, DataClient dataClient, double currencyValue, MyController controller) {
-        this.staticJPanel = staticJPanel;
-        this.dataClient = dataClient;
+        super(staticJPanel,dataClient,"Счёт-фактура",controller);
         this.currencyValue = currencyValue;
-        this.controller = controller;
     }
     @Override
     public void display(){
+        startPage();
         MaskFormatter
                 dateMask = null;
         try {
@@ -37,49 +33,18 @@ public class ViewInvoiceDocument implements Display {
         }
         catch (Exception e){}
 
-        staticJPanel.removeAll();
-        staticJPanel.setLayout(new GridBagLayout());
+        workingWindow.setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.weightx = 0.1;
 
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = GridBagConstraints.WEST;
+
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridx = 0;
-        JLabel j1 = new JLabel("Клиент: ");
-        j1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        staticJPanel.add(j1,gridBagConstraints);
-
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridwidth = 2;
-        JLabel j2 = new JLabel(dataClient.getFullNameClient());
-        j2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        staticJPanel.add(j2,gridBagConstraints);
-
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 1;
-        JLabel j4 = new JLabel("Счет-фактура");
-        j4.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        staticJPanel.add(j4,gridBagConstraints);
-
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridwidth = 2;
-        JLabel j3 = new JLabel(dataClient.getNumberContract()+" " + dataClient.getStrangeName());
-        j3.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        staticJPanel.add(j3,gridBagConstraints);
-
-        gridBagConstraints.gridy = 2;
-        JLabel jName = new JLabel(" ");
-        staticJPanel.add(jName,gridBagConstraints);
-        gridBagConstraints.gridy = 3;
-        staticJPanel.add(new JLabel(" "),gridBagConstraints);
-
-        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.gridwidth = 1;
-        staticJPanel.add(new JLabel("Курс евро:"),gridBagConstraints);
+        workingWindow.add(new JLabel("Курс евро:"),gridBagConstraints);
 
         currencyInvoiceDocument = new JTextField();
         currencyInvoiceDocument.setText(String.format(Locale.US,"%.4f",currencyValue));
@@ -88,103 +53,103 @@ public class ViewInvoiceDocument implements Display {
         currencyInvoiceDocument.addKeyListener(controller);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.ipadx = 290;
-        staticJPanel.add(currencyInvoiceDocument,gridBagConstraints);
+        workingWindow.add(currencyInvoiceDocument,gridBagConstraints);
         gridBagConstraints.gridx = 2;
         gridBagConstraints.ipadx = 20;
         JCheckBox checkBoxCurrencyInvoiceDocument  = new JCheckBox();
         checkBoxCurrencyInvoiceDocument.setSelected(false);
         checkBoxCurrencyInvoiceDocument.setName("checkBoxCurrencyInvoiceDocument");
         checkBoxCurrencyInvoiceDocument.addActionListener(controller);
-        staticJPanel.add(checkBoxCurrencyInvoiceDocument,gridBagConstraints);
+        workingWindow.add(checkBoxCurrencyInvoiceDocument,gridBagConstraints);
 
 
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.ipadx = 0;
-        staticJPanel.add(new JLabel("Сумма в у.е."),gridBagConstraints);
+        workingWindow.add(new JLabel("Сумма в у.е."),gridBagConstraints);
         gridBagConstraints.gridx = 1;
         priceInEURInvoiceDocument = new JTextField();
         priceInEURInvoiceDocument.setName("priceInEURInvoiceDocument");
         priceInEURInvoiceDocument.addKeyListener(controller);
         priceInEURInvoiceDocument.setEnabled(false);
         priceInEURInvoiceDocument.setText(String.valueOf(dataClient.getInvoiceDocument().getPriceInEURInvoiceDocument()));
-        staticJPanel.add(priceInEURInvoiceDocument,gridBagConstraints);
+        workingWindow.add(priceInEURInvoiceDocument,gridBagConstraints);
         gridBagConstraints.gridx = 2;
         JCheckBox checkBoxPriceInEURInvoiceDocument  = new JCheckBox();
         checkBoxPriceInEURInvoiceDocument.setName("checkBoxPriceInEURInvoiceDocument");
         checkBoxPriceInEURInvoiceDocument.addActionListener(controller);
-        staticJPanel.add(checkBoxPriceInEURInvoiceDocument,gridBagConstraints);
-        gridBagConstraints.gridy = 6;
+        workingWindow.add(checkBoxPriceInEURInvoiceDocument,gridBagConstraints);
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.ipadx = 0;
-        staticJPanel.add(new JLabel("Сумма в рублях"),gridBagConstraints);
+        workingWindow.add(new JLabel("Сумма в рублях"),gridBagConstraints);
         gridBagConstraints.gridx = 1;
         priceBYNInvoiceDocument = new JTextField();
         priceBYNInvoiceDocument.setName("priceBYNInvoiceDocument");
         priceBYNInvoiceDocument.addKeyListener(controller);
         priceBYNInvoiceDocument.setEnabled(false);
         priceBYNInvoiceDocument.setText(String.valueOf(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument()));
-        staticJPanel.add(priceBYNInvoiceDocument,gridBagConstraints);
+        workingWindow.add(priceBYNInvoiceDocument,gridBagConstraints);
         gridBagConstraints.gridx = 2;
         JCheckBox checkBoxPriceBYNInvoiceDocument  = new JCheckBox();
         checkBoxPriceBYNInvoiceDocument.setName("checkBoxPriceBYNInvoiceDocument");
         checkBoxPriceBYNInvoiceDocument.addActionListener(controller);
-        staticJPanel.add(checkBoxPriceBYNInvoiceDocument,gridBagConstraints);
+        workingWindow.add(checkBoxPriceBYNInvoiceDocument,gridBagConstraints);
 
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.ipadx = 0;
-        staticJPanel.add(new JLabel("НДС 20%"),gridBagConstraints);
+        workingWindow.add(new JLabel("НДС 20%"),gridBagConstraints);
         gridBagConstraints.gridx = 1;
         vat20InvoiceDocument = new JTextField();
         vat20InvoiceDocument.setName("vat20InvoiceDocument");
         vat20InvoiceDocument.addKeyListener(controller);
         vat20InvoiceDocument.setEnabled(false);
         vat20InvoiceDocument.setText(String.format(Locale.US,"%.2f",dataClient.getInvoiceDocument().getVat20InvoiceDocument()));
-        staticJPanel.add(vat20InvoiceDocument,gridBagConstraints);
+        workingWindow.add(vat20InvoiceDocument,gridBagConstraints);
         gridBagConstraints.gridx = 2;
         JCheckBox checkBoxVat20InvoiceDocument  = new JCheckBox();
         checkBoxVat20InvoiceDocument.setName("checkBoxVat20InvoiceDocument");
         checkBoxVat20InvoiceDocument.addActionListener(controller);
-        staticJPanel.add(checkBoxVat20InvoiceDocument,gridBagConstraints);
+        workingWindow.add(checkBoxVat20InvoiceDocument,gridBagConstraints);
 
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridx = 0;
-        staticJPanel.add(new JLabel("Дата счет-фактуры"),gridBagConstraints);
+        workingWindow.add(new JLabel("Дата счет-фактуры"),gridBagConstraints);
         gridBagConstraints.gridx = 1;
         createDateInvoiceDocument = new JFormattedTextField(dateMask);
         createDateInvoiceDocument.setName("createDateInvoiceDocument");
         createDateInvoiceDocument.setText(String.valueOf(dataClient.getInvoiceDocument().getCreateDateInvoiceDocument()));
         createDateInvoiceDocument.addKeyListener(controller);
         createDateInvoiceDocument.setEnabled(false);
-        staticJPanel.add(createDateInvoiceDocument,gridBagConstraints);
+        workingWindow.add(createDateInvoiceDocument,gridBagConstraints);
         gridBagConstraints.gridx = 2;
         JCheckBox checkBoxCreateDateInvoiceDocument  = new JCheckBox();
         checkBoxCreateDateInvoiceDocument.setName("checkBoxCreateDateInvoiceDocument");
         checkBoxCreateDateInvoiceDocument.addActionListener(controller);
-        staticJPanel.add(checkBoxCreateDateInvoiceDocument,gridBagConstraints);
+        workingWindow.add(checkBoxCreateDateInvoiceDocument,gridBagConstraints);
 
 
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridx = 0;
-        staticJPanel.add(new JLabel("Дата договора"),gridBagConstraints);
+        workingWindow.add(new JLabel("Дата договора"),gridBagConstraints);
         gridBagConstraints.gridx = 1;
         JFormattedTextField dateCreateBasicContract = new JFormattedTextField(dateMask);
-        dateCreateBasicContract.setName("dateCreateSupplementaryAgreementUpSaleContract");
-        dateCreateBasicContract.setText(String.valueOf(dataClient.getSupplementaryAgreementUpSaleContract().getDateCreateSupplementaryAgreementUpSaleContract()));
+        dateCreateBasicContract.setName("dateCreateBasicContract");
+        dateCreateBasicContract.setText(String.valueOf(dataClient.getBasicContract().getDateCreateContract()));
         dateCreateBasicContract.addKeyListener(controller);
         dateCreateBasicContract.setEnabled(false);
-        staticJPanel.add(dateCreateBasicContract,gridBagConstraints);
+        workingWindow.add(dateCreateBasicContract,gridBagConstraints);
         gridBagConstraints.gridx = 2;
         JCheckBox checkBoxDateCreateBasicContract = new JCheckBox();
         checkBoxDateCreateBasicContract.setName("checkBoxDateCreateBasicContract");
         checkBoxDateCreateBasicContract.addActionListener(controller);
         checkBoxDateCreateBasicContract.setEnabled(false);
-        staticJPanel.add(checkBoxDateCreateBasicContract,gridBagConstraints);
+        workingWindow.add(checkBoxDateCreateBasicContract,gridBagConstraints);
 
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.gridx = 0;
-        staticJPanel.add(new JLabel("Банк"),gridBagConstraints);
+        workingWindow.add(new JLabel("Банк"),gridBagConstraints);
         gridBagConstraints.gridx = 1;
         listBank = new JComboBox(new String[]{"Беларусбанк","Любой банк"});
         listBank.setName("timeProduction");
@@ -197,66 +162,43 @@ public class ViewInvoiceDocument implements Display {
         else {
             listBank.setSelectedIndex(0);
         }
-        staticJPanel.add(listBank,gridBagConstraints);
+        workingWindow.add(listBank,gridBagConstraints);
 
-        gridBagConstraints.gridy = 15;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.gridx = 0;
         JButton saveDataInvoiceDocument = new JButton("Сохранить");
         saveDataInvoiceDocument.setName("saveDataInvoiceDocument");
         saveDataInvoiceDocument.addActionListener(controller);
-        staticJPanel.add(saveDataInvoiceDocument,gridBagConstraints);
+        workingWindow.add(saveDataInvoiceDocument,gridBagConstraints);
 
-        gridBagConstraints.gridy = 15;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridwidth = 2;
         JButton printInvoiceDocument = new JButton("Распечатать");
         printInvoiceDocument.setName("printInvoiceDocument");
         printInvoiceDocument.addActionListener(controller);
-        staticJPanel.add(printInvoiceDocument,gridBagConstraints);
+        workingWindow.add(printInvoiceDocument,gridBagConstraints);
 
-        gridBagConstraints.gridy = 16;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 1;
         JButton openDirectoryWithFile = new JButton("Открыть папку с файлом");
         openDirectoryWithFile.setName("openDirectoryWithFile");
         openDirectoryWithFile.addActionListener(controller);
-        staticJPanel.add(openDirectoryWithFile,gridBagConstraints);
+        workingWindow.add(openDirectoryWithFile,gridBagConstraints);
 
-        gridBagConstraints.gridy = 16;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridwidth = 2;
         JButton openFileInvoiceDocument = new JButton("Открыть файл");
         openFileInvoiceDocument.setName("openFileInvoiceDocument");
         openFileInvoiceDocument.addActionListener(controller);
-        staticJPanel.add(openFileInvoiceDocument,gridBagConstraints);
-
-        gridBagConstraints.gridy = 17;
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.ipady = 190;
-        staticJPanel.add(new JLabel(" "),gridBagConstraints);
-
-        gridBagConstraints.gridy = 18;
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.ipady = 0;
-        gridBagConstraints.gridwidth =3;
-        JButton backSelectClient = new JButton("Назад");
-        backSelectClient.setName("backSelectClient");
-        backSelectClient.addActionListener(controller);
-        staticJPanel.add(backSelectClient,gridBagConstraints);
-
-        gridBagConstraints.gridy = 19;
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
-        JButton mainPage = new JButton("Главная страница");
-        mainPage.setName("mainPage");
-        mainPage.addActionListener(controller);
-        staticJPanel.add(mainPage,gridBagConstraints);
+        workingWindow.add(openFileInvoiceDocument,gridBagConstraints);
 
         if(priceBYNInvoiceDocument.getText().equals("0")){
             fillData();
         }
-        staticJPanel.revalidate();
-        staticJPanel.repaint();
+        endPage();
     }
 
     public void editPriceInEURInvoiceDocument(){
@@ -299,14 +241,14 @@ public class ViewInvoiceDocument implements Display {
             throw new DontHaveData("Заполните все поля");
         }
 
-        HashMap<String,String> map = new HashMap<>();
-        map.put("priceBYNInvoiceDocument",priceBYNInvoiceDocument.getText());
-        map.put("priceInEURInvoiceDocument",priceInEURInvoiceDocument.getText());
-        map.put("vat20InvoiceDocument",vat20InvoiceDocument.getText());
-        map.put("createDateInvoiceDocument",createDateInvoiceDocument.getText());
-        map.put("whichBank", String.valueOf(listBank.getSelectedItem()));
-        System.out.println(map.get("whichBank"));
-        return map;
+        HashMap<String,String> result = new HashMap<>();
+        result.put("priceBYNInvoiceDocument",priceBYNInvoiceDocument.getText());
+        result.put("priceInEURInvoiceDocument",priceInEURInvoiceDocument.getText());
+        result.put("vat20InvoiceDocument",vat20InvoiceDocument.getText());
+        result.put("createDateInvoiceDocument",createDateInvoiceDocument.getText());
+        result.put("whichBank", String.valueOf(listBank.getSelectedItem()));
+        System.out.println(result.get("whichBank"));
+        return result;
     }
 
     private void fillData(){
