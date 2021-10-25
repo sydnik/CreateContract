@@ -46,6 +46,9 @@ public class SupplementaryAgreementBasicContract implements Serializable {
     }
 
     public int getNumberSupplementaryAgreementBasicContract() {
+        if(numberSupplementaryAgreementBasicContract==0){
+            return 1;
+        }
         return numberSupplementaryAgreementBasicContract;
     }
 

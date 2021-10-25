@@ -2,12 +2,15 @@ package org.sydnik.createContract;
 
 import org.sydnik.createContract.data.Currency;
 import org.sydnik.createContract.data.DataClient;
+import org.sydnik.createContract.data.ListMaterial;
 import org.sydnik.createContract.data.SalesManager;
 import org.sydnik.createContract.exception.CantWriteDoc;
 import org.sydnik.createContract.exception.DontHaveData;
 import org.sydnik.createContract.exception.DontHaveFilePattern;
 import org.sydnik.createContract.view.Display;
 import org.sydnik.createContract.createFileDocument.*;
+import org.sydnik.createContract.view.ViewCreateFileForCutting;
+import org.sydnik.createContract.view.ViewSetting;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,9 +29,7 @@ public class Model {
 
             this.salesManager = SalesManager.load();
         if(salesManager==null) {
-            System.out.println("i tutu");
-            salesManager = new SalesManager("Нужно имя тебе", "99",
-                    "99.99.9999","+375(00) 000 0000","");
+            salesManager = SalesManager.getBasicSalesManager();
         }
     }
     public void setCurrency(){
@@ -46,46 +47,19 @@ public class Model {
         }
         currency = new Currency(value);
     }
-    public void setSalesManager(Component[] listComponent) throws CantWriteDoc {
-        String fullName = null;
-        String numberPhoneManager = null;
-        String numberPowerOfAttorney = null;
-        String datePowerOfAttorney = null;
-        String pathForSaveContact = null;
-        for (Component component:listComponent) {
-            try {
-                switch ((String) component.getName()) {
-                    case "fullName": {
-                        fullName = ((JTextField) component).getText();
-                        break;
-                    }
-                    case "numberPowerOfAttorney": {
-                        numberPowerOfAttorney = ((JTextField) component).getText();
-                        break;
-                    }
-                    case "datePowerOfAttorney": {
-                        datePowerOfAttorney = ((JTextField) component).getText();
-                        break;
-                    }
-                    case "numberPhoneManager": {
-                        numberPhoneManager = ((JTextField) component).getText();
-                        break;
-                    }
-                    case "pathForSaveContact": {
-                        pathForSaveContact = ((JTextField) component).getText();
-                        break;
-                    }
-                }
-            } catch (Exception e) {
-            }
-        }
-        salesManager = new SalesManager(fullName,numberPowerOfAttorney,datePowerOfAttorney,numberPhoneManager,pathForSaveContact);
+    public void setSalesManager(Display display) throws CantWriteDoc, DontHaveData {
+        salesManager = new SalesManager(display.getDataForSave());
         salesManager.save();
 
     }
+    public void addNewDecor(Display display) throws CantWriteDoc, DontHaveData {
+        ListMaterial listMaterial = new ListMaterial();
+        listMaterial.readListCatalog(((ViewSetting)display).getMaterialForAdd());
+        listMaterial.addDecor(((ViewSetting)display).getDecorForAdd());
+    }
     public void createNewClient(Display display) throws CantWriteDoc, DontHaveData {
         dataClient = new DataClient(display.getDataForSave());
-        if(dataClient.checkNameFreeForSave()){
+        if(dataClient.checkNameFreeForSave(salesManager)){
             dataClient.save();
         }else throw new CantWriteDoc("такой номер догора и имя занято(Поменяйте как минимум Странное название)");
 
@@ -121,6 +95,12 @@ public class Model {
         CreateXlsXFile.createInvoiceDocument(dataClient,salesManager);
     }
 
+    public void createFileForCutting(Display display) throws DontHaveFilePattern, CantWriteDoc {
+        String material = ((ViewCreateFileForCutting)display).getValueMaterial();
+        String decor = ((ViewCreateFileForCutting)display).getValueDecor();
+        String edge = ((ViewCreateFileForCutting)display).getValueEdge();
+        CreateFileForCutting.createFile(dataClient,salesManager,material,decor,edge);
+    }
     //Возвращает лист всех папок(Клиентов)
     public String[] listSelectClient(){
         File path = new File("saveContract"); //path указывает на директорию
@@ -259,8 +239,6 @@ public class Model {
     public void clearDataClient(){
         dataClient = null;
     }
-
-
 
     public SalesManager getSalesManager() {
         return salesManager;

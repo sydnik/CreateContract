@@ -17,6 +17,7 @@ import java.util.Locale;
 public class MyView extends JFrame {
     public static final int HEIGHT_WINDOW_APPS = 600;
     public static final int WIDTH_WINDOW_APPS = 500;
+
     private MyController controller;
     private JPanel staticJPanel;
 
@@ -83,107 +84,11 @@ public class MyView extends JFrame {
     }
 
     public void settingsManager(SalesManager salesManager){
-        staticJPanel.removeAll();
-        staticJPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = GridBagConstraints.WEST;
-
-        MaskFormatter datePowerOfAttorneyFormatter = null,
-                numberPhoneManagerFormatter = null;
-        JFormattedTextField datePowerOfAttorney = null;
-        try {
-            numberPhoneManagerFormatter = new MaskFormatter("+375(##) ### ####");
-
-            datePowerOfAttorneyFormatter = new MaskFormatter("##.##.####");
-            datePowerOfAttorney = new JFormattedTextField(datePowerOfAttorneyFormatter);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
-        staticJPanel.add(new JLabel("ФИО менеджера :"),gridBagConstraints);
-
-        gridBagConstraints.gridy = 1;
-        JTextField fullNameSalesManager = new JTextField();
-        fullNameSalesManager.setText(salesManager.getFullName());
-        fullNameSalesManager.setName("fullName");
-        staticJPanel.add(fullNameSalesManager,gridBagConstraints);
-
-        gridBagConstraints.gridy = 2;
-        staticJPanel.add(new JLabel("Номер доверенности :"),gridBagConstraints);
-
-        JTextField numberPowerOfAttorney = new JTextField();
-        gridBagConstraints.gridy = 3;
-        numberPowerOfAttorney.setName("numberPowerOfAttorney");
-        numberPowerOfAttorney.setText(String.valueOf(salesManager.getNumberPowerOfAttorney()));
-        numberPowerOfAttorney.addKeyListener(controller);
-        staticJPanel.add(numberPowerOfAttorney,gridBagConstraints);
-
-        gridBagConstraints.gridy = 4;
-        staticJPanel.add(new JLabel("От какой даты действует :"),gridBagConstraints);
-
-        gridBagConstraints.gridy = 5;
-        datePowerOfAttorney.setName("datePowerOfAttorney");
-        datePowerOfAttorney.setText(salesManager.getDatePowerOfAttorney());
-        staticJPanel.add(datePowerOfAttorney,gridBagConstraints);
-
-        gridBagConstraints.gridy = 6;
-        staticJPanel.add(new JLabel("Номер менеджера:"),gridBagConstraints);
-
-        gridBagConstraints.gridy = 7;
-        JFormattedTextField numberPhoneManager = new JFormattedTextField(numberPhoneManagerFormatter);
-        numberPhoneManager.setName("numberPhoneManager");
-        numberPhoneManager.setText(salesManager.getNumberPhoneManager());
-        staticJPanel.add(numberPhoneManager,gridBagConstraints);
-
-        gridBagConstraints.gridy = 8;
-        staticJPanel.add(new JLabel("Путь куда сохранять доки"),gridBagConstraints);
-
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.ipadx = 300;
-        JTextField pathForSaveContact = new JTextField();
-        pathForSaveContact.setName("pathForSaveContact");
-        pathForSaveContact.setText(salesManager.getPathForSaveContract());
-        staticJPanel.add(pathForSaveContact,gridBagConstraints);
-
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridwidth = 1;
-        gridBagConstraints.ipadx = 70;
-        JButton selectPath = new JButton("Указать путь");
-        pathForSaveContact.addActionListener(controller);
-        selectPath.addActionListener(controller);
-        selectPath.setName("selectPath");
-        staticJPanel.add(selectPath,gridBagConstraints);
-
-        gridBagConstraints.gridy = 10;
-        gridBagConstraints.ipady = 270;
-        staticJPanel.add(new JLabel(" "),gridBagConstraints);
-
-        gridBagConstraints.gridy = 11;
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.ipady = 0;
-        gridBagConstraints.ipadx = 0;
-        JButton save = new JButton("Сохранить");
-        save.setName("saveSittingsManager");
-        save.addActionListener(controller);
-        staticJPanel.add(save,gridBagConstraints);
-
-        gridBagConstraints.gridy = 12;
-        JButton mainPage = new JButton("Главная страница");
-        mainPage.setName("mainPage");
-        mainPage.addActionListener(controller);
-        staticJPanel.add(mainPage,gridBagConstraints);
-        staticJPanel.revalidate();
-        staticJPanel.repaint();
-
-
+        ViewSetting viewSetting = new ViewSetting(controller,staticJPanel,salesManager);
+        viewSetting.display();
+        controller.setDisplay(viewSetting);
     }
+
     public void listClientsAndSelect(String[] list,String s) {
         staticJPanel.removeAll();
         staticJPanel.setLayout(new GridBagLayout());
@@ -411,13 +316,13 @@ public class MyView extends JFrame {
         gridBagConstraints.gridy = 10;
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridwidth = 1;
-        JButton createFileForCutting = new JButton("Создать");
-        createFileForCutting.addActionListener(controller);
-        createFileForCutting.setName("createFileForCutting");
-        staticJPanel.add(createFileForCutting,gridBagConstraints);
+        JButton viewCreateFileForCutting = new JButton("Создать");
+        viewCreateFileForCutting.addActionListener(controller);
+        viewCreateFileForCutting.setName("viewCreateFileForCutting");
+        staticJPanel.add(viewCreateFileForCutting,gridBagConstraints);
 
         gridBagConstraints.ipadx = 40;
-        gridBagConstraints.ipady = 220;
+        gridBagConstraints.ipady = 210;
         gridBagConstraints.gridy = 11;
         gridBagConstraints.gridx = 1;
         staticJPanel.add(new JLabel(" "),gridBagConstraints);
@@ -487,10 +392,9 @@ public class MyView extends JFrame {
 
     }
     public void displayCreateFileForCutting(DataClient dataClient){
-        // в разработке
-//        ViewCreateFileForCutting viewCreateFileForCutting = new ViewCreateFileForCutting(staticJPanel,dataClient,controller);
-//        viewCreateFileForCutting.display();
-//        controller.setDisplay(viewCreateFileForCutting);
+        ViewCreateFileForCutting viewCreateFileForCutting = new ViewCreateFileForCutting(staticJPanel,dataClient,controller);
+        viewCreateFileForCutting.display();
+        controller.setDisplay(viewCreateFileForCutting);
     }
     //Общие методы которые работают везде
     public void refreshCheckBox(JCheckBox checkBox){

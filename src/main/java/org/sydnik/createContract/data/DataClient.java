@@ -180,9 +180,13 @@ public class DataClient implements Serializable {
         return invoiceDocument;
     }
 
-    public boolean checkNameFreeForSave(){
+    public boolean checkNameFreeForSave(SalesManager salesManager){
         String path ="saveContract/" +numberContract +" "+ strangeName;
         Path s = Paths.get(path);
+        if(Files.isDirectory(s)){
+            return false;
+        }
+        s = Paths.get(salesManager.getPathForSaveContract() + "\\" + getNumberContract() + " " + getStrangeName());
         if(Files.isDirectory(s)){
             return false;
         }

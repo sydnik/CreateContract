@@ -13,14 +13,13 @@ public class SalesManager implements Serializable {
     private String numberPhoneManager;
     private String pathForSaveContract;
 
-    public SalesManager(String fullName, String numberPowerOfAttorney, String datePowerOfAttorney,
-                        String numberPhoneManager, String pathForSaveContract) {
-        this.fullName = fullName;
-        this.numberPowerOfAttorney = numberPowerOfAttorney;
-        this.datePowerOfAttorney = datePowerOfAttorney;
-        this.numberPhoneManager = numberPhoneManager;
-        this.pathForSaveContract = pathForSaveContract;
-        setMiniName(fullName);
+    public SalesManager(HashMap<String,String> map) {
+        this.fullName = map.get("fullName");
+        this.numberPowerOfAttorney = map.get("numberPowerOfAttorney");
+        this.datePowerOfAttorney = map.get("datePowerOfAttorney");
+        this.numberPhoneManager = map.get("numberPhoneManager");
+        this.pathForSaveContract = map.get("pathForSaveContact");
+        setMiniName(map.get("fullName"));
     }
     private SalesManager(String fullName, String numberPowerOfAttorney, String datePowerOfAttorney,
                          String miniName, String numberPhoneManager, String pathForSaveContract) {
@@ -42,6 +41,10 @@ public class SalesManager implements Serializable {
             }
 
         }
+    }
+    public static SalesManager getBasicSalesManager(){
+        return new SalesManager("Нужно имя тебе", "99",
+                "99.99.9999","Н И Т","+375(00) 000 0000","");
     }
 
     public String getFullName() {

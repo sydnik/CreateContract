@@ -7,10 +7,11 @@ import org.sydnik.createContract.exception.DontHaveData;
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class ViewSupplementaryAgreementBasicContract extends MainViewContract implements Display {
+public class ViewSupplementaryAgreementBasicContract extends MainViewContract implements Display, DataForViber, InfoForPayment {
     private double currencyValue;
     JTextField currencySumSupplementaryAgreement;
     JTextField allSumInEURSupplementaryAgreement;
@@ -21,6 +22,7 @@ public class ViewSupplementaryAgreementBasicContract extends MainViewContract im
     JFormattedTextField dateCreateSupplementaryAgreementBasicContract;
     JTextField numberSupplementaryAgreementBasicContract;
     JCheckBox checkBoxAllSumInEURSupplementaryAgreement;
+    JButton[] buttonsForDataForViber;
 
     public ViewSupplementaryAgreementBasicContract(JPanel staticJPanel, DataClient dataClient, double currencyValue, MyController controller) {
         super(staticJPanel,dataClient,"Доп соглашение",controller);
@@ -187,7 +189,8 @@ public class ViewSupplementaryAgreementBasicContract extends MainViewContract im
         gridBagConstraints.gridx = 1;
         numberSupplementaryAgreementBasicContract = new JTextField();
         numberSupplementaryAgreementBasicContract.setName("numberSupplementaryAgreementBasicContract");
-        numberSupplementaryAgreementBasicContract.setText(String.valueOf(dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()));
+        numberSupplementaryAgreementBasicContract.setText(String.valueOf(
+                dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()));
         numberSupplementaryAgreementBasicContract.addKeyListener(controller);
         numberSupplementaryAgreementBasicContract.setEnabled(false);
         workingWindow.add(numberSupplementaryAgreementBasicContract,gridBagConstraints);
@@ -228,11 +231,46 @@ public class ViewSupplementaryAgreementBasicContract extends MainViewContract im
         openFileSupplementaryAgreementBasicContract.addActionListener(controller);
         workingWindow.add(openFileSupplementaryAgreementBasicContract,gridBagConstraints);
 
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridwidth = 3;
+        JButton dataForViberBasicContract = new JButton("Данные для вайбер");
+        dataForViberBasicContract.setName("dataForViber");
+        dataForViberBasicContract.addActionListener(controller);
+        workingWindow.add(dataForViberBasicContract,gridBagConstraints);
+
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridwidth = 3;
+        JButton sumInBYNToday = new JButton("Суммы в рублях на сегодня");
+        sumInBYNToday.setName("sumInBYNToday");
+        sumInBYNToday.addActionListener(controller);
+        workingWindow.add(sumInBYNToday,gridBagConstraints);
+
         endPage();
         if(dataClient.getSupplementaryAgreementBasicContract().getAllSumInEURSupplementaryAgreement()==0){
             fillData();
             allSumInEURSupplementaryAgreement.requestFocusInWindow();
         }
+    }
+
+    @Override
+    public HashMap<String, String> getDataForSave() throws DontHaveData {
+        if(numberSupplementaryAgreementBasicContract.getText().equals("")||allSumInEURSupplementaryAgreement.getText().equals("")||
+                allSumInBYNSupplementaryAgreement.getText().equals("")||dateCreateSupplementaryAgreementBasicContract.getText().equals("  .  .    ")||
+                prepaymentOr10PercentSumSupplementaryAgreement.getText().equals("")||payUpTo50PercentSumSupplementaryAgreement.getText().equals("")||
+                payUpTo100PercentSumSupplementaryAgreement.getText().equals("")|| currencySumSupplementaryAgreement.equals("")){
+            throw new DontHaveData("Заполните все поля");
+        }
+        HashMap<String,String> result = new HashMap<>();
+        result.put("dateCreateSupplementaryAgreementBasicContract",dateCreateSupplementaryAgreementBasicContract.getText());
+        result.put("numberSupplementaryAgreementBasicContract",numberSupplementaryAgreementBasicContract.getText());
+        result.put("allSumInEURSupplementaryAgreement",allSumInEURSupplementaryAgreement.getText());
+        result.put("allSumInBYNSupplementaryAgreement",allSumInBYNSupplementaryAgreement.getText());
+        result.put("prepaymentOr10PercentSumSupplementaryAgreement",prepaymentOr10PercentSumSupplementaryAgreement.getText());
+        result.put("payUpTo50PercentSumSupplementaryAgreement",payUpTo50PercentSumSupplementaryAgreement.getText());
+        result.put("payUpTo100PercentSumSupplementaryAgreement",payUpTo100PercentSumSupplementaryAgreement.getText());
+        return result;
     }
 
     public void editAllEURSumAgreementBasicContract (){
@@ -266,7 +304,6 @@ public class ViewSupplementaryAgreementBasicContract extends MainViewContract im
             payUpTo100PercentSumSupplementaryAgreement.setText(String.valueOf(percent100));
         }
     }
-
     public void editCurrencyAgreementBasicContract(){
         if(!currencySumSupplementaryAgreement.getText().equals("")) {
             double allSumEUR = Double.parseDouble(allSumInEURSupplementaryAgreement.getText());
@@ -286,26 +323,73 @@ public class ViewSupplementaryAgreementBasicContract extends MainViewContract im
 
     }
 
-
-
+    @Override
+    public void displayDataForViber() {
+        buttonsForDataForViber = new JButton[6];
+        displayDataForViber(staticJPanel,controller, buttonsForDataForViber);
+    }
+    @Override
+    public void setSelectMethodPayment(String nameButton) {
+        setSelectMethodPayment(buttonsForDataForViber,nameButton);
+    }
 
     @Override
-    public HashMap<String, String> getDataForSave() throws DontHaveData {
-        if(numberSupplementaryAgreementBasicContract.getText().equals("")||allSumInEURSupplementaryAgreement.getText().equals("")||
-                allSumInBYNSupplementaryAgreement.getText().equals("")||dateCreateSupplementaryAgreementBasicContract.getText().equals("  .  .    ")||
-                prepaymentOr10PercentSumSupplementaryAgreement.getText().equals("")||payUpTo50PercentSumSupplementaryAgreement.getText().equals("")||
-                payUpTo100PercentSumSupplementaryAgreement.getText().equals("")|| currencySumSupplementaryAgreement.equals("")){
-            throw new DontHaveData("Заполните все поля");
-        }
-        HashMap<String,String> result = new HashMap<>();
-        result.put("dateCreateSupplementaryAgreementBasicContract",dateCreateSupplementaryAgreementBasicContract.getText());
-        result.put("numberSupplementaryAgreementBasicContract",numberSupplementaryAgreementBasicContract.getText());
-        result.put("allSumInEURSupplementaryAgreement",allSumInEURSupplementaryAgreement.getText());
-        result.put("allSumInBYNSupplementaryAgreement",allSumInBYNSupplementaryAgreement.getText());
-        result.put("prepaymentOr10PercentSumSupplementaryAgreement",prepaymentOr10PercentSumSupplementaryAgreement.getText());
-        result.put("payUpTo50PercentSumSupplementaryAgreement",payUpTo50PercentSumSupplementaryAgreement.getText());
-        result.put("payUpTo100PercentSumSupplementaryAgreement",payUpTo100PercentSumSupplementaryAgreement.getText());
+    public String getDataFirstPayment() {
+        String result = "Если вы воспользовались данной кнопкой \n" +
+                "напишете мне и объясните что она должна выдавать ";
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(result),null);
         return result;
+    }
+
+    @Override
+    public String getDataSecondPayment() {
+        int payTo50Percent = (int) Math.round(Double.parseDouble(payUpTo50PercentSumSupplementaryAgreement.getText())*
+                Double.parseDouble(currencySumSupplementaryAgreement.getText()));
+        String methodPayment = "";
+        for (int i = 0; i < 3; i++) {
+            if(!buttonsForDataForViber[i].isEnabled()){
+                methodPayment = buttonsForDataForViber[i].getText();
+                break;
+            }
+        }
+        String result = "Доп соглашение " +dataClient.getNumberContract()+" стало "+ allSumInEURSupplementaryAgreement.getText()+
+                "у.е., "+" доплата " +
+                payUpTo50PercentSumSupplementaryAgreement.getText()+ "у.е. " + payTo50Percent +"руб., " +
+                methodPayment;
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(result),null);
+        return result;
+    }
+
+    @Override
+    public String getDataThirdPayment() {
+        int payTo100Percent = (int) Math.round(Double.parseDouble(payUpTo100PercentSumSupplementaryAgreement.getText()) *
+                Double.parseDouble(currencySumSupplementaryAgreement.getText()));
+        String methodPayment = "";
+        for (int i = 0; i < 3; i++) {
+            if(!buttonsForDataForViber[i].isEnabled()){
+                methodPayment = buttonsForDataForViber[i].getText();
+                break;
+            }
+        }
+        String result = "Доплата по договору " +dataClient.getNumberContract()+" на сумму " +
+                payUpTo100PercentSumSupplementaryAgreement.getText()+ "у.е. " + payTo100Percent +"руб., " +
+                methodPayment;
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(result),null);
+        return result;
+    }
+
+    @Override
+    public String getInfoForPayment() {
+        int prepaymentBYN = (int) Math.round(Double.parseDouble(prepaymentOr10PercentSumSupplementaryAgreement.getText())*
+                Double.parseDouble(currencySumSupplementaryAgreement.getText()));
+        int payTo50Percent = (int) Math.round(Double.parseDouble(payUpTo50PercentSumSupplementaryAgreement.getText())*
+                Double.parseDouble(currencySumSupplementaryAgreement.getText()));
+        int payTo100Percent = (int) Math.round(Double.parseDouble(payUpTo100PercentSumSupplementaryAgreement.getText())*
+                Double.parseDouble(currencySumSupplementaryAgreement.getText()));
+
+        return "Предолпата: "+prepaymentBYN+"руб.\n"+
+                "Доплата до 50%: " + payTo50Percent + "руб.\n"+
+                "Доплата до 100% " + payTo100Percent + "руб.";
     }
 
     private void fillData(){

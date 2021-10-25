@@ -1,5 +1,6 @@
 package org.sydnik.createContract;
 
+import org.sydnik.createContract.dataForViber.OrderUpSale;
 import org.sydnik.createContract.exception.CantWriteDoc;
 import org.sydnik.createContract.exception.DontHaveData;
 import org.sydnik.createContract.exception.DontHaveFilePattern;
@@ -38,7 +39,9 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(e);
+        System.out.println(e.getActionCommand());
+        System.out.println("ID " + e.getID());
+        System.out.println("MOD " +e.getModifiers());
         long s = System.currentTimeMillis();
         if(((Component)e.getSource()).getName().contains("checkBox")){
             view.refreshCheckBox((JCheckBox) e.getSource());
@@ -50,7 +53,7 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                     break;
                 }
                 case "saveSittingsManager": {
-                    model.setSalesManager(view.getComponentsStaticPanel());
+                    model.setSalesManager(display);
                     view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
                     break;
                 }
@@ -264,8 +267,57 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                     view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
                     break;
                 }
-                case "createFileForCutting" : {
+                case "viewCreateFileForCutting" : {
                     view.displayCreateFileForCutting(model.getDataClient());
+                    break;
+                }
+                case "boxListMaterial" : {
+                    if(e.getModifiers()!=0) {
+                        ((ViewCreateFileForCutting) display).updateBoxListDecor();
+                    }
+                    break;
+                }
+                case "createFileForCutting" :{
+                    model.createFileForCutting(display);
+                    break;
+                }
+                case "addNewDecor" :{
+                    ((ViewSetting)display).addNewDecor();
+                    break;
+                }
+                case "saveNewDecor" :{
+                    model.addNewDecor(display);
+                    view.writeJustMessage("Декор добавлен",JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                case "dataForViber" : {
+                    ((DataForViber)display).displayDataForViber();
+                    break;
+                }
+                case DataForViber.PAYMENT_METHOD_NAME_BUTTON :{
+                    ((DataForViber)display).setSelectMethodPayment(((JButton)e.getSource()).getText());
+                    break;
+                }
+                case DataForViber.BUTTON_NAME_FIRST_PAYMENT:{
+                    ((DataForViber)display).getDataFirstPayment();
+                    view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+
+                    break;
+                }
+                case DataForViber.BUTTON_NAME_SECOND_PAYMENT:{
+                    ((DataForViber)display).getDataSecondPayment();
+                    view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+
+                    break;
+                }
+                case DataForViber.BUTTON_NAME_THIRD_PAYMENT:{
+                    ((DataForViber)display).getDataThirdPayment();
+                    view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+
+                    break;
+                }
+                case "sumInBYNToday" :{
+                    view.writeJustMessage(((InfoForPayment)display).getInfoForPayment(),JOptionPane.INFORMATION_MESSAGE);
                     break;
                 }
 
@@ -408,8 +460,24 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                 break;
             }
             case "boxListMaterial" :{
-                System.out.println("dsads");
-                ((ViewCreateFileForCutting)display).filterBoxListMaterial(((JTextField)e.getComponent()).getText());
+                if(e.getKeyCode()==KeyEvent.VK_ENTER){
+                    ((ViewCreateFileForCutting)display).updateBoxListDecor();
+                }
+                else if (e.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+                    ((ViewCreateFileForCutting) display).filterBoxListMaterial(((JTextField) e.getComponent()).getText());
+                }
+                else if(String.valueOf(e.getKeyChar()).matches("[а-яА-ЯёЁa-zA-Z0-1]")) {
+                    ((ViewCreateFileForCutting) display).filterBoxListMaterial(((JTextField) e.getComponent()).getText());
+                }
+                break;
+            }
+            case "boxListDecor" : {
+                if (e.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+                    ((ViewCreateFileForCutting)display).filterBoxListDecor(((JTextField)e.getComponent()).getText());
+                }
+                else if(String.valueOf(e.getKeyChar()).matches("[а-яА-ЯёЁa-zA-Z0-1]")) {
+                    ((ViewCreateFileForCutting)display).filterBoxListDecor(((JTextField)e.getComponent()).getText());
+                }
                 break;
             }
         }
@@ -442,6 +510,7 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
     }
     @Override
     public void mouseClicked(MouseEvent e) {
+        System.out.println(e);
         switch (((Component) e.getSource()).getName()) {
             case "jListClients": {
                 if (e.getClickCount() == 2) {
@@ -455,8 +524,16 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                 }
                 break;
             }
-            case "boxListMaterial": {
-                ((ViewCreateFileForCutting)display).popupVisible();
+            case "boxListMaterial" :{
+                ((ViewCreateFileForCutting)display).setVisibleBoxMaterial();
+                break;
+            }
+            case "boxListDecor" :{
+                ((ViewCreateFileForCutting)display).setVisibleBoxDecor();
+                break;
+            }
+            case "boxListEdge" :{
+                ((ViewCreateFileForCutting)display).setVisibleBoxEdge();
                 break;
             }
         }

@@ -51,20 +51,24 @@ public class AdditionalProduct implements Serializable {
         return data;
     }
     public static AdditionalProduct Load(String s){
-        String[] data = s.split("<a>");
-        String[] tempString = new String[0];
-        HashMap<String,String> map = new HashMap();
-        for (int i = 0; i < data.length; i++) {
-            try {
-                tempString = data[i].split("<b>");
-                map.put(tempString[0], tempString[1]);
-            }catch (Exception e){
-                map.put(tempString[0],"");
+        try {
+            String[] data = s.split("<a>");
+            String[] tempString = new String[0];
+            HashMap<String, String> map = new HashMap();
+            for (int i = 0; i < data.length; i++) {
+                try {
+                    tempString = data[i].split("<b>");
+                    map.put(tempString[0], tempString[1]);
+                } catch (Exception e) {
+                    map.put(tempString[0], "");
+                }
             }
+            AdditionalProduct additionalProduct = new AdditionalProduct(map.get("name"), map.get("count"), map.get("fullPrice"),
+                    map.get("discount"), map.get("priceWithDiscount"));
+            return additionalProduct;
+        }catch (Exception e){
+            return new AdditionalProduct("","1","","0","");
         }
-        AdditionalProduct additionalProduct = new AdditionalProduct(map.get("name"),map.get("count"),map.get("fullPrice"),
-                map.get("discount"),map.get("priceWithDiscount"));
-        return additionalProduct;
 
     }
 }

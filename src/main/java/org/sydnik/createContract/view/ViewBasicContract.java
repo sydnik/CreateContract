@@ -7,9 +7,10 @@ import org.sydnik.createContract.exception.DontHaveData;
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.util.HashMap;
 
-public class ViewBasicContract extends MainViewContract implements Display{
+public class ViewBasicContract extends MainViewContract implements Display,DataForViber,InfoForPayment{
     private double currencyValue;
     private JTextField allSumInEUR;
     private JTextField payUpTo100PercentSum;
@@ -19,6 +20,7 @@ public class ViewBasicContract extends MainViewContract implements Display{
     private JFormattedTextField dateCreateContract;
     private JComboBox<String> periodOfExecution;
     private JTextField currency;
+    private JButton[] buttonsForDataForViber;
 
     public ViewBasicContract(JPanel staticJPanel, DataClient dataClient, double currencyValue, MyController controller) {
         super(staticJPanel,dataClient,"Базовый договор",controller);
@@ -209,60 +211,29 @@ public class ViewBasicContract extends MainViewContract implements Display{
         openFileBasicContract.setName("openFileBasicContract");
         openFileBasicContract.addActionListener(controller);
         workingWindow.add(openFileBasicContract,gridBagConstraints);
+
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridwidth = 3;
+        JButton dataForViberBasicContract = new JButton("Данные для вайбер");
+        dataForViberBasicContract.setName("dataForViber");
+        dataForViberBasicContract.addActionListener(controller);
+        workingWindow.add(dataForViberBasicContract,gridBagConstraints);
+
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridwidth = 3;
+        JButton sumInBYNToday = new JButton("Суммы в рублях на сегодня");
+        sumInBYNToday.setName("sumInBYNToday");
+        sumInBYNToday.addActionListener(controller);
+        workingWindow.add(sumInBYNToday,gridBagConstraints);
+
         endPage();
         if(dataClient.getBasicContract().getAllSumInEUR()==0){
             allSumInEUR.requestFocusInWindow();
         }
 
     }
-
-    public void editBasicContractEditAllSumInEUR(){
-        if(!allSumInEUR.getText().equals("")) {
-            double cur = Double.parseDouble(currency.getText());
-            int allSum = Integer.parseInt(allSumInEUR.getText());
-            int prepayment10 = allSum / 10,
-                    percent50 = allSum / 2 - prepayment10,
-                    percent100 = allSum - prepayment10 - percent50;
-            prepaymentOr10PercentSum.setText(String.valueOf(prepayment10));
-            payUpTo50PercentSum.setText(String.valueOf(percent50));
-            payUpTo100PercentSum.setText(String.valueOf(percent100));
-            allSumInBYN.setText(String.valueOf(Math.round(((double) allSum) * cur)));
-        }
-    }
-
-    public void editBasicContractEditPrepaymentOr10PercentSum(){
-        if(!prepaymentOr10PercentSum.getText().equals("")) {
-            int allSum = Integer.parseInt(allSumInEUR.getText());
-            int prepayment10 = Integer.parseInt(prepaymentOr10PercentSum.getText());
-            int percent50 = allSum / 2 - prepayment10;
-            if (percent50 < 0) {
-                percent50 = 0;
-            }
-            int percent100 = allSum - prepayment10 - percent50;
-            allSumInEUR.setText(String.valueOf(allSum));
-            payUpTo50PercentSum.setText(String.valueOf(percent50));
-            payUpTo100PercentSum.setText(String.valueOf(percent100));
-        }
-    }
-
-    public void editBasicContractEditPayUpTo50PercentSum(){
-        if(!payUpTo50PercentSum.getText().equals("")) {
-            int allSum = Integer.parseInt(allSumInEUR.getText());
-            int prepayment10 = Integer.parseInt(prepaymentOr10PercentSum.getText());
-            int percent50 = Integer.parseInt(payUpTo50PercentSum.getText());
-            int percent100 = allSum - prepayment10 - percent50;
-            allSumInEUR.setText(String.valueOf(allSum));
-            prepaymentOr10PercentSum.setText(String.valueOf(prepayment10));
-            payUpTo100PercentSum.setText(String.valueOf(percent100));
-        }
-    }
-
-    public void editCurrencyBasicContract(){
-        if(!currency.getText().equals("")) {
-            allSumInBYN.setText(String.valueOf((int) Math.round((Double.parseDouble(allSumInEUR.getText())) * Double.parseDouble(currency.getText()))));
-        }
-    }
-
     @Override
     public HashMap<String, String> getDataForSave() throws DontHaveData {
         if(allSumInEUR.getText().equals("")||allSumInBYN.getText().equals("")||
@@ -280,6 +251,50 @@ public class ViewBasicContract extends MainViewContract implements Display{
         result.put("payUpTo100PercentSum", payUpTo100PercentSum.getText());
         return result;
     }
+
+    public void editBasicContractEditAllSumInEUR(){
+        if(!allSumInEUR.getText().equals("")) {
+            double cur = Double.parseDouble(currency.getText());
+            int allSum = Integer.parseInt(allSumInEUR.getText());
+            int prepayment10 = allSum / 10,
+                    percent50 = allSum / 2 - prepayment10,
+                    percent100 = allSum - prepayment10 - percent50;
+            prepaymentOr10PercentSum.setText(String.valueOf(prepayment10));
+            payUpTo50PercentSum.setText(String.valueOf(percent50));
+            payUpTo100PercentSum.setText(String.valueOf(percent100));
+            allSumInBYN.setText(String.valueOf(Math.round(((double) allSum) * cur)));
+        }
+    }
+    public void editBasicContractEditPrepaymentOr10PercentSum(){
+        if(!prepaymentOr10PercentSum.getText().equals("")) {
+            int allSum = Integer.parseInt(allSumInEUR.getText());
+            int prepayment10 = Integer.parseInt(prepaymentOr10PercentSum.getText());
+            int percent50 = allSum / 2 - prepayment10;
+            if (percent50 < 0) {
+                percent50 = 0;
+            }
+            int percent100 = allSum - prepayment10 - percent50;
+            allSumInEUR.setText(String.valueOf(allSum));
+            payUpTo50PercentSum.setText(String.valueOf(percent50));
+            payUpTo100PercentSum.setText(String.valueOf(percent100));
+        }
+    }
+    public void editBasicContractEditPayUpTo50PercentSum(){
+        if(!payUpTo50PercentSum.getText().equals("")) {
+            int allSum = Integer.parseInt(allSumInEUR.getText());
+            int prepayment10 = Integer.parseInt(prepaymentOr10PercentSum.getText());
+            int percent50 = Integer.parseInt(payUpTo50PercentSum.getText());
+            int percent100 = allSum - prepayment10 - percent50;
+            allSumInEUR.setText(String.valueOf(allSum));
+            prepaymentOr10PercentSum.setText(String.valueOf(prepayment10));
+            payUpTo100PercentSum.setText(String.valueOf(percent100));
+        }
+    }
+    public void editCurrencyBasicContract(){
+        if(!currency.getText().equals("")) {
+            allSumInBYN.setText(String.valueOf((int) Math.round((Double.parseDouble(allSumInEUR.getText())) * Double.parseDouble(currency.getText()))));
+        }
+    }
     public void setCurrencyZero(boolean CorrectOrZero){
         if(CorrectOrZero){
             currency.setText(String.valueOf(currencyValue));
@@ -288,5 +303,74 @@ public class ViewBasicContract extends MainViewContract implements Display{
             currency.setText("0");
         }
 
+    }
+    @Override
+    public void displayDataForViber(){
+        buttonsForDataForViber = new JButton[6];
+        displayDataForViber(staticJPanel,controller, buttonsForDataForViber);
+    }
+    @Override
+    public void setSelectMethodPayment(String nameButton) {
+        setSelectMethodPayment(buttonsForDataForViber,nameButton);
+    }
+
+    @Override
+    public String getDataFirstPayment() {
+        int prepaymentBYN = (int) Math.round(Double.parseDouble(prepaymentOr10PercentSum.getText())*Double.parseDouble(currency.getText()));
+        String methodPayment = "";
+        for (int i = 0; i < 3; i++) {
+            if(!buttonsForDataForViber[i].isEnabled()){
+                methodPayment = buttonsForDataForViber[i].getText();
+                break;
+            }
+        }
+        String result = "Договор " +dataClient.getNumberContract()+" на сумму " + allSumInEUR.getText()+ "у.е., " +
+                "предоплата " + prepaymentOr10PercentSum.getText()+ "у.е. " + prepaymentBYN +"руб., " +
+                methodPayment;
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(result),null);
+
+        return result;
+    }
+    @Override
+    public String getDataSecondPayment() {
+        int payTo50Percent = (int) Math.round(Double.parseDouble(payUpTo50PercentSum.getText())*Double.parseDouble(currency.getText()));
+        String methodPayment = "";
+        for (int i = 0; i < 3; i++) {
+            if(!buttonsForDataForViber[i].isEnabled()){
+                methodPayment = buttonsForDataForViber[i].getText();
+                break;
+            }
+        }
+        String result = "Доплата по договору " +dataClient.getNumberContract()+" на сумму " +
+                payUpTo50PercentSum.getText()+ "у.е. " + payTo50Percent +"руб., " +
+                methodPayment;
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(result),null);
+        return result;
+    }
+    @Override
+    public String getDataThirdPayment() {
+        int payTo100Percent = (int) Math.round(Double.parseDouble(payUpTo100PercentSum.getText())*Double.parseDouble(currency.getText()));
+        String methodPayment = "";
+        for (int i = 0; i < 3; i++) {
+            if(!buttonsForDataForViber[i].isEnabled()){
+                methodPayment = buttonsForDataForViber[i].getText();
+                break;
+            }
+        }
+        String result = "Доплата по договору " +dataClient.getNumberContract()+" на сумму " +
+                payUpTo100PercentSum.getText()+ "у.е. " + payTo100Percent +"руб., " +
+                methodPayment;
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(result),null);
+        return result;
+    }
+    @Override
+    public String getInfoForPayment() {
+        int prepaymentBYN = (int) Math.round(Double.parseDouble(prepaymentOr10PercentSum.getText())*Double.parseDouble(currency.getText()));
+        int payTo50Percent = (int) Math.round(Double.parseDouble(payUpTo50PercentSum.getText())*Double.parseDouble(currency.getText()));
+        int payTo100Percent = (int) Math.round(Double.parseDouble(payUpTo100PercentSum.getText())*Double.parseDouble(currency.getText()));
+
+        return "Предолпата: "+prepaymentBYN+"руб.\n"+
+                "Доплата до 50%: " + payTo50Percent + "руб.\n"+
+                "Доплата до 100% " + payTo100Percent + "руб.";
     }
 }
