@@ -6,77 +6,73 @@ import java.util.Date;
 import java.util.Map;
 
 public class BasicContract implements Serializable {
-    private String dateCreateContract;
-    private String timeProduction;
-    private int allSumInEUR;
-    private int allSumInBYN;
-    private int prepaymentOr10PercentSum;
-    private int payUpTo50PercentSum;
-    private int payUpTo100PercentSum;
+    public final static String[] TIME_PRODUCT = {"14 до 25","21 до 29"};
 
-    public BasicContract(String dateCreateContract, String timeProduction, int allSumInEUR,
-                         int allSumInBYN, int prepaymentOr10PercentSum, int payUpTo50PercentSum, int payUpTo100PercentSum) {
-        this.dateCreateContract = dateCreateContract;
+    protected String dateCreate;
+    protected String timeProduction;
+    protected int allSumInEUR;
+    protected int allSumInBYN;
+    protected int prepayment;
+    protected int payUpTo50Percent;
+    protected int payUpTo100Percent;
+
+    public BasicContract(String dateCreate, String timeProduction, int allSumInEUR,
+                         int allSumInBYN, int prepayment, int payUpTo50Percent, int payUpTo100Percent) {
+        this.dateCreate = dateCreate;
         this.timeProduction = timeProduction;
         this.allSumInEUR = allSumInEUR;
         this.allSumInBYN = allSumInBYN;
-        this.prepaymentOr10PercentSum = prepaymentOr10PercentSum;
-        this.payUpTo50PercentSum = payUpTo50PercentSum;
-        this.payUpTo100PercentSum = payUpTo100PercentSum;
+        this.prepayment = prepayment;
+        this.payUpTo50Percent = payUpTo50Percent;
+        this.payUpTo100Percent = payUpTo100Percent;
     }
 
     public BasicContract() {
-        this.dateCreateContract = null;
+        this.dateCreate = null;
         this.timeProduction = null;
         this.allSumInEUR = 0;
         this.allSumInBYN = 0;
-        this.prepaymentOr10PercentSum = 0;
-        this.payUpTo50PercentSum = 0;
-        this.payUpTo100PercentSum = 0;
+        this.prepayment = 0;
+        this.payUpTo50Percent = 0;
+        this.payUpTo100Percent = 0;
     }
 
 
-    public String getDateCreateContract() {
-        if(dateCreateContract==null||dateCreateContract.equals("null")){
+    public String getDateCreate() {
+        if(dateCreate ==null|| dateCreate.equals("null")){
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
             return dateFormat.format(new Date());
         }
-        return dateCreateContract;
+        return dateCreate;
     }
-
     public String getTimeProduction() {
         return timeProduction;
     }
-
     public int getAllSumInEUR() {
         return allSumInEUR;
     }
-
     public int getAllSumInBYN() {
         return allSumInBYN;
     }
-
-    public int getPrepaymentOr10PercentSum() {
-        return prepaymentOr10PercentSum;
+    public int getPrepayment() {
+        return prepayment;
+    }
+    public int getPayUpTo50Percent() {
+        return payUpTo50Percent;
+    }
+    public int getPayUpTo100Percent() {
+        return payUpTo100Percent;
     }
 
-    public int getPayUpTo50PercentSum() {
-        return payUpTo50PercentSum;
-    }
-
-    public int getPayUpTo100PercentSum() {
-        return payUpTo100PercentSum;
-    }
-
-    public StringBuilder dataForSave (){
+    public StringBuilder getDataForSave(){
         StringBuilder data = new StringBuilder();
-        data.append("dateCreateContract/=/").append(dateCreateContract).append("\n");
+        data.append("dateCreateContract/=/").append(dateCreate).append("\n");
         data.append("timeProduction/=/").append(timeProduction).append("\n");
         data.append("allSumInEUR/=/").append(allSumInEUR).append("\n");
         data.append("allSumInBYN/=/").append(allSumInBYN).append("\n");
-        data.append("prepaymentOr10PercentSum/=/").append(prepaymentOr10PercentSum).append("\n");
-        data.append("payUpTo50PercentSum/=/").append(payUpTo50PercentSum).append("\n");
-        data.append("payUpTo100PercentSum/=/").append(payUpTo100PercentSum).append("\n");
+        data.append("prepaymentOr10PercentSum/=/").append(prepayment).append("\n");
+        data.append("payUpTo50PercentSum/=/").append(payUpTo50Percent).append("\n");
+        data.append("payUpTo100PercentSum/=/").append(payUpTo100Percent).append("\n");
         return data;
     }
     public static BasicContract load (Map<String,String> map){

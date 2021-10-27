@@ -4,10 +4,13 @@ import org.sydnik.createContract.MyController;
 import org.sydnik.createContract.data.ListMaterial;
 import org.sydnik.createContract.data.SalesManager;
 import org.sydnik.createContract.exception.DontHaveData;
+import org.sydnik.createContract.myComponent.MyButton;
+import org.sydnik.createContract.myComponent.ValueButton;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.io.File;
 import java.text.ParseException;
 import java.util.HashMap;
 
@@ -23,7 +26,6 @@ public class ViewSetting implements Display {
     private JPanel panelForAddDecor;
     private JComboBox boxListMaterial;
     private JTextField decorForAdd;
-    private JButton saveNewDecor;
 
     public ViewSetting(MyController controller, JPanel staticJPanel, SalesManager salesManager) {
         this.controller = controller;
@@ -94,7 +96,6 @@ public class ViewSetting implements Display {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 300;
         pathForSaveContact = new JTextField();
-        pathForSaveContact.setName("pathForSaveContact");
         pathForSaveContact.setText(salesManager.getPathForSaveContract());
         staticJPanel.add(pathForSaveContact,gridBagConstraints);
 
@@ -102,11 +103,7 @@ public class ViewSetting implements Display {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridwidth = 1;
         gridBagConstraints.ipadx = 70;
-        JButton selectPath = new JButton("Указать путь");
-        pathForSaveContact.addActionListener(controller);
-        selectPath.addActionListener(controller);
-        selectPath.setName("selectPath");
-        staticJPanel.add(selectPath,gridBagConstraints);
+        staticJPanel.add(new MyButton(ValueButton.VIEW_SELECT_PATH,controller),gridBagConstraints);
 
         gridBagConstraints.gridy = 10;
         staticJPanel.add(new JLabel(" "),gridBagConstraints);
@@ -114,10 +111,7 @@ public class ViewSetting implements Display {
         gridBagConstraints.gridy = 11;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridwidth = 3;
-        JButton addNewDecor = new JButton("Добавить декор");
-        addNewDecor.setName("addNewDecor");
-        addNewDecor.addActionListener(controller);
-        staticJPanel.add(addNewDecor,gridBagConstraints);
+        staticJPanel.add(new MyButton(ValueButton.VIEW_ADD_NEW_DECOR,controller),gridBagConstraints);
 
         gridBagConstraints.gridy = 15;
         gridBagConstraints.ipady = 235;
@@ -129,16 +123,10 @@ public class ViewSetting implements Display {
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.ipady = 0;
         gridBagConstraints.ipadx = 0;
-        JButton save = new JButton("Сохранить");
-        save.setName("saveSittingsManager");
-        save.addActionListener(controller);
-        staticJPanel.add(save,gridBagConstraints);
+        staticJPanel.add(new MyButton(ValueButton.SAVE_SETTING_MANAGER,controller),gridBagConstraints);
 
         gridBagConstraints.gridy = 17;
-        JButton mainPage = new JButton("Главная страница");
-        mainPage.setName("mainPage");
-        mainPage.addActionListener(controller);
-        staticJPanel.add(mainPage,gridBagConstraints);
+        staticJPanel.add(new MyButton(ValueButton.VIEW_MAIN_PAGE,controller),gridBagConstraints);
         staticJPanel.revalidate();
         staticJPanel.repaint();
     }
@@ -175,18 +163,24 @@ public class ViewSetting implements Display {
 
         gridBagConstraints.gridy = 3;
         gridBagConstraints.ipady = 20;
-        saveNewDecor= new JButton("Добавить декор");
-        saveNewDecor.setName("saveNewDecor");
-        saveNewDecor.addActionListener(controller);
-        jPanel.add(saveNewDecor,gridBagConstraints);
+        jPanel.add(new MyButton(ValueButton.SAVE_DECOR,controller),gridBagConstraints);
 
         jPanel.revalidate();
         jPanel.repaint();
         dialog.setVisible(true);
     }
 
+    public void selectPathForSaveContract(){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File(pathForSaveContact.getText()));
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnVal = chooser.showOpenDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            pathForSaveContact.setText(chooser.getSelectedFile().getAbsolutePath());
+        }
+    }
     @Override
-    public HashMap<String, String> getDataForSave() throws DontHaveData {
+    public HashMap<String, String> getData() throws DontHaveData {
         HashMap<String,String> result = new HashMap<>();
         result.put("fullName",fullNameSalesManager.getText());
         result.put("numberPhoneManager",numberPhoneManager.getText());

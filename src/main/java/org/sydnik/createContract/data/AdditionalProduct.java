@@ -44,7 +44,7 @@ public class AdditionalProduct implements Serializable {
                 ", priceWithDiscount='" + priceWithDiscount + '\'' +
                 '}';
     }
-    public StringBuilder dataForSave () {
+    public StringBuilder getDataForSave() {
         StringBuilder data = new StringBuilder();
         data.append("name<b>"+name).append("<a>count<b>"+count).append("<a>fullPrice<b>"+count).append("<a>fullPrice<b>"+fullPrice).
                 append("<a>discount<b>"+discount).append("<a>priceWithDiscount<b>"+priceWithDiscount);

@@ -15,6 +15,7 @@ public class ListMaterial {
     public ListMaterial() {
         listCatalog = new ArrayList<>();;
     }
+
     public void readListCatalog(String s){
         listCatalog = new ArrayList<>();
         path= "material/"+s+".txt";
@@ -22,18 +23,14 @@ public class ListMaterial {
             while (reader.ready()){
                 listCatalog.add(reader.readLine());
             }
-        } catch (FileNotFoundException e) {
-            listCatalog = new ArrayList<>();
-            listCatalog.add("");
-        } catch (IOException e) {
-            listCatalog = new ArrayList<>();
-            listCatalog.add("");
-
         }
+        catch (IOException e) {
+            listCatalog = new ArrayList<>();
+            listCatalog.add("");
+        }
+
     }
-    public ArrayList<String> getListCatalog(){
-        return listCatalog;
-    }
+
     public void addDecor(String decor) throws CantWriteDoc, DontHaveData {
         if(listCatalog.size()==0){
             throw new DontHaveData("Возможно вы забыли выбрать материал куда добавлять");
@@ -46,6 +43,11 @@ public class ListMaterial {
         writeListDecor();
 
     }
+
+    public ArrayList<String> getListCatalog(){
+        return listCatalog;
+    }
+
     private void writeListDecor() throws CantWriteDoc {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "UTF-8"))){
             for(String s:listCatalog)
@@ -56,6 +58,7 @@ public class ListMaterial {
             throw new CantWriteDoc("Что то пошло не так, не смог записать данные");
         }
     }
+
     private int findPosition(int a,String decor,int maxPosition){
         if(listCatalog.get(a).toLowerCase().compareTo(decor)>0){
             if(maxPosition-a==1){
@@ -70,4 +73,6 @@ public class ListMaterial {
         }
         return -1;
     }
+
+
 }

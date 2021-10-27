@@ -2,14 +2,13 @@ package org.sydnik.createContract.data;
 
 import org.sydnik.createContract.data.contract.*;
 import org.sydnik.createContract.exception.CantWriteDoc;
-import org.sydnik.createContract.view.ViewSupplementaryAgreementUpSale;
-import org.sydnik.createContract.view.ViewUpSaleContract;
+import org.sydnik.createContract.view.document.ViewSupplementaryAgreementUpSale;
+import org.sydnik.createContract.view.document.ViewUpSaleContract;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DataClient implements Serializable {
@@ -25,15 +24,15 @@ public class DataClient implements Serializable {
     private String addressDelivery;
     private String numberPhoneClient;
 
-    BasicContract basicContract;
-    UpSaleContract upSaleContract;
-    SupplementaryAgreementBasicContract supplementaryAgreementBasicContract;
-    SupplementaryAgreementUpSaleContract supplementaryAgreementUpSaleContract;
-    InvoiceDocument invoiceDocument;
+    private BasicContract basicContract;
+    private UpSaleContract upSaleContract;
+    private SupplementaryAgreementBasicContract supplementaryAgreementBasicContract;
+    private SupplementaryAgreementUpSaleContract supplementaryAgreementUpSaleContract;
+    private InvoiceDocument invoiceDocument;
 
     public DataClient(Map<String,String> mapDataClient) {
-        this.numberContract = mapDataClient.get("numberContract").trim();
-        this.strangeName = mapDataClient.get("strangeName").trim();
+        numberContract = mapDataClient.get("numberContract").trim();
+        strangeName = mapDataClient.get("strangeName").trim();
         fullNameClient = mapDataClient.get("fullNameClient").trim();
         setMiniNameClient(fullNameClient);
         numberPassport = mapDataClient.get("numberPassport");
@@ -43,11 +42,11 @@ public class DataClient implements Serializable {
         addressRegistration = mapDataClient.get("addressRegistration");
         addressDelivery = mapDataClient.get("addressDelivery");
         numberPhoneClient = mapDataClient.get("numberPhoneClient");
-        this.basicContract = new BasicContract();
-        this.upSaleContract = new UpSaleContract();
-        this.supplementaryAgreementBasicContract = new SupplementaryAgreementBasicContract();
-        this.supplementaryAgreementUpSaleContract = new SupplementaryAgreementUpSaleContract();
-        this.invoiceDocument = new InvoiceDocument();
+        basicContract = new BasicContract();
+        upSaleContract = new UpSaleContract();
+        supplementaryAgreementBasicContract = new SupplementaryAgreementBasicContract();
+        supplementaryAgreementUpSaleContract = new SupplementaryAgreementUpSaleContract();
+        invoiceDocument = new InvoiceDocument();
     }
 
     private void setMiniNameClient(String fullName){
@@ -61,8 +60,6 @@ public class DataClient implements Serializable {
 
         }
     }
-
-
     public void setDateAboutClient(Map<String,String> mapDataClient){
         this.numberContract = mapDataClient.get("numberContract").trim();
         this.strangeName = mapDataClient.get("strangeName").trim();
@@ -76,7 +73,6 @@ public class DataClient implements Serializable {
         addressDelivery = mapDataClient.get("addressDelivery");
         numberPhoneClient = mapDataClient.get("numberPhoneClient");
     }
-
     public void setBaseContract(Map<String,String> map){
         this.basicContract = new BasicContract(map.get("dateCreateContract"),map.get("timeProduction"),
                 Integer.parseInt(map.get("allSumInEUR")), Integer.parseInt(map.get("allSumInBYN")),
@@ -84,7 +80,7 @@ public class DataClient implements Serializable {
                 Integer.parseInt(map.get("payUpTo100PercentSum")));
     }
     public void setUpSaleContract(Map<String,String> map){
-        AdditionalProduct[] listAdditionalProducts = new AdditionalProduct[ViewUpSaleContract.COUNT_ADDITIONAL_PRODUCT];
+        AdditionalProduct[] listAdditionalProducts = new AdditionalProduct[ViewUpSaleContract.ROW_ADDITIONAL_PRODUCT];
         for (int i = 0; i < listAdditionalProducts.length; i++) {
             listAdditionalProducts[i] = new AdditionalProduct(
                     map.get("additionalProducts"+i),
@@ -100,15 +96,15 @@ public class DataClient implements Serializable {
     }
     public void setDateSupplementaryAgreementBasicContract(Map<String,String> map) {
         this.supplementaryAgreementBasicContract = new SupplementaryAgreementBasicContract(
-                map.get("dateCreateSupplementaryAgreementBasicContract"),Integer.parseInt(map.get("numberSupplementaryAgreementBasicContract")),
-                Integer.parseInt(map.get("allSumInEURSupplementaryAgreement")),Integer.parseInt(map.get("allSumInBYNSupplementaryAgreement")),
-                Integer.parseInt(map.get("prepaymentOr10PercentSumSupplementaryAgreement")),Integer.parseInt(map.get("payUpTo50PercentSumSupplementaryAgreement")),
-                Integer.parseInt(map.get("payUpTo100PercentSumSupplementaryAgreement")));
+                map.get("dateCreateSupplementaryAgreementBasicContract"),SupplementaryAgreementBasicContract.TIME_PRODUCT[0],
+                Integer.parseInt(map.get("allSumInEURSupplementaryAgreement")), Integer.parseInt(map.get("allSumInBYNSupplementaryAgreement")),
+                Integer.parseInt(map.get("prepaymentOr10PercentSumSupplementaryAgreement")), Integer.parseInt(map.get("payUpTo50PercentSumSupplementaryAgreement")),
+                Integer.parseInt(map.get("payUpTo100PercentSumSupplementaryAgreement")),Integer.parseInt(map.get("numberSupplementaryAgreementBasicContract")));
     }
     public void setDateSupplementaryAgreementUpSaleContract(Map<String,String> map) {
-        AdditionalProduct[] listAdditionalProductsSupplementaryAgreementUpSale = new AdditionalProduct[ViewSupplementaryAgreementUpSale.COUNT_ADDITIONAL_PRODUCT];
-        for (int i = 0; i < listAdditionalProductsSupplementaryAgreementUpSale.length; i++) {
-            listAdditionalProductsSupplementaryAgreementUpSale[i] = new AdditionalProduct(
+        AdditionalProduct[] listAdditionalProducts = new AdditionalProduct[ViewSupplementaryAgreementUpSale.ROW_ADDITIONAL_PRODUCT];
+        for (int i = 0; i < listAdditionalProducts.length; i++) {
+            listAdditionalProducts[i] = new AdditionalProduct(
                     map.get("supplementaryAgreementAdditionalProducts"+i),
                     map.get("supplementaryAgreementAdditionalProductsCount"+i),
                     map.get("supplementaryAgreementAdditionalProductsFullPrice"+i),
@@ -116,10 +112,12 @@ public class DataClient implements Serializable {
                     map.get("supplementaryAgreementAdditionalProductsWithDiscount"+i)
             );
         }
-        this.supplementaryAgreementUpSaleContract = new SupplementaryAgreementUpSaleContract(
-                map.get("dateCreateSupplementaryAgreementUpSaleContract"),Integer.parseInt(map.get("numberSupplementaryAgreementUpSale")),
-                listAdditionalProductsSupplementaryAgreementUpSale,Integer.parseInt(map.get("sumUpSaleInBYNSupplementaryAgreement")),
-                Integer.parseInt(map.get("prepaymentUpSaleSupplementaryAgreement")),Integer.parseInt(map.get("payUpTo100percentUpSaleSupplementaryAgreement")));
+        this.supplementaryAgreementUpSaleContract = new SupplementaryAgreementUpSaleContract(map.get("dateCreateSupplementaryAgreementUpSaleContract"),
+                listAdditionalProducts,
+                Integer.parseInt(map.get("allSumUpSaleInBYNSupplementaryAgreement")),
+                Integer.parseInt(map.get("prepaymentUpSaleSupplementaryAgreement")),
+                Integer.parseInt(map.get("payUpTo100percentUpSaleSupplementaryAgreement")),
+                Integer.parseInt(map.get("numberSupplementaryAgreementUpSale")));
     }
     public void setDataInvoiceDocument(HashMap<String,String> map){
         invoiceDocument = new InvoiceDocument(
@@ -205,11 +203,11 @@ public class DataClient implements Serializable {
         data.append("addressRegistration/=/").append(addressRegistration).append("\n");
         data.append("addressDelivery/=/").append(addressDelivery).append("\n");
         data.append("numberPhoneClient/=/").append(numberPhoneClient).append("\n");
-        data.append(basicContract.dataForSave());
-        data.append(upSaleContract.dataForSave());
-        data.append(supplementaryAgreementBasicContract.dataForSave());
-        data.append(supplementaryAgreementUpSaleContract.dataForSave());
-        data.append(invoiceDocument.dataForSave());
+        data.append(basicContract.getDataForSave());
+        data.append(upSaleContract.getDataForSave());
+        data.append(supplementaryAgreementBasicContract.getDataForSave());
+        data.append(supplementaryAgreementUpSaleContract.getDataForSave());
+        data.append(invoiceDocument.getDataForSave());
         String path ="saveContract/" +numberContract +" "+ strangeName;
         new File(path).mkdirs();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(

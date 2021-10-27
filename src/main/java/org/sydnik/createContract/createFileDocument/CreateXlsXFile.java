@@ -26,7 +26,7 @@ public class CreateXlsXFile {
                     "files/Базовый договор.docx");
         }
         try {
-            sheet.getRow(4).getCell(1).setCellValue("Счет-Фактура " + dataClient.getNumberContract() + " " + dataClient.getInvoiceDocument().getCreateDateInvoiceDocument());
+            sheet.getRow(4).getCell(1).setCellValue("Счет-Фактура " + dataClient.getNumberContract() + " " + dataClient.getInvoiceDocument().getCreateDate());
             sheet.getRow(5).getCell(3).setCellValue(dataClient.getFullNameClient());
             sheet.getRow(6).getCell(3).setCellValue("Документ, удостоверяющий личность:\n" +
                     "Паспорт: " + dataClient.getNumberPassport() + " \n" +
@@ -36,18 +36,18 @@ public class CreateXlsXFile {
                     "Адрес регистрации: " + dataClient.getAddressRegistration() + "\n" +
                     "Адрес доставки: " + dataClient.getAddressDelivery() + "\n" +
                     "тел.: " + dataClient.getNumberPhoneClient());
-            sheet.getRow(7).getCell(3).setCellValue("№" + dataClient.getNumberContract() + " " + dataClient.getBasicContract().getDateCreateContract());
+            sheet.getRow(7).getCell(3).setCellValue("№" + dataClient.getNumberContract() + " " + dataClient.getBasicContract().getDateCreate());
             sheet.getRow(14).getCell(2).setCellValue("Набор мебельных деталей для кухни (№" + dataClient.getNumberContract() + ") \n" +
                     "Страна производства Республика Беларусь");
-            sheet.getRow(14).getCell(7).setCellValue(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument() + ".00");
-            sheet.getRow(14).getCell(8).setCellValue(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument() + ".00");
-            sheet.getRow(14).getCell(10).setCellValue(dataClient.getInvoiceDocument().getVat20InvoiceDocument());
-            sheet.getRow(14).getCell(11).setCellValue(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument());
-            sheet.getRow(15).getCell(10).setCellValue(dataClient.getInvoiceDocument().getVat20InvoiceDocument());
-            sheet.getRow(15).getCell(11).setCellValue(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument());
+            sheet.getRow(14).getCell(7).setCellValue(dataClient.getInvoiceDocument().getPriceBYN() + ".00");
+            sheet.getRow(14).getCell(8).setCellValue(dataClient.getInvoiceDocument().getPriceBYN() + ".00");
+            sheet.getRow(14).getCell(10).setCellValue(dataClient.getInvoiceDocument().getVat20());
+            sheet.getRow(14).getCell(11).setCellValue(dataClient.getInvoiceDocument().getPriceBYN());
+            sheet.getRow(15).getCell(10).setCellValue(dataClient.getInvoiceDocument().getVat20());
+            sheet.getRow(15).getCell(11).setCellValue(dataClient.getInvoiceDocument().getPriceBYN());
 
-            sheet.getRow(18).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getVat20InvoiceDocument()));
-            sheet.getRow(19).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getPriceBYNInvoiceDocument()));
+            sheet.getRow(18).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getVat20()));
+            sheet.getRow(19).getCell(3).setCellValue(NumberInWords.sumBYNInWords(dataClient.getInvoiceDocument().getPriceBYN()));
             sheet.getRow(21).getCell(1).setCellValue(dataClient.getInvoiceDocument().getLineForBank());
 
             } catch (Exception e) {

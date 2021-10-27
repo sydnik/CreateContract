@@ -1,10 +1,14 @@
 package org.sydnik.createContract;
 
-import org.sydnik.createContract.dataForViber.OrderUpSale;
+import org.sydnik.createContract.data.OrderUpSale;
 import org.sydnik.createContract.exception.CantWriteDoc;
 import org.sydnik.createContract.exception.DontHaveData;
 import org.sydnik.createContract.exception.DontHaveFilePattern;
+import org.sydnik.createContract.myComponent.EnumValue;
+import org.sydnik.createContract.myComponent.MyButton;
+import org.sydnik.createContract.myComponent.MyCheckBox;
 import org.sydnik.createContract.view.*;
+import org.sydnik.createContract.view.document.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,332 +17,490 @@ import java.awt.event.*;
 
 public class MyController implements ActionListener, KeyListener, MouseListener {
     private Model model;
-    private MyView view;
-    private Display display;
+    private MainView view;
+    private Display currentView;
 
 
-    public MyController(Model model,MyView view) {
+    public MyController(Model model, MainView view) {
         this.model = model;
         this.view =view;
         view.setController(this);
 
     }
 
-    public void setDisplay(Display display){
-        this.display = display;
+    public void setCurrentView(Display currentView){
+        this.currentView = currentView;
     }
 
     public void displayMainPage(){
-        view.mainPage(model.getSalesManager());
+        view.viewMainPage(model.getSalesManager());
     }
     public void displayRateEUR() {
         view.displayInputRate();
     }
-
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println(e.getActionCommand());
-        System.out.println("ID " + e.getID());
-        System.out.println("MOD " +e.getModifiers());
         long s = System.currentTimeMillis();
-        if(((Component)e.getSource()).getName().contains("checkBox")){
-            view.refreshCheckBox((JCheckBox) e.getSource());
-        }
         try {
-            switch (((Component) e.getSource()).getName()) {
-                case "sittingsManager": {
-                    view.settingsManager(model.getSalesManager());
-                    break;
-                }
-                case "saveSittingsManager": {
-                    model.setSalesManager(display);
-                    view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "mainPage": {
-                    view.mainPage(model.getSalesManager());
-                    model.clearDataClient();
-                    display= null;
-                    break;
-                }
-                case "saveNewDataClient": {
-                    model.createNewClient(display);
-                    view.selectedClient(model.getDataClient());
-                    break;
-                }
-                case "saveDataAboutClient": {
-                    model.saveDataAboutClient(display);
-                    view.selectedClient(model.getDataClient());
-                    break;
-                }
-                case "selectClient": {
-                    view.listClientsAndSelect(model.listSelectClient(), "");
-                    model.clearDataClient();
-                    break;
-                }
-                case "pushSelectClient": {
-                    for (Component component : view.getComponentsStaticPanel()) {
-                        try {
-                            if ((((JList) ((JViewport) ((JScrollPane) component).getComponent(0)).getComponent(0)).getSelectedIndex()) != -1) {
-                                model.writeDataClient(view.getComponentsStaticPanel());
-                                if (model.getDataClient() != null) {
-                                    view.selectedClient(model.getDataClient());
-                                }
-                            }
-                        } catch (Exception a) {
-                        }
+            if(e.getSource() instanceof MyButton ){
+                switch (((MyButton) e.getSource()).getEnumValue()) {
+                    case VIEW_SETTINGS_MANAGER: {
+                        view.displaySettingsManager(model.getSalesManager());
+                        break;
                     }
-                    break;
-                }
-                case "searchClientButton": {
-                    String line = "";
-                    for (Component component : view.getComponentsStaticPanel()) {
-                        try {
-                            switch (component.getName()) {
-                                case "searchClient": {
-                                    line = ((JTextField) component).getText();
-                                    break;
-                                }
+                    case VIEW_MAIN_PAGE: {
+                        view.viewMainPage(model.getSalesManager());
+                        model.clearDataClient();
+                        currentView = null;
+                        break;
+                    }
+                    case VIEW_SELECT_CLIENT: {
+                        view.displayListClients(model.listSelectClient());
+                        model.clearDataClient();
+                        break;
+                    }
+                    case VIEW_CLIENT: {
+                        model.writeDataClient(currentView.getData());
+                        view.displayMainClient(model.getDataClient());
 
-                            }
-                        } catch (Exception a) {
-                        }
+                        break;
                     }
-                    view.listClientsAndSelect(model.listSelectClientSearch(view.getComponentsStaticPanel()), line);
-                    break;
-                }
-                case "editBasicContract": {
-                    view.displayBasicContract(model.getDataClient(), model.getCurrencyValue());
-                    break;
-                }
-                case "backSelectClient": {
-                    view.selectedClient(model.getDataClient());
-                    display = null;
-                    break;
-                }
-                case "saveDataBaseContractClient": {
-                    model.saveDataBaseContractClient(display);
-                    model.createBaseContract();
+                    case VIEW_BASIC_CONTRACT: {
+                        view.displayBasicContract(model.getDataClient(), model.getCurrencyValue());
+                        break;
+                    }
+                    case VIEW_BACK_SELECT_CLIENT: {
+                        view.displayMainClient(model.getDataClient());
+                        currentView = null;
+                        break;
+                    }
+                    case VIEW_DATA_ABOUT_CLIENT: {
+                        view.displayEditDataAboutClient(model.getDataClient());
+                        break;
+                    }
+                    case VIEW_NEW_CLIENT: {
+                        model.clearDataClient();
+                        view.displayNewClient();
+                        break;
+                    }
+                    case VIEW_UP_SALE_CONTRACT: {
+                        view.displayUpSaleContract(model.getDataClient());
+                        break;
+                    }
+                    case VIEW_SUPPLEMENTARY_AGREEMENT_UP_SALE: {
+                        view.displaySupplementaryAgreementUpSale(model.getDataClient());
+                        break;
+                    }
+                    case VIEW_SELECT_PATH: {
+                        ((ViewSetting) currentView).selectPathForSaveContract();
+                        break;
+                    }
+                    case VIEW_INVOICE_DOCUMENT: {
+                        view.displayInvoiceDocument(model.getDataClient(), model.getCurrencyValue());
+                        break;
+                    }
+                    case VIEW_SUPPLEMENTARY_AGREEMENT_BASIC_CONTRACT: {
+                        view.displaySupplementaryAgreementBasicContract(model.getDataClient(), model.getCurrencyValue());
+                        break;
+                    }
+                    case VIEW_CREATE_FILE_FOR_CUTTING: {
+                        view.displayCreateFileForCutting(model.getDataClient());
+                        break;
+                    }
+                    case VIEW_ADD_NEW_DECOR: {
+                        ((ViewSetting) currentView).addNewDecor();
+                        break;
+                    }
+                    case VIEW_DATA_FOR_VIBER: {
+                        ((DataForViber) currentView).displayDataForViber();
+                        break;
+                    }
+                    case VIEW_SUM_IN_BYN_TODAY: {
+                        view.writeJustMessage(((InfoForPayment) currentView).getInfoForPayment(), JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+
+                    case SAVE_DECOR: {
+                        model.addNewDecor(currentView);
+                        view.writeJustMessage("Декор добавлен", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case SAVE_SETTING_MANAGER: {
+                        model.setSalesManager(currentView);
                         view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "printBaseContract": {
-                    model.saveDataBaseContractClient(display);
-                    model.printDoc("printBaseContract");
-                    break;
-                }
-                case "editDataAboutClient": {
-                    view.displayEditDataAboutClient(model.getDataClient());
-                    break;
-                }
-                case "createNewClient": {
-                    model.clearDataClient();
-                    view.displayNewClient();
-                    break;
-                }
-                case "openFileBasicContract": {
-                    model.saveDataBaseContractClient(display);
-                    model.openDoc("openFileBasicContract");
-                    break;
-                }
-                case "openFileSupplementaryAgreementBasicContract": {
-                    model.saveDataSupplementaryAgreementBasicContract(display);
-                    model.openDoc("openFileSupplementaryAgreementBasicContract");
-                    break;
-                }
-                case "openDirectoryWithFile": {
-                    model.openDirectory();
-                    break;
-                }
-                case "editUpSaleContract": {
-                    view.displayUpSaleContract(model.getDataClient());
-                    break;
-                }
-                case "saveDataUpSaleContact": {
-                    model.saveDataUpSale(display);
-                    view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "openFileUpSaleContract": {
-                    model.saveDataUpSale(display);
-                    model.openDoc("openFileUpSaleContract");
-                    break;
-                }
-                case "printUpSaleContract": {
-                        model.saveDataUpSale(display);
+                        break;
+                    }
+                    case SAVE_NEW_DATA_CLIENT: {
+                        model.createNewClient(currentView);
+                        view.displayMainClient(model.getDataClient());
+                        break;
+                    }
+                    case SAVE_DATA_ABOUT_CLIENT: {
+                        model.saveDataAboutClient(currentView);
+                        view.displayMainClient(model.getDataClient());
+                        break;
+                    }
+                    case SAVE_DATA_BASE_CONTRACT_CLIENT: {
+                        model.saveDataBaseContractClient(currentView);
+                        model.createBaseContract();
+                        view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case SAVE_DATA_UP_SALE_CONTACT: {
+                        model.saveDataUpSale(currentView);
+                        view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case SAVE_DATA_SUPPLEMENTARY_AGREEMENT_BASIC_CONTRACT: {
+                        try {
+                            model.saveDataSupplementaryAgreementBasicContract(currentView);
+                            view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (CantWriteDoc | DontHaveFilePattern ex) {
+                            view.writeJustMessage(ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+                        }
+                        break;
+                    }
+                    case SAVE_CURRENCY: {
+                        model.setCurrency(currentView);
+                        view.viewMainPage(model.getSalesManager());
+                        break;
+                    }
+                    case SAVE_DATA_SUPPLEMENTARY_AGREEMENT_UP_SALE_CONTACT: {
+                        model.saveDataSupplementaryAgreementUpSaleContract(currentView);
+                        view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case SAVE_DATA_INVOICE_DOCUMENT: {
+                        model.saveDataInvoiceDocument(currentView);
+                        view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case SAVE_FILE_FOR_CUTTING: {
+                        model.SaveFileForCutting(currentView);
+                        break;
+                    }
+
+                    case OPEN_FILE_INVOICE_DOCUMENT: {
+                        model.saveDataInvoiceDocument(currentView);
+                        model.openDoc("openFileInvoiceDocument");
+                        break;
+                    }
+                    case OPEN_FILE_SUPPLEMENTARY_AGREEMENT_UP_SALE_CONTRACT: {
+                        model.saveDataSupplementaryAgreementUpSaleContract(currentView);
+                        model.openDoc("openFileSupplementaryAgreementUpSaleContract");
+                        break;
+                    }
+                    case OPEN_FILE_BASIC_CONTRACT: {
+                        model.saveDataBaseContractClient(currentView);
+                        model.openDoc("openFileBasicContract");
+                        break;
+                    }
+                    case OPEN_FILE_SUPPLEMENTARY_AGREEMENT_BASIC_CONTRACT: {
+                        model.saveDataSupplementaryAgreementBasicContract(currentView);
+                        model.openDoc("openFileSupplementaryAgreementBasicContract");
+                        break;
+                    }
+                    case OPEN_DIRECTORY_WITH_FILE: {
+                        model.openDirectory();
+                        break;
+                    }
+                    case OPEN_FILE_UP_SALE_CONTRACT: {
+                        model.saveDataUpSale(currentView);
+                        model.openDoc("openFileUpSaleContract");
+                        break;
+                    }
+
+                    case PRINT_UP_SALE_CONTRACT: {
+                        model.saveDataUpSale(currentView);
                         model.printDoc("printUpSaleContract");
-                    break;
-                }
-                case "printSupplementaryAgreementBasicContract": {
-
-                    model.saveDataSupplementaryAgreementBasicContract(display);
-                    model.printDoc("printSupplementaryAgreementBasicContract");
-                    break;
-                }
-                case "editSupplementaryAgreementBasicContract": {
-                    view.displaySupplementaryAgreementBasicContract(model.getDataClient(), model.getCurrencyValue());
-                    break;
-                }
-                case "saveDataSupplementaryAgreementBasicContract": {
-                    try {
-                        model.saveDataSupplementaryAgreementBasicContract(display);
-                        view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (CantWriteDoc | DontHaveFilePattern ex) {
-                        view.writeJustMessage(ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+                        break;
                     }
-                    break;
-                }
-                case "saveCurrency": {
-                    model.setCurrency(view.getComponentsStaticPanel());
-                    view.mainPage(model.getSalesManager());
-                    break;
-                }
-                case "editSupplementaryAgreementUpSale": {
-                    view.displaySupplementaryAgreementUpSale(model.getDataClient());
-                    break;
-                }
-                case "saveDataSupplementaryAgreementUpSaleContact": {
-                    model.saveDataSupplementaryAgreementUpSaleContract(display);
-                    view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "printSupplementaryAgreementUpSaleContract": {
-                    model.saveDataSupplementaryAgreementUpSaleContract(display);
-                    model.printDoc("printSupplementaryAgreementUpSaleContract");
-                    break;
-                }
-                case "openFileSupplementaryAgreementUpSaleContract": {
-                    model.saveDataSupplementaryAgreementUpSaleContract(display);
-                    model.openDoc("openFileSupplementaryAgreementUpSaleContract");
-                    break;
-                }
-                case "selectPath": {
-                    view.selectPathForSaveContract();
-                    break;
-                }
-                case "editInvoiceDocument": {
-                    view.displayInvoiceDocument(model.getDataClient(), model.getCurrencyValue());
-                    break;
-                }
-                case "saveDataInvoiceDocument": {
-                    model.saveDataInvoiceDocument(display);
-                    view.writeJustMessage("Настройки сохранены", JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "printInvoiceDocument": {
-                    model.saveDataInvoiceDocument(display);
-                    model.printDoc("printInvoiceDocument");
-                    break;
-                }
-                case "openFileInvoiceDocument": {
-                    model.saveDataInvoiceDocument(display);
-                    model.openDoc("openFileInvoiceDocument");
-                    break;
-                }
-                case "orderUpSaleMaunfeld": {
-                    OrderUpSale orderUpSale = new OrderUpSale(model.getDataClient().getUpSaleContract().getListAdditionalProducts(),
-                            model.getDataClient().getNumberContract());
-                    orderUpSale.copyTextBuffer(OrderUpSale.MAUNFELD);
-                    view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "orderUpSaleSink": {
-                    OrderUpSale orderUpSale = new OrderUpSale(model.getDataClient().getUpSaleContract().getListAdditionalProducts(),
-                            model.getDataClient().getNumberContract());
-                    orderUpSale.copyTextBuffer(OrderUpSale.EMAR);
-                    view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "orderSupplementaryAgreementUpSaleSink" :{
-                    OrderUpSale orderUpSale = new OrderUpSale(
-                            model.getDataClient().getSupplementaryAgreementUpSaleContract().getListAdditionalProductsSupplementaryAgreementUpSale(),
-                            model.getDataClient().getNumberContract());
-                    orderUpSale.copyTextBuffer(OrderUpSale.EMAR);
-                    view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "orderSupplementaryAgreementUpSaleMaunfeld": {
-                    OrderUpSale orderUpSale = new OrderUpSale(
-                            model.getDataClient().getSupplementaryAgreementUpSaleContract().getListAdditionalProductsSupplementaryAgreementUpSale(),
-                            model.getDataClient().getNumberContract());
-                    orderUpSale.copyTextBuffer(OrderUpSale.MAUNFELD);
-                    view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "viewCreateFileForCutting" : {
-                    view.displayCreateFileForCutting(model.getDataClient());
-                    break;
-                }
-                case "boxListMaterial" : {
-                    if(e.getModifiers()!=0) {
-                        ((ViewCreateFileForCutting) display).updateBoxListDecor();
+                    case PRINT_SUPPLEMENTARY_AGREEMENT_BASIC_CONTRACT: {
+
+                        model.saveDataSupplementaryAgreementBasicContract(currentView);
+                        model.printDoc("printSupplementaryAgreementBasicContract");
+                        break;
                     }
-                    break;
-                }
-                case "createFileForCutting" :{
-                    model.createFileForCutting(display);
-                    break;
-                }
-                case "addNewDecor" :{
-                    ((ViewSetting)display).addNewDecor();
-                    break;
-                }
-                case "saveNewDecor" :{
-                    model.addNewDecor(display);
-                    view.writeJustMessage("Декор добавлен",JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-                case "dataForViber" : {
-                    ((DataForViber)display).displayDataForViber();
-                    break;
-                }
-                case DataForViber.PAYMENT_METHOD_NAME_BUTTON :{
-                    ((DataForViber)display).setSelectMethodPayment(((JButton)e.getSource()).getText());
-                    break;
-                }
-                case DataForViber.BUTTON_NAME_FIRST_PAYMENT:{
-                    ((DataForViber)display).getDataFirstPayment();
-                    view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+                    case PRINT_BASE_CONTRACT: {
+                        model.saveDataBaseContractClient(currentView);
+                        model.printDoc("printBaseContract");
+                        break;
+                    }
+                    case PRINT_SUPPLEMENTARY_AGREEMENT_UP_SALE_CONTRACT: {
+                        model.saveDataSupplementaryAgreementUpSaleContract(currentView);
+                        model.printDoc("printSupplementaryAgreementUpSaleContract");
+                        break;
+                    }
+                    case PRINT_INVOICE_DOCUMENT: {
+                        model.saveDataInvoiceDocument(currentView);
+                        model.printDoc("printInvoiceDocument");
+                        break;
+                    }
 
-                    break;
-                }
-                case DataForViber.BUTTON_NAME_SECOND_PAYMENT:{
-                    ((DataForViber)display).getDataSecondPayment();
-                    view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+                    case ORDER_UP_SALE_MAUNFELD: {
+                        OrderUpSale orderUpSale = new OrderUpSale(model.getDataClient().getUpSaleContract().getListAdditionalProducts(),
+                                model.getDataClient().getNumberContract());
+                        orderUpSale.copyTextBuffer(OrderUpSale.MAUNFELD);
+                        view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case ORDER_UP_SALE_SINK: {
+                        OrderUpSale orderUpSale = new OrderUpSale(model.getDataClient().getUpSaleContract().getListAdditionalProducts(),
+                                model.getDataClient().getNumberContract());
+                        orderUpSale.copyTextBuffer(OrderUpSale.EMAR);
+                        view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case ORDER_SUPPLEMENTARY_AGREEMENT_UP_SALE_SINK: {
+                        OrderUpSale orderUpSale = new OrderUpSale(
+                                model.getDataClient().getSupplementaryAgreementUpSaleContract().getListAdditionalProducts(),
+                                model.getDataClient().getNumberContract());
+                        orderUpSale.copyTextBuffer(OrderUpSale.EMAR);
+                        view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case ORDER_SUPPLEMENTARY_AGREEMENT_UP_SALE_MAUNFELD: {
+                        OrderUpSale orderUpSale = new OrderUpSale(
+                                model.getDataClient().getSupplementaryAgreementUpSaleContract().getListAdditionalProducts(),
+                                model.getDataClient().getNumberContract());
+                        orderUpSale.copyTextBuffer(OrderUpSale.MAUNFELD);
+                        view.writeJustMessage("Техника скопирована,можете вставить в вайбер ;)", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
 
-                    break;
-                }
-                case DataForViber.BUTTON_NAME_THIRD_PAYMENT:{
-                    ((DataForViber)display).getDataThirdPayment();
-                    view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)",JOptionPane.INFORMATION_MESSAGE);
+                    case SELECT_PAYMENT_CARD:
+                    case SELECT_PAYMENT_CASH:
+                    case SELECT_PAYMENT_NON_CASH: {
+                        ((DataForViber) currentView).setSelectMethodPayment(((JButton) e.getSource()).getText());
+                        break;
+                    }
 
-                    break;
-                }
-                case "sumInBYNToday" :{
-                    view.writeJustMessage(((InfoForPayment)display).getInfoForPayment(),JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
+                    case COPY_PREPAYMENT: {
+                        ((DataForViber) currentView).getDataFirstPayment();
+                        view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case COPY_PAY_TO_50_PERCENT: {
+                        ((DataForViber) currentView).getDataSecondPayment();
+                        view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    case COPY_PAY_TO_100_PERCENT: {
+                        ((DataForViber) currentView).getDataThirdPayment();
+                        view.writeJustMessage("Текст скопирован,можете вставить в вайбер ;)", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
 
+                    case SEARCH_CLIENT_BUTTON: {
+                        ((ViewListClients)currentView).filter();
+                        break;
+                    }
+
+                }
             }
-        } catch (CantWriteDoc | DontHaveFilePattern cantWriteDoc) {
-        view.writeJustMessage(cantWriteDoc.getMessage(), JOptionPane.ERROR_MESSAGE);
-        } catch (DontHaveData dontHaveData) {
+            else if (e.getSource() instanceof MyCheckBox) {
+                ((MyCheckBox) e.getSource()).setSelectedLinkToComponent();
+            }
+            else if(e.getSource() instanceof JComboBox){
+                switch (((JComboBox)e.getSource()).getName()) {
+                    case "boxListMaterial" : {
+                        if (e.getModifiers() != 0) {
+                            ((ViewCreateFileForCutting) currentView).updateBoxListDecor();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        catch (CantWriteDoc | DontHaveFilePattern cantWriteDoc) {
+            view.writeJustMessage(cantWriteDoc.getMessage(), JOptionPane.ERROR_MESSAGE);
+        }
+        catch (DontHaveData dontHaveData) {
             view.writeJustMessage(dontHaveData.getMessage(), JOptionPane.WARNING_MESSAGE);
         }
-        System.out.println(System.currentTimeMillis()-s);
-    }
-    @Override
-    public void keyTyped(KeyEvent e) {
+        System.out.println(System.currentTimeMillis() - s);
 
     }
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-    @Override
     public void keyReleased(KeyEvent e) {
+
+        if(e.getComponent() instanceof EnumValue) {
+            switch (((EnumValue) e.getComponent()).getEnumValue()) {
+                case ALL_SUM_IN_EUR: {
+                    view.onlyNumber((JTextField) e.getSource());
+                    ((ViewBasicContract) currentView).editBasicContractEditAllSumInEUR();
+                    break;
+                }
+                case SEARCH_CLIENT: {
+                    ((ViewListClients)currentView).filter();
+                    break;
+                }
+                case PREPAYMENT_OR_10_PERCENT_SUM: {
+                    view.onlyNumber((JTextField) e.getSource());
+                    ((ViewBasicContract) currentView).editBasicContractEditPrepaymentOr10PercentSum();
+                    break;
+                }
+                case PAY_UP_TO_50_PERCENT_SUM: {
+                    view.onlyNumber((JTextField) e.getSource());
+                    ((ViewBasicContract) currentView).editBasicContractEditPayUpTo50PercentSum();
+                    break;
+                }
+                case ALL_SUM_UP_SALE_IN_BYN: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewUpSaleContract) currentView).editAllSumUpSaleInBYN();
+                    break;
+                }
+                case PREPAYMENT_UP_SALE: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewUpSaleContract) currentView).editPrepaymentUpSaleUpSale();
+                    break;
+                }
+                case RATE: {
+                    view.onlyDoubleNumber((JTextField) e.getComponent(), 4);
+                    ((ViewBasicContract) currentView).editCurrencyBasicContract();
+                    break;
+                }
+                case ALL_SUM_IN_EUR_SUPPLEMENTARY_AGREEMENT: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewSupplementaryAgreementBasicContract) currentView).editAllEURSum();
+                    break;
+                }
+                case PREPAYMENT_OR_10_PERCENT_SUM_SUPPLEMENTARY_AGREEMENT: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewSupplementaryAgreementBasicContract) currentView).editPrepayment();
+                    break;
+                }
+                case PAY_UP_TO_50_PERCENT_SUM_SUPPLEMENTARY_AGREEMENT: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewSupplementaryAgreementBasicContract) currentView).editPayUpTo50percent();
+                    break;
+                }
+                case PREPAYMENT_UP_SALE_SUPPLEMENTARY_AGREEMENT:
+                case SUM_UP_SALE_IN_BYN_SUPPLEMENTARY_AGREEMENT: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewSupplementaryAgreementUpSale) currentView).editPrepaymentOrAllSumSupplementaryAgreementUpSale();
+                    break;
+                }
+                case RATE_SUM_SUPPLEMENTARY_AGREEMENT: {
+                    view.onlyDoubleNumber((JTextField) e.getComponent(), 4);
+                    ((ViewSupplementaryAgreementBasicContract) currentView).editCurrency();
+                    break;
+                }
+                case PRICE_IN_EUR_INVOICE_DOCUMENT: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewInvoiceDocument)currentView).editPriceInEURInvoiceDocument();
+                    break;
+                }
+                case PRICE_BYN_INVOICE_DOCUMENT: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    ((ViewInvoiceDocument) currentView).editPriceBYNInvoiceDocument();
+                    break;
+                }
+                case RATE_INVOICE_DOCUMENT: {
+                    view.onlyDoubleNumber((JTextField) e.getComponent(), 4);
+                    ((ViewInvoiceDocument) currentView).editCurrencyInvoiceDocument();
+                    break;
+                }
+                case VAT_20_INVOICE_DOCUMENT: {
+                    view.onlyDoubleNumber(((JTextField) e.getComponent()), 2);
+                    break;
+                }
+                case DATE_CREATE_SUPPLEMENTARY_AGREEMENT_BASIC_CONTRACT: {
+                    if (!model.isDateCurrency(((JTextField) e.getComponent()).getText())) {
+                        ((ViewSupplementaryAgreementBasicContract) currentView).setCurrencyZero(false);
+                    } else {
+                        ((ViewSupplementaryAgreementBasicContract) currentView).setCurrencyZero(true);
+                    }
+                    ((ViewSupplementaryAgreementBasicContract) currentView).editCurrency();
+                    break;
+                }
+                case DATE_CREATE_CONTRACT: {
+                    if (!model.isDateCurrency(((JTextField) e.getComponent()).getText())) {
+                        ((ViewBasicContract) currentView).setCurrencyZero(false);
+                    } else {
+                        ((ViewBasicContract) currentView).setCurrencyZero(true);
+                    }
+                    ((ViewBasicContract) currentView).editCurrencyBasicContract();
+                    break;
+                }
+                case CREATE_DATE_INVOICE_DOCUMENT: {
+                    if (!model.isDateCurrency(((JTextField) e.getComponent()).getText())) {
+                        ((ViewInvoiceDocument) currentView).setCurrencyZero(false);
+                    } else {
+                        ((ViewInvoiceDocument) currentView).setCurrencyZero(true);
+                    }
+                    ((ViewInvoiceDocument) currentView).editCurrencyInvoiceDocument();
+                    break;
+                }
+                case VALUE_RATE: {
+                    view.onlyDoubleNumber((JTextField) e.getComponent(), 4);
+                    break;
+                }
+                case NUMBER_SUPPLEMENTARY_AGREEMENT_BASIC_CONTRACT:
+                case NUMBER_POWER_OF_ATTORNEY:
+                case PAY_UP_TO_100_PERCENT_SUM_SUPPLEMENTARY_AGREEMENT:
+                case ALL_SUM_IN_BYN_SUPPLEMENTARY_AGREEMENT:
+                case PAY_UP_TO_100_PERCENT_SUM:
+                case PAY_UP_TO_100_PERCENT_UP_SALE_SUPPLEMENTARY_AGREEMENT:
+                case NUMBER_SUPPLEMENTARY_AGREEMENT_UP_SALE:
+                case PAY_UP_TO_100_PERCENT_UP_SALE:
+                case ALL_SUM_IN_BYN: {
+                    view.onlyNumber((JTextField) e.getComponent());
+                    break;
+                }
+            }
+        }
+        else if(e.getComponent() instanceof  JTextField) {
+            switch (e.getComponent().getName()) {
+                case "boxListMaterial": {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        ((ViewCreateFileForCutting) currentView).updateBoxListDecor();
+                    } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                        ((ViewCreateFileForCutting) currentView).filterBoxListMaterial(((JTextField) e.getComponent()).getText());
+                    } else if (String.valueOf(e.getKeyChar()).matches("[а-яА-ЯёЁa-zA-Z0-1]")) {
+                        ((ViewCreateFileForCutting) currentView).filterBoxListMaterial(((JTextField) e.getComponent()).getText());
+                    }
+                    break;
+                }
+                case "boxListDecor": {
+                    if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                        ((ViewCreateFileForCutting) currentView).filterBoxListDecor(((JTextField) e.getComponent()).getText());
+                    } else if (String.valueOf(e.getKeyChar()).matches("[а-яА-ЯёЁa-zA-Z0-1]")) {
+                        ((ViewCreateFileForCutting) currentView).filterBoxListDecor(((JTextField) e.getComponent()).getText());
+                    }
+                    break;
+                }
+            }
+            if (e.getComponent().getName().contains("dditionalProduct")) {
+                if (e.getComponent().getName().contains("supplementaryAgreement")) {
+                    //"Этот блок отвественный за Доп соглашение Апсейл
+                    if (e.getComponent().getName().contains("Count") || e.getComponent().getName().contains("sDiscount") ||
+                            e.getComponent().getName().contains("FullPrice")) {
+                        view.onlyNumber((JTextField) e.getComponent());
+                        ((ViewSupplementaryAgreementUpSale) currentView).editSupplementaryAgreementUpSaleSumProductPriceAndDiscountAndCount((JTextField) e.getComponent());
+
+                    }
+                    if (e.getComponent().getName().contains("WithDiscount")) {
+                        view.onlyNumber((JTextField) e.getComponent());
+                        ((ViewSupplementaryAgreementUpSale) currentView).editWithDiscount();
+                    }
+                } else {
+
+                    if (e.getComponent().getName().contains("additionalProductsCount") || e.getComponent().getName().contains("additionalProductsDiscount") || e.getComponent().getName().contains("additionalProductsFullPrice")) {
+                        view.onlyNumber((JTextField) e.getComponent());
+                        ((ViewUpSaleContract) currentView).editUpSaleEditSumProductPriceAndDiscountAndCount((JTextField) e.getComponent());
+
+
+                    }
+                    if (e.getComponent().getName().contains("additionalProductsWithDiscount")) {
+                        view.onlyNumber((JTextField) e.getComponent());
+                        ((ViewUpSaleContract) currentView).editWithDiscount();
+                    }
+                }
+            }
+        }
+    }
+/*    public void keyReleased(KeyEvent e) {
         //свич реализует логику если кнопку нажал и находится  в определеном поел то делаем это
         switch (e.getComponent().getName()){
             case "allSumInEUR":{
@@ -507,57 +669,61 @@ public class MyController implements ActionListener, KeyListener, MouseListener 
                 }
             }
         }
-    }
+    }*/
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println(e);
         switch (((Component) e.getSource()).getName()) {
             case "jListClients": {
                 if (e.getClickCount() == 2) {
                     int index = ((JList) e.getSource()).locationToIndex(e.getPoint());
                     if(index!=-1) {
-                        model.writeDataClient(view.getComponentsStaticPanel());
-                        if (model.getDataClient() != null) {
-                            view.selectedClient(model.getDataClient());
+                        try {
+                        model.writeDataClient(currentView.getData());
+                        view.displayMainClient(model.getDataClient());
+                        } catch (DontHaveData dontHaveData) {
+                            dontHaveData.printStackTrace();
                         }
                     }
                 }
                 break;
             }
             case "boxListMaterial" :{
-                ((ViewCreateFileForCutting)display).setVisibleBoxMaterial();
+                ((ViewCreateFileForCutting) currentView).setVisibleBoxMaterial();
                 break;
             }
             case "boxListDecor" :{
-                ((ViewCreateFileForCutting)display).setVisibleBoxDecor();
+                ((ViewCreateFileForCutting) currentView).setVisibleBoxDecor();
                 break;
             }
             case "boxListEdge" :{
-                ((ViewCreateFileForCutting)display).setVisibleBoxEdge();
+                ((ViewCreateFileForCutting) currentView).setVisibleBoxEdge();
                 break;
             }
+
         }
 
-
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {
 
     }
-
     @Override
     public void mouseReleased(MouseEvent e) {
 
     }
-
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
-
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+    @Override
+    public void keyPressed(KeyEvent e) {
 
     }
 }

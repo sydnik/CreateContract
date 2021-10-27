@@ -109,7 +109,8 @@ public class SalesManager implements Serializable {
                 return null;
             }
             return new SalesManager(map.get("fullName"),map.get("numberPowerOfAttorney"),
-                    map.get("datePowerOfAttorney"),map.get("miniName"),map.get("numberPhoneManager"),map.get("pathForSaveContract"));
+                    map.get("datePowerOfAttorney"),map.get("miniName"),map.get("numberPhoneManager"),
+                    map.get("pathForSaveContract"));
         }  catch (Exception e) {
         }
         return null;

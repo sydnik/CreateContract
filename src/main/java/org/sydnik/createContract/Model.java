@@ -9,16 +9,13 @@ import org.sydnik.createContract.exception.DontHaveData;
 import org.sydnik.createContract.exception.DontHaveFilePattern;
 import org.sydnik.createContract.view.Display;
 import org.sydnik.createContract.createFileDocument.*;
-import org.sydnik.createContract.view.ViewCreateFileForCutting;
 import org.sydnik.createContract.view.ViewSetting;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Model {
     private SalesManager salesManager;
@@ -32,23 +29,15 @@ public class Model {
             salesManager = SalesManager.getBasicSalesManager();
         }
     }
+
     public void setCurrency(){
         currency = Currency.createCurrency();
     }
-    public void setCurrency(Component[] components){
-        double value = 0;
-        for(Component component : components){
-            try {
-                if(component.getName().equals("valueCurrency")){
-                    value=Double.parseDouble(((JTextField)component).getText());
-                }
-            }catch (Exception e){}
-
-        }
-        currency = new Currency(value);
+    public void setCurrency(Display display) throws DontHaveData {
+        currency = new Currency(Double.parseDouble(display.getData().get("Result")));
     }
     public void setSalesManager(Display display) throws CantWriteDoc, DontHaveData {
-        salesManager = new SalesManager(display.getDataForSave());
+        salesManager = new SalesManager(display.getData());
         salesManager.save();
 
     }
@@ -58,7 +47,7 @@ public class Model {
         listMaterial.addDecor(((ViewSetting)display).getDecorForAdd());
     }
     public void createNewClient(Display display) throws CantWriteDoc, DontHaveData {
-        dataClient = new DataClient(display.getDataForSave());
+        dataClient = new DataClient(display.getData());
         if(dataClient.checkNameFreeForSave(salesManager)){
             dataClient.save();
         }else throw new CantWriteDoc("такой номер догора и имя занято(Поменяйте как минимум Странное название)");
@@ -66,39 +55,38 @@ public class Model {
 
     }
     public void saveDataAboutClient(Display display) throws CantWriteDoc, DontHaveData {
-        dataClient.setDateAboutClient(display.getDataForSave());
+        dataClient.setDateAboutClient(display.getData());
         dataClient.save();
     }
     public void saveDataBaseContractClient (Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
-        dataClient.setBaseContract(display.getDataForSave());
+        dataClient.setBaseContract(display.getData());
         dataClient.save();
         CreateDocumentsAndPrint.createBasicContract(dataClient,salesManager);
     }
     public void saveDataUpSale (Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
-        dataClient.setUpSaleContract(display.getDataForSave());
+        dataClient.setUpSaleContract(display.getData());
         dataClient.save();
         CreateDocumentsAndPrint.createUpSaleContract(dataClient,salesManager);
     }
     public void saveDataSupplementaryAgreementBasicContract(Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
-        dataClient.setDateSupplementaryAgreementBasicContract(display.getDataForSave());
+        dataClient.setDateSupplementaryAgreementBasicContract(display.getData());
         dataClient.save();
         CreateDocumentsAndPrint.createSupplementaryAgreementBasicContract(dataClient, salesManager);
     }
     public void saveDataSupplementaryAgreementUpSaleContract(Display display) throws CantWriteDoc, DontHaveFilePattern, DontHaveData {
-        dataClient.setDateSupplementaryAgreementUpSaleContract(display.getDataForSave());
+        dataClient.setDateSupplementaryAgreementUpSaleContract(display.getData());
         dataClient.save();
         CreateDocumentsAndPrint.createSupplementaryAgreementUpSaleContract(dataClient, salesManager);
     }
     public void saveDataInvoiceDocument(Display display) throws CantWriteDoc, DontHaveData, DontHaveFilePattern {
-        dataClient.setDataInvoiceDocument(display.getDataForSave());
+        dataClient.setDataInvoiceDocument(display.getData());
         dataClient.save();
         CreateXlsXFile.createInvoiceDocument(dataClient,salesManager);
     }
-
-    public void createFileForCutting(Display display) throws DontHaveFilePattern, CantWriteDoc {
-        String material = ((ViewCreateFileForCutting)display).getValueMaterial();
-        String decor = ((ViewCreateFileForCutting)display).getValueDecor();
-        String edge = ((ViewCreateFileForCutting)display).getValueEdge();
+    public void SaveFileForCutting(Display display) throws DontHaveFilePattern, CantWriteDoc, DontHaveData {
+        String material = display.getData().get("material");
+        String decor = display.getData().get("decor");
+        String edge = display.getData().get("edge");
         CreateFileForCutting.createFile(dataClient,salesManager,material,decor,edge);
     }
     //Возвращает лист всех папок(Клиентов)
@@ -112,37 +100,10 @@ public class Model {
         });
         return list;
     }
-    public String[] listSelectClientSearch(Component[] components){
-        String line= "";
-        for(Component component:components) {
-            try {
-                switch (component.getName()) {
-                    case "searchClient": {
-                        line = ((JTextField) component).getText();
-                        break;
-                    }
-
-                }
-            }catch (Exception e){}
-        }
-        File path = new File("saveContract"); //path указывает на директорию
-        String finalLine = line;
-        String[] list = path.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                if(name.matches("([a-zA-Zа-яёА-ЯЁ]{2})\\d-\\d{6}-\\d{2}(.*)"))
-                {
-                    return name.toLowerCase().contains(finalLine.toLowerCase());
-                }
-                return false;
-            }
-        });
-        return list;
-    }
     public void createBaseContract() throws CantWriteDoc, DontHaveFilePattern {
         CreateDocumentsAndPrint.createBasicContract(dataClient,salesManager);
     }
-    public void printDoc(String nameDoc){
+    public void printDoc(String nameDoc) throws DontHaveFilePattern {
         // 150 мс недает встретится двум потокам
         try {
             Thread.sleep(150);
@@ -159,7 +120,8 @@ public class Model {
         switch (s){
             case "openFileBasicContract" : {
                 try {
-                    Desktop.getDesktop().open(new File(path+ "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
+                    Desktop.getDesktop().open(new File(path+ "\\" + dataClient.getNumberContract() + " " +
+                            dataClient.getStrangeName() + "/Договор"+dataClient.getNumberContract() + ".docx"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -167,7 +129,8 @@ public class Model {
             }
             case "openFileUpSaleContract": {
                 try {
-                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
+                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +
+                            dataClient.getStrangeName() + "/ДоговорUpSale"+dataClient.getNumberContract() + ".docx"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -177,8 +140,10 @@ public class Model {
             case "openFileSupplementaryAgreementBasicContract" : {
                 try {
 
-                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
-                            "/Дополнительное соглашение №"+ dataClient.getSupplementaryAgreementBasicContract().getNumberSupplementaryAgreementBasicContract()+" " +dataClient.getNumberContract() + ".docx"));
+                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +
+                            dataClient.getStrangeName() + "/Дополнительное соглашение №"+
+                            dataClient.getSupplementaryAgreementBasicContract().getNumber()+
+                            " " +dataClient.getNumberContract() + ".docx"));
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -187,9 +152,10 @@ public class Model {
             }
             case "openFileSupplementaryAgreementUpSaleContract" : {
                 try {
-
-                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
-                            dataClient.getSupplementaryAgreementUpSaleContract().getNumberSupplementaryAgreementUpSale()+" "+dataClient.getNumberContract() + ".docx"));
+                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +
+                            dataClient.getStrangeName() + "/Дополнительное соглашение UpSale"+
+                            dataClient.getSupplementaryAgreementUpSaleContract().getNumber()+
+                            " "+dataClient.getNumberContract() + ".docx"));
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -199,8 +165,8 @@ public class Model {
             case "openFileInvoiceDocument" : {
                 try {
 
-                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +dataClient.getStrangeName() +
-                            "/Счет-фактура " + dataClient.getNumberContract()+ ".xlsx"));
+                    Desktop.getDesktop().open(new File(path + "\\" + dataClient.getNumberContract() + " " +
+                            dataClient.getStrangeName() + "/Счет-фактура " + dataClient.getNumberContract()+ ".xlsx"));
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -223,18 +189,9 @@ public class Model {
 
     }
 
-    public void writeDataClient(Component[] listComponent) {
-        for(Component component:listComponent){
-            try {
-                if (component.getName().equals("ListClients")) {
-                    dataClient = DataClient.load("saveContract/" +
-                            (((JList)((JViewport)((JScrollPane)component).getComponent(0)).getComponent(0)).getSelectedValue())
-                            +"/baseDataClient.dat");
-                }
-            }catch (Exception e){
+    public void writeDataClient(HashMap<String,String> map) {
+        dataClient = DataClient.load("saveContract/" +map.get("result") +"/baseDataClient.dat");
 
-            }
-        }
     }
     public void clearDataClient(){
         dataClient = null;
@@ -247,7 +204,7 @@ public class Model {
         return dataClient;
     }
     public double getCurrencyValue(){
-        return currency.getValue();
+        return currency.getRate();
     }
     public boolean isDateCurrency(String date){
         if(currency.getDate().equals(date)){

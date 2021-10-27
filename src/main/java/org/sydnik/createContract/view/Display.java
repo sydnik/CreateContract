@@ -6,6 +6,6 @@ import java.util.HashMap;
 
 public interface Display {
     public void display();
-    public HashMap<String,String> getDataForSave() throws DontHaveData;
+    public HashMap<String,String> getData() throws DontHaveData;
 
 }
